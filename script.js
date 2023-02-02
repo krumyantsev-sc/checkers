@@ -41,14 +41,10 @@ const board = [
 let whiteCheckers = document.querySelectorAll(".white-checker");
 let blackCheckers = document.querySelectorAll(".black-checker");
 let allCheckers = document.querySelectorAll("td");
-console.log(whiteCheckers);
-console.log(1);
+
 function giveListeners() {
     for (let item of whiteCheckers) {
-        console.log(item);
-        item.addEventListener("click", function (e) {
-            console.log(e.target.id);
-        });
+        item.addEventListener("click", checkPossibilities);
     }
     for (let item of blackCheckers) {
         item.addEventListener("click", checkPossibilities);
@@ -60,8 +56,78 @@ function getBoardIndex(id) {
 }
 
 function checkPossibilities(event) {
+    clearHighlightedCells();
+    let possibleWays = [];
     let checker = event.target.id;
     let checkerId = getBoardIndex(checker);
     console.log(checkerId);
+    if (board[checkerId + 7] == null) {
+        possibleWays.push(checkerId + 7);
+    }
+    if (board[checkerId + 9] == null) {
+        possibleWays.push(checkerId + 9);
+    }
+    if (board[checkerId - 7] == null) {
+        possibleWays.push(checkerId - 7);
+    }
+    if (board[checkerId - 9] == null) {
+        possibleWays.push(checkerId - 9);
+    }
+    if (possibleWays.length > 0) {
+        highlightPossibleWays(possibleWays);
+        addMoveListener(checkerId, possibleWays);
+    }
 }
+
+function clearHighlightedCells() {
+    for(let item of allCheckers) {
+        item.classList.remove("highlightedCell");
+    }
+}
+
+function highlightPossibleWays(ways) {
+    console.log(ways);
+    for(let item of ways) {
+        allCheckers[item].classList.add("highlightedCell");
+    }
+}
+
+function addMoveListener(id, ways) {
+    let item;
+    for (item of ways) {
+        allCheckers[item].addEventListener("click", moveListener);
+    }
+    function moveListener(event) {
+        console.log(event);
+        moveChecker(id,item);
+    }
+    const moveChecker = (id, way) => {
+        console.log(id, way);
+        allCheckers[way].appendChild(allCheckers[id].firstChild);
+        removeMoveListeners();
+        clearHighlightedCells();
+        function removeMoveListeners() {
+            for (item of ways) {
+                allCheckers[item].removeEventListener("click", moveListener);
+            }
+        }
+
+    }
+
+}
+
+const moveChecker = (id, way) => {
+    console.log(id, way);
+    allCheckers[way].appendChild(allCheckers[id].firstChild);
+    function removeMoveListeners() {
+        for(let item of allCheckers) {
+            if (item.classList.contains("highlightedCell")) {
+                item.removeEventListener("click", moveChecker.bind(null,id,item));
+            }
+        }
+    }
+    removeMoveListeners();
+}
+
+
 giveListeners();
