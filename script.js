@@ -38,6 +38,8 @@ const board = [
     20, null, 21, null, 22, null, 23, null
 ];
 
+let currentChecker;
+
 let whiteCheckers = document.querySelectorAll(".white-checker");
 let blackCheckers = document.querySelectorAll(".black-checker");
 let allCheckers = document.querySelectorAll("td");
@@ -59,7 +61,9 @@ function checkPossibilities(event) {
     clearHighlightedCells();
     let possibleWays = [];
     let checker = event.target.id;
+    console.log(checker);
     let checkerId = getBoardIndex(checker);
+    currentChecker = checkerId;
     console.log(checkerId);
     if (board[checkerId + 7] == null) {
         possibleWays.push(checkerId + 7);
@@ -95,38 +99,15 @@ function highlightPossibleWays(ways) {
 function addMoveListener(id, ways) {
     let item;
     for (item of ways) {
-        allCheckers[item].addEventListener("click", moveListener);
+        allCheckers[item].addEventListener("click", moveChecker);
     }
-    function moveListener(event) {
-        console.log(event);
-        moveChecker(id,item);
-    }
-    const moveChecker = (id, way) => {
-        console.log(id, way);
-        allCheckers[way].appendChild(allCheckers[id].firstChild);
-        removeMoveListeners();
-        clearHighlightedCells();
-        function removeMoveListeners() {
-            for (item of ways) {
-                allCheckers[item].removeEventListener("click", moveListener);
-            }
-        }
-
-    }
-
 }
 
-const moveChecker = (id, way) => {
-    console.log(id, way);
-    allCheckers[way].appendChild(allCheckers[id].firstChild);
-    function removeMoveListeners() {
-        for(let item of allCheckers) {
-            if (item.classList.contains("highlightedCell")) {
-                item.removeEventListener("click", moveChecker.bind(null,id,item));
-            }
-        }
-    }
-    removeMoveListeners();
+const moveChecker = (event) => {
+    event.target.appendChild(allCheckers[currentChecker].firstChild);
+    board[currentChecker] = null;
+    clearHighlightedCells();
+    event.target.removeEventListener("click", moveChecker);
 }
 
 
