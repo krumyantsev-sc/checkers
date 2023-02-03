@@ -9,6 +9,7 @@ class checker {
     constructor(color) {
         this.color = color;
     }
+    isLady;
     move() {
 
     }
@@ -37,20 +38,42 @@ const board = [
     null, 16, null, 17, null, 18, null, 19,
     20, null, 21, null, 22, null, 23, null
 ];
-
 let currentChecker;
+let counter = 1;
 
+let currTeamDiv = document.querySelector(".current-team");
 let whiteCheckers = document.querySelectorAll(".white-checker");
 let blackCheckers = document.querySelectorAll(".black-checker");
 let allCheckers = document.querySelectorAll("td");
 
+function changeTeam() {
+    counter++;
+    currTeamDiv.innerHTML = (counter % 2 === 0) ? "Ходят черные" : "Ходят белые";
+}
+
+function startMove() {
+    giveListeners();
+}
+
 function giveListeners() {
-    for (let item of whiteCheckers) {
-        item.addEventListener("click", checkPossibilities);
+    if (counter % 2 !== 0) {
+        for (let item of whiteCheckers) {
+            item.addEventListener("click", checkPossibilities);
+        }
+    } else {
+        for (let item of blackCheckers) {
+            item.addEventListener("click", checkPossibilities);
+        }
     }
-    for (let item of blackCheckers) {
-        item.addEventListener("click", checkPossibilities);
-    }
+}
+
+function removeListeners() {
+        for (let item of whiteCheckers) {
+            item.removeEventListener("click", checkPossibilities);
+        }
+        for (let item of blackCheckers) {
+            item.removeEventListener("click", checkPossibilities);
+        }
 }
 
 function getBoardIndex(id) {
@@ -58,6 +81,7 @@ function getBoardIndex(id) {
 }
 
 function checkPossibilities(event) {
+    console.log(board);
     clearHighlightedCells();
     let possibleWays = [];
     let checker = event.target.id;
@@ -65,16 +89,16 @@ function checkPossibilities(event) {
     let checkerId = getBoardIndex(checker);
     currentChecker = checkerId;
     console.log(checkerId);
-    if (board[checkerId + 7] == null) {
+    if (board[checkerId + 7] == null && !allCheckers[checkerId + 7].classList.contains("cleanCell")) {
         possibleWays.push(checkerId + 7);
     }
-    if (board[checkerId + 9] == null) {
+    if (board[checkerId + 9] == null && !allCheckers[checkerId + 9].classList.contains("cleanCell")) {
         possibleWays.push(checkerId + 9);
     }
-    if (board[checkerId - 7] == null) {
+    if (board[checkerId - 7] == null && !allCheckers[checkerId - 7].classList.contains("cleanCell")) {
         possibleWays.push(checkerId - 7);
     }
-    if (board[checkerId - 9] == null) {
+    if (board[checkerId - 9] == null && !allCheckers[checkerId - 9].classList.contains("cleanCell")) {
         possibleWays.push(checkerId - 9);
     }
     if (possibleWays.length > 0) {
@@ -103,12 +127,24 @@ function addMoveListener(id, ways) {
     }
 }
 
+function findIndexOfNode(event) {
+    for (let i = 0; i < allCheckers.length; i++) {
+        if (allCheckers[i] === event.target) {
+            return i;
+        }
+    }
+}
+
 const moveChecker = (event) => {
     event.target.appendChild(allCheckers[currentChecker].firstChild);
+    let newCheckerDiv = event.target.firstChild;
+    board[findIndexOfNode(event)] = +newCheckerDiv.id;
     board[currentChecker] = null;
     clearHighlightedCells();
     event.target.removeEventListener("click", moveChecker);
+    removeListeners();
+    changeTeam();
+    startMove();
 }
+startMove();
 
-
-giveListeners();
