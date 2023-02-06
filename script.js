@@ -68,7 +68,12 @@ class Board {
     }
 
     getBoardIndex(id) {
-        return this.board.indexOf(parseInt(id));
+        for(let i = 0; i < this.board.length; i++) {
+            if (this.board[i] != null && this.board[i].divId === id) {
+                return i;
+            }
+        }
+        return 0;
     }
 
 
@@ -129,6 +134,7 @@ function checkPossibilities(event) {
     clearHighlightedCells();
     let possibleWays = [];
     let checker = event.target.id;
+    console.log(event.target.id);
     let checkerId = gameBoard.getBoardIndex(checker);
     console.log(checkerId);
     currentChecker = checkerId;
