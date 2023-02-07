@@ -39,11 +39,11 @@ class Board {
     init() {
         let whiteCheckerSelectors = document.querySelectorAll(".white-checker");
         for (let i = 0; i < 12; i++) {
-            this.whiteCheckers.push(new checker("white", i, this.getBoardIndex(i), whiteCheckerSelectors[i]));
+            this.whiteCheckers.push(new checker("white", i, this.board.indexOf(i), whiteCheckerSelectors[i]));
         }
         let blackCheckerSelectors = document.querySelectorAll(".black-checker");
         for (let i = 12; i < 24; i++) {
-            this.blackCheckers.push(new checker("black", i, this.getBoardIndex(i)));
+            this.blackCheckers.push(new checker("black", i, this.board.indexOf(i)));
         }
         for (let i = 0; i < blackCheckerSelectors.length; i++) {
             this.blackCheckers[i].div = blackCheckerSelectors[i];
@@ -59,8 +59,8 @@ class Board {
                 this.board[i] = this.whiteCheckers[k];
                 k++;
             } else {
-                if (this.board[i] > 12 && this.board[i] != null) {
-                    this.board[i] = this.whiteCheckers[j];
+                if (this.board[i] >= 12 && this.board[i] != null) {
+                    this.board[i] = this.blackCheckers[j];
                     j++;
                 }
             }
@@ -68,15 +68,14 @@ class Board {
     }
 
     getBoardIndex(id) {
+        id = +id;
         for(let i = 0; i < this.board.length; i++) {
-            if (this.board[i] != null && this.board[i].divId === id) {
-                return i;
+            if(this.board[i] != null && this.board[i].divId === id) {
+                return this.board[i].position;
             }
         }
         return 0;
     }
-
-
     allCheckers = document.querySelectorAll("td");
 }
 
@@ -138,16 +137,16 @@ function checkPossibilities(event) {
     let checkerId = gameBoard.getBoardIndex(checker);
     console.log(checkerId);
     currentChecker = checkerId;
-    if (gameBoard.board[checkerId + 7] == null && !gameBoard.board[checkerId + 7].classList.contains("cleanCell")) {
+    if (gameBoard.board[checkerId + 7] == null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell")) {
         possibleWays.push(checkerId + 7);
     }
-    if (gameBoard.board[checkerId + 9] == null && !gameBoard.board[checkerId + 9].classList.contains("cleanCell")) {
+    if (gameBoard.board[checkerId + 9] == null && !gameBoard.allCheckers[checkerId + 9].classList.contains("cleanCell")) {
         possibleWays.push(checkerId + 9);
     }
-    if (gameBoard.board[checkerId - 7] == null && !gameBoard.board[checkerId - 7].classList.contains("cleanCell")) {
+    if (gameBoard.board[checkerId - 7] == null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell")) {
         possibleWays.push(checkerId - 7);
     }
-    if (gameBoard.board[checkerId - 9] == null && !gameBoard.board[checkerId - 9].classList.contains("cleanCell")) {
+    if (gameBoard.board[checkerId - 9] == null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell")) {
         possibleWays.push(checkerId - 9);
     }
     if (possibleWays.length > 0) {
