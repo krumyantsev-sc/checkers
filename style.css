@@ -46,3 +46,8 @@ td {
     font-size: 25px;
     color: lightsalmon;
 }
+
+.lady {
+    border-radius: 50%;
+    border: 2px solid red;
+}

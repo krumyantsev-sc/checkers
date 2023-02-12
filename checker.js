@@ -6,6 +6,7 @@ export default class checker {
         this.position = position;
         this.div = div;
     }
+
     color;
     position;
     divId;

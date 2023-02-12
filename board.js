@@ -17,11 +17,11 @@ export default class Board {
     init() {
         let whiteCheckerSelectors = document.querySelectorAll(".white-checker");
         for (let i = 0; i < 12; i++) {
-            this.whiteCheckers.push(new checker("white", i, this.board.indexOf(i), whiteCheckerSelectors[i]));
+            this.whiteCheckers.push(new checker("White", i, this.board.indexOf(i), whiteCheckerSelectors[i]));
         }
         let blackCheckerSelectors = document.querySelectorAll(".black-checker");
         for (let i = 12; i < 24; i++) {
-            this.blackCheckers.push(new checker("black", i, this.board.indexOf(i)));
+            this.blackCheckers.push(new checker("Black", i, this.board.indexOf(i)));
         }
         for (let i = 0; i < blackCheckerSelectors.length; i++) {
             this.blackCheckers[i].div = blackCheckerSelectors[i];
