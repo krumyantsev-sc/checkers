@@ -51,3 +51,11 @@ td {
     border-radius: 50%;
     border: 2px solid red;
 }
+
+.scoreboard {
+    margin-left: 45%;
+    margin-top: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 25px;
+    color: lightsalmon;
+}

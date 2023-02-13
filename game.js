@@ -1,16 +1,16 @@
 import Board from './board.js';
 import checker from './checker.js';
-
-class Player {
-    score = 0;
-}
+import Player from './player.js'
 
 let currentChecker;
 let counter = 1;
 let gameBoard = new Board;
+let player1 = new Player();
+let player2 = new Player();
 gameBoard.init();
 let currTeamDiv = document.querySelector(".current-team");
-
+let whiteScore = document.querySelector("#whiteSpan");
+let blackScore = document.querySelector("#blackSpan");
 
 function changeTeam() {
     counter++;
@@ -33,41 +33,42 @@ function giveListeners() {
     }
 }
 
-function removeListeners() {
+function removeListeners(event) {
         for (let item of gameBoard.whiteCheckers) {
             item.div.removeEventListener("click", checkPossibilities);
         }
         for (let item of gameBoard.blackCheckers) {
             item.div.removeEventListener("click", checkPossibilities);
         }
+        event.target.removeEventListener("click", moveChecker);
 }
 
 
-function getBeatPositions(checkerId) {
+export function getBeatPositions(checkerId) {
     let takenPositions = [];
-    if (gameBoard.board[checkerId].color == "White" || gameBoard.board[checkerId].isLady) {
-    if (gameBoard.allCheckers[checkerId + 7] != undefined && gameBoard.board[checkerId + 7] != null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId+7].color) {
-        if (gameBoard.allCheckers[checkerId + 14] != undefined && gameBoard.board[checkerId + 14] == null && !gameBoard.allCheckers[checkerId + 14].classList.contains("cleanCell")) {
+    if (gameBoard.board[checkerId].color === "White" || gameBoard.board[checkerId].isLady) {
+    if (gameBoard.allCheckers[checkerId + 7] !== undefined && gameBoard.board[checkerId + 7] != null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId+7].color) {
+        if (gameBoard.allCheckers[checkerId + 14] !== undefined && gameBoard.board[checkerId + 14] == null && !gameBoard.allCheckers[checkerId + 14].classList.contains("cleanCell")) {
             takenPositions.push(checkerId + 14);
         }
         
     }
-    if (gameBoard.allCheckers[checkerId + 9] != undefined && gameBoard.board[checkerId + 9] != null && !gameBoard.allCheckers[checkerId + 9].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId+9].color) {
-        if (gameBoard.allCheckers[checkerId + 18] != undefined && gameBoard.board[checkerId + 18] == null && !gameBoard.allCheckers[checkerId + 18].classList.contains("cleanCell")) {
+    if (gameBoard.allCheckers[checkerId + 9] !== undefined && gameBoard.board[checkerId + 9] != null && !gameBoard.allCheckers[checkerId + 9].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId+9].color) {
+        if (gameBoard.allCheckers[checkerId + 18] !== undefined && gameBoard.board[checkerId + 18] == null && !gameBoard.allCheckers[checkerId + 18].classList.contains("cleanCell")) {
             takenPositions.push(checkerId + 18);
         }
         
     }
 }
-if (gameBoard.board[checkerId].color == "Black" || gameBoard.board[checkerId].isLady) {
-    if (gameBoard.allCheckers[checkerId - 7] != undefined && gameBoard.board[checkerId - 7] != null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-7].color) {
-        if (gameBoard.allCheckers[checkerId - 14] != undefined && gameBoard.board[checkerId - 14] == null && !gameBoard.allCheckers[checkerId - 14].classList.contains("cleanCell")) {
+if (gameBoard.board[checkerId].color === "Black" || gameBoard.board[checkerId].isLady) {
+    if (gameBoard.allCheckers[checkerId - 7] !== undefined && gameBoard.board[checkerId - 7] != null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-7].color) {
+        if (gameBoard.allCheckers[checkerId - 14] !== undefined && gameBoard.board[checkerId - 14] == null && !gameBoard.allCheckers[checkerId - 14].classList.contains("cleanCell")) {
             takenPositions.push(checkerId - 14);
         }
         
     }
-    if (gameBoard.allCheckers[checkerId - 9] != undefined && gameBoard.board[checkerId - 9] != null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-9].color) {
-        if (gameBoard.allCheckers[checkerId - 18] != undefined && gameBoard.board[checkerId - 18] == null && !gameBoard.allCheckers[checkerId - 18].classList.contains("cleanCell")) {
+    if (gameBoard.allCheckers[checkerId - 9] !== undefined && gameBoard.board[checkerId - 9] != null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-9].color) {
+        if (gameBoard.allCheckers[checkerId - 18] !== undefined && gameBoard.board[checkerId - 18] == null && !gameBoard.allCheckers[checkerId - 18].classList.contains("cleanCell")) {
             takenPositions.push(checkerId - 18);
         }
         
@@ -76,10 +77,10 @@ if (gameBoard.board[checkerId].color == "Black" || gameBoard.board[checkerId].is
     return takenPositions;
 }
 
-function checkMoveVariants(checkerId) {
+export function checkMoveVariants(checkerId) {
     let possibleWays = getBeatPositions(checkerId);
     if (possibleWays.length === 0) {
-        if (gameBoard.board[checkerId].color == "White" || gameBoard.board[checkerId].isLady) {
+        if (gameBoard.board[checkerId].color === "White" || gameBoard.board[checkerId].isLady) {
     if (gameBoard.board[checkerId + 7] == null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell")) {
         possibleWays.push(checkerId + 7);
     }
@@ -87,7 +88,7 @@ function checkMoveVariants(checkerId) {
         possibleWays.push(checkerId + 9);
     }
 }
-if (gameBoard.board[checkerId].color == "Black" || gameBoard.board[checkerId].isLady) {
+if (gameBoard.board[checkerId].color === "Black" || gameBoard.board[checkerId].isLady) {
     if (gameBoard.board[checkerId - 7] == null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell")) {
         possibleWays.push(checkerId - 7);
     }
@@ -131,69 +132,59 @@ function addMoveListener(id, ways) {
     }
 }
 
-function findIndexOfNode(event) {
-    for (let i = 0; i < gameBoard.allCheckers.length; i++) {
-        if (gameBoard.allCheckers[i] === event.target) {
-            return i;
-        }
+function incrementScore(checker) {
+    if (checker.color === "Black") {
+        player1.score++;
+    } else {
+        player2.score++;
     }
 }
 
-function removeChecker(difference) {
+function refreshScore() {
+    whiteScore.textContent = player1.score + "";
+    blackScore.textContent = player2.score + "";
+}
+
+export function removeChecker(difference) {
     if (difference % 7 === 0) {
         if (difference > 0) {
             gameBoard.board[currentChecker + 7] = null;
             gameBoard.allCheckers[currentChecker + 7].removeChild(gameBoard.allCheckers[currentChecker + 7].firstChild);
+            incrementScore(gameBoard.allCheckers[currentChecker + 7]);
         } else {
             gameBoard.board[currentChecker - 7] = null;
             gameBoard.allCheckers[currentChecker - 7].removeChild(gameBoard.allCheckers[currentChecker - 7].firstChild);
+            incrementScore(gameBoard.allCheckers[currentChecker - 7]);
         }
     } else {
         if (difference > 0) {
             gameBoard.board[currentChecker + 9] = null;
             gameBoard.allCheckers[currentChecker + 9].removeChild(gameBoard.allCheckers[currentChecker + 9].firstChild);
+            incrementScore(gameBoard.allCheckers[currentChecker + 9]);
         } else {
             gameBoard.board[currentChecker - 9] = null;
             gameBoard.allCheckers[currentChecker - 9].removeChild(gameBoard.allCheckers[currentChecker - 9].firstChild);
+            incrementScore(gameBoard.allCheckers[currentChecker - 9]);
         }
     }
 
 }
 
-function makeLady(position) {
-    if (gameBoard.board[position].color === "Black" && position < 8) {
-        gameBoard.board[position].isLady = true;
-        gameBoard.board[position].div.classList.add("lady");
-    }
-    if (gameBoard.board[position].color === "White" && position > 55) {
-        gameBoard.board[position].isLady = true;
-        gameBoard.board[position].div.classList.add("lady");
-    }
-}
-
 const moveChecker = (event) => {
+    let newIndex = gameBoard.findIndexOfNode(event);
     event.target.appendChild(gameBoard.allCheckers[currentChecker].firstChild);
-    let newIndex = findIndexOfNode(event);
-    gameBoard.board[newIndex] = gameBoard.board[currentChecker];
-    gameBoard.board[newIndex].position = newIndex;
-    let difference = newIndex - currentChecker;
-    makeLady(newIndex);
-    let pos = [];
-    if (Math.abs(difference) > 9) {
-        removeChecker(difference);
-        pos = getBeatPositions(newIndex);
-    }
-    gameBoard.board[currentChecker] = null;
-    if(pos.length > 0) {
+    player1.moveChecker(gameBoard.board[currentChecker], gameBoard, currentChecker, newIndex);
+    gameBoard.board[newIndex].checkLady();
+    let pos = checker.beat(currentChecker, newIndex);
+    if(checker.canBeatOneMore(pos)) {
         clearHighlightedCells();
         currentChecker = newIndex;
         checkMoveVariants(newIndex);
         return;
     }
-    
     clearHighlightedCells();
-    event.target.removeEventListener("click", moveChecker);
-    removeListeners();
+    refreshScore();
+    removeListeners(event);
     changeTeam();
     startMove();
 }

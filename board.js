@@ -54,5 +54,13 @@ export default class Board {
         }
         return 0;
     }
+
+    findIndexOfNode(event) {
+        for (let i = 0; i < this.allCheckers.length; i++) {
+            if (this.allCheckers[i] === event.target) {
+                return i;
+            }
+        }
+    }
     allCheckers = document.querySelectorAll("td");
 }
