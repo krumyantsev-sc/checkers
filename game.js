@@ -1,12 +1,14 @@
 import Board from './board.js';
 import checker from './checker.js';
 import Player from './player.js'
+import Bot from './bot.js'
 
 let currentChecker;
 let counter = 1;
 export let gameBoard = new Board;
 let player1 = new Player();
 let player2 = new Player();
+let bot = new Bot();
 gameBoard.init();
 let currTeamDiv = document.querySelector(".current-team");
 let whiteScore = document.querySelector("#whiteSpan");
@@ -27,9 +29,11 @@ function giveListeners() {
             item.div.addEventListener("click", checkPossibilities);
         }
     } else {
-        for (let item of gameBoard.blackCheckers) {
-            item.div.addEventListener("click", checkPossibilities);
-        }
+        console.log("Ходят черные");
+            bot.moveClosestChecker();
+        refreshScore();
+        changeTeam();
+        startMove();
     }
 }
 
@@ -60,43 +64,50 @@ export function getBeatPositions(checkerId) {
         
     }
 }
-if (gameBoard.board[checkerId].color === "Black" || gameBoard.board[checkerId].isLady) {
-    if (gameBoard.allCheckers[checkerId - 7] !== undefined && gameBoard.board[checkerId - 7] != null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-7].color) {
-        if (gameBoard.allCheckers[checkerId - 14] !== undefined && gameBoard.board[checkerId - 14] == null && !gameBoard.allCheckers[checkerId - 14].classList.contains("cleanCell")) {
-            takenPositions.push(checkerId - 14);
+    if (gameBoard.board[checkerId].color === "Black" || gameBoard.board[checkerId].isLady) {
+        if (gameBoard.allCheckers[checkerId - 7] !== undefined && gameBoard.board[checkerId - 7] != null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-7].color) {
+            if (gameBoard.allCheckers[checkerId - 14] !== undefined && gameBoard.board[checkerId - 14] == null && !gameBoard.allCheckers[checkerId - 14].classList.contains("cleanCell")) {
+                takenPositions.push(checkerId - 14);
+            }
+
         }
-        
-    }
-    if (gameBoard.allCheckers[checkerId - 9] !== undefined && gameBoard.board[checkerId - 9] != null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-9].color) {
-        if (gameBoard.allCheckers[checkerId - 18] !== undefined && gameBoard.board[checkerId - 18] == null && !gameBoard.allCheckers[checkerId - 18].classList.contains("cleanCell")) {
-            takenPositions.push(checkerId - 18);
+        if (gameBoard.allCheckers[checkerId - 9] !== undefined && gameBoard.board[checkerId - 9] != null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-9].color) {
+            if (gameBoard.allCheckers[checkerId - 18] !== undefined && gameBoard.board[checkerId - 18] == null && !gameBoard.allCheckers[checkerId - 18].classList.contains("cleanCell")) {
+                takenPositions.push(checkerId - 18);
+            }
+
         }
-        
-    }
 }
     return takenPositions;
 }
 
+export function calculateSimpleMoveVariants(checkerId) {
+    let possibleWays = [];
+    if (gameBoard.board[checkerId].color === "White" || gameBoard.board[checkerId].isLady) {
+        if (gameBoard.board[checkerId + 7] == null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell")) {
+            possibleWays.push(checkerId + 7);
+        }
+        if (gameBoard.board[checkerId + 9] == null && !gameBoard.allCheckers[checkerId + 9].classList.contains("cleanCell")) {
+            possibleWays.push(checkerId + 9);
+        }
+    }
+    if (gameBoard.board[checkerId].color === "Black" || gameBoard.board[checkerId].isLady) {
+        if (gameBoard.board[checkerId - 7] == null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell")) {
+            possibleWays.push(checkerId - 7);
+        }
+        if (gameBoard.board[checkerId - 9] == null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell")) {
+            possibleWays.push(checkerId - 9);
+        }
+    }
+    return possibleWays;
+}
+
 export function checkMoveVariants(checkerId) {
     let possibleWays = getBeatPositions(checkerId);
+    console.log(possibleWays);
     if (possibleWays.length === 0) {
-        if (gameBoard.board[checkerId].color === "White" || gameBoard.board[checkerId].isLady) {
-    if (gameBoard.board[checkerId + 7] == null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell")) {
-        possibleWays.push(checkerId + 7);
+        possibleWays = calculateSimpleMoveVariants(checkerId);
     }
-    if (gameBoard.board[checkerId + 9] == null && !gameBoard.allCheckers[checkerId + 9].classList.contains("cleanCell")) {
-        possibleWays.push(checkerId + 9);
-    }
-}
-if (gameBoard.board[checkerId].color === "Black" || gameBoard.board[checkerId].isLady) {
-    if (gameBoard.board[checkerId - 7] == null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell")) {
-        possibleWays.push(checkerId - 7);
-    }
-    if (gameBoard.board[checkerId - 9] == null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell")) {
-        possibleWays.push(checkerId - 9);
-    }
-}
-}
     if (possibleWays.length > 0) {
         highlightPossibleWays(possibleWays);
         addMoveListener(checkerId, possibleWays);
@@ -172,9 +183,13 @@ export function removeChecker(difference) {
 
 }
 
+export function moveCheckerDiv(initialCell, targetCellDiv) {
+    targetCellDiv.appendChild(gameBoard.allCheckers[initialCell].firstChild);
+}
+
 const moveChecker = (event) => {
     let newIndex = gameBoard.findIndexOfNode(event);
-    event.target.appendChild(gameBoard.allCheckers[currentChecker].firstChild);
+    moveCheckerDiv(currentChecker, event.target);
     player1.moveChecker(gameBoard.board[currentChecker], gameBoard, currentChecker, newIndex);
     gameBoard.board[newIndex].checkLady();
     let pos = checker.beat(currentChecker, newIndex);

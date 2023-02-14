@@ -42,4 +42,5 @@ export default class checker {
             this.makeLady();
         }
     }
+
 }
