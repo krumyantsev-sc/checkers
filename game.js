@@ -4,7 +4,7 @@ import Player from './player.js'
 
 let currentChecker;
 let counter = 1;
-let gameBoard = new Board;
+export let gameBoard = new Board;
 let player1 = new Player();
 let player2 = new Player();
 gameBoard.init();
@@ -134,8 +134,10 @@ function addMoveListener(id, ways) {
 
 function incrementScore(checker) {
     if (checker.color === "Black") {
+        console.log(checker);
         player1.score++;
     } else {
+        console.log(checker);
         player2.score++;
     }
 }
@@ -148,23 +150,23 @@ function refreshScore() {
 export function removeChecker(difference) {
     if (difference % 7 === 0) {
         if (difference > 0) {
+            incrementScore(gameBoard.board[currentChecker + 7]);
             gameBoard.board[currentChecker + 7] = null;
             gameBoard.allCheckers[currentChecker + 7].removeChild(gameBoard.allCheckers[currentChecker + 7].firstChild);
-            incrementScore(gameBoard.allCheckers[currentChecker + 7]);
         } else {
+            incrementScore(gameBoard.allCheckers[currentChecker - 7]);
             gameBoard.board[currentChecker - 7] = null;
             gameBoard.allCheckers[currentChecker - 7].removeChild(gameBoard.allCheckers[currentChecker - 7].firstChild);
-            incrementScore(gameBoard.allCheckers[currentChecker - 7]);
         }
     } else {
         if (difference > 0) {
+            incrementScore(gameBoard.allCheckers[currentChecker + 9]);
             gameBoard.board[currentChecker + 9] = null;
             gameBoard.allCheckers[currentChecker + 9].removeChild(gameBoard.allCheckers[currentChecker + 9].firstChild);
-            incrementScore(gameBoard.allCheckers[currentChecker + 9]);
         } else {
+            incrementScore(gameBoard.allCheckers[currentChecker - 9]);
             gameBoard.board[currentChecker - 9] = null;
             gameBoard.allCheckers[currentChecker - 9].removeChild(gameBoard.allCheckers[currentChecker - 9].firstChild);
-            incrementScore(gameBoard.allCheckers[currentChecker - 9]);
         }
     }
 
