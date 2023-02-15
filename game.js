@@ -14,6 +14,11 @@ let currTeamDiv = document.querySelector(".current-team");
 let whiteScore = document.querySelector("#whiteSpan");
 let blackScore = document.querySelector("#blackSpan");
 
+
+export function setCurrentChecker(num) {
+    currentChecker = num;
+}
+
 function changeTeam() {
     counter++;
     currTeamDiv.innerHTML = (counter % 2 === 0) ? "Ходят черные" : "Ходят белые";
@@ -159,12 +164,15 @@ function refreshScore() {
 }
 
 export function removeChecker(difference) {
+    console.log(difference);
     if (difference % 7 === 0) {
         if (difference > 0) {
+            console.log("diff % 7 > 0",currentChecker, currentChecker+7);
             incrementScore(gameBoard.board[currentChecker + 7]);
             gameBoard.board[currentChecker + 7] = null;
             gameBoard.allCheckers[currentChecker + 7].removeChild(gameBoard.allCheckers[currentChecker + 7].firstChild);
         } else {
+            console.log("diff % 7 < 0",currentChecker, currentChecker-7);
             incrementScore(gameBoard.allCheckers[currentChecker - 7]);
             gameBoard.board[currentChecker - 7] = null;
             gameBoard.allCheckers[currentChecker - 7].removeChild(gameBoard.allCheckers[currentChecker - 7].firstChild);
@@ -180,6 +188,7 @@ export function removeChecker(difference) {
             gameBoard.allCheckers[currentChecker - 9].removeChild(gameBoard.allCheckers[currentChecker - 9].firstChild);
         }
     }
+    console.log("???",gameBoard.board);
 
 }
 
