@@ -4,7 +4,7 @@ import Player from './player.js'
 import Bot from './bot.js'
 
 let currentChecker;
-let counter = 1;
+export let counter = 1;
 export let gameBoard = new Board;
 let player1 = new Player();
 let player2 = new Player();
@@ -15,11 +15,15 @@ let whiteScore = document.querySelector("#whiteSpan");
 let blackScore = document.querySelector("#blackSpan");
 
 
+export function incCounter() {
+    counter++;
+}
+
 export function setCurrentChecker(num) {
     currentChecker = num;
 }
 
-function changeTeam() {
+export function changeTeam() {
     counter++;
     currTeamDiv.innerHTML = (counter % 2 === 0) ? "Ходят черные" : "Ходят белые";
 }
@@ -34,8 +38,7 @@ function giveListeners() {
             item.div.addEventListener("click", checkPossibilities);
         }
     } else {
-        console.log("Ходят черные");
-            bot.moveClosestChecker();
+        bot.moveClosestChecker();
         refreshScore();
         changeTeam();
         startMove();
@@ -89,18 +92,18 @@ export function getBeatPositions(checkerId) {
 export function calculateSimpleMoveVariants(checkerId) {
     let possibleWays = [];
     if (gameBoard.board[checkerId].color === "White" || gameBoard.board[checkerId].isLady) {
-        if (gameBoard.board[checkerId + 7] == null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell")) {
+        if (gameBoard.allCheckers[checkerId + 7] !== undefined && gameBoard.board[checkerId + 7] == null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell")) {
             possibleWays.push(checkerId + 7);
         }
-        if (gameBoard.board[checkerId + 9] == null && !gameBoard.allCheckers[checkerId + 9].classList.contains("cleanCell")) {
+        if (gameBoard.allCheckers[checkerId + 9] !== undefined && gameBoard.board[checkerId + 9] == null && !gameBoard.allCheckers[checkerId + 9].classList.contains("cleanCell")) {
             possibleWays.push(checkerId + 9);
         }
     }
     if (gameBoard.board[checkerId].color === "Black" || gameBoard.board[checkerId].isLady) {
-        if (gameBoard.board[checkerId - 7] == null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell")) {
+        if (gameBoard.allCheckers[checkerId - 7] !== undefined && gameBoard.board[checkerId - 7] == null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell")) {
             possibleWays.push(checkerId - 7);
         }
-        if (gameBoard.board[checkerId - 9] == null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell")) {
+        if (gameBoard.allCheckers[checkerId - 9] !== undefined && gameBoard.board[checkerId - 9] == null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell")) {
             possibleWays.push(checkerId - 9);
         }
     }
@@ -109,7 +112,6 @@ export function calculateSimpleMoveVariants(checkerId) {
 
 export function checkMoveVariants(checkerId) {
     let possibleWays = getBeatPositions(checkerId);
-    console.log(possibleWays);
     if (possibleWays.length === 0) {
         possibleWays = calculateSimpleMoveVariants(checkerId);
     }
@@ -122,9 +124,7 @@ export function checkMoveVariants(checkerId) {
 function checkPossibilities(event) {
     clearHighlightedCells();
     let checker = event.target.id;
-    console.log(gameBoard.board);
     let checkerId = gameBoard.getBoardIndex(checker);
-    console.log(checkerId);
     currentChecker = checkerId;
     checkMoveVariants(checkerId);
 }
@@ -148,52 +148,66 @@ function addMoveListener(id, ways) {
     }
 }
 
-function incrementScore(checker) {
-    if (checker.color === "Black") {
-        console.log(checker);
+function incrementScore(color) {
+    console.log(color);
+    if (color === "Black") {
         player1.score++;
-    } else {
-        console.log(checker);
+    }
+    if (color === "White") {
         player2.score++;
     }
 }
 
-function refreshScore() {
+export function refreshScore() {
     whiteScore.textContent = player1.score + "";
     blackScore.textContent = player2.score + "";
 }
 
 export function removeChecker(difference) {
-    console.log(difference);
     if (difference % 7 === 0) {
         if (difference > 0) {
-            console.log("diff % 7 > 0",currentChecker, currentChecker+7);
-            incrementScore(gameBoard.board[currentChecker + 7]);
+            console.log(gameBoard.board[currentChecker+7]);
+            incrementScore(gameBoard.board[currentChecker + 7].color);
             gameBoard.board[currentChecker + 7] = null;
             gameBoard.allCheckers[currentChecker + 7].removeChild(gameBoard.allCheckers[currentChecker + 7].firstChild);
         } else {
-            console.log("diff % 7 < 0",currentChecker, currentChecker-7);
-            incrementScore(gameBoard.allCheckers[currentChecker - 7]);
+            console.log(gameBoard.board[currentChecker-7]);
+            incrementScore(gameBoard.board[currentChecker - 7].color);
             gameBoard.board[currentChecker - 7] = null;
             gameBoard.allCheckers[currentChecker - 7].removeChild(gameBoard.allCheckers[currentChecker - 7].firstChild);
         }
     } else {
         if (difference > 0) {
-            incrementScore(gameBoard.allCheckers[currentChecker + 9]);
+            console.log(gameBoard.board[currentChecker+9]);
+            incrementScore(gameBoard.board[currentChecker + 9].color);
             gameBoard.board[currentChecker + 9] = null;
             gameBoard.allCheckers[currentChecker + 9].removeChild(gameBoard.allCheckers[currentChecker + 9].firstChild);
         } else {
-            incrementScore(gameBoard.allCheckers[currentChecker - 9]);
+            console.log(gameBoard.board[currentChecker-9]);
+            incrementScore(gameBoard.board[currentChecker - 9].color);
             gameBoard.board[currentChecker - 9] = null;
             gameBoard.allCheckers[currentChecker - 9].removeChild(gameBoard.allCheckers[currentChecker - 9].firstChild);
         }
     }
-    console.log("???",gameBoard.board);
-
+    console.log(player1.score, player2.score);
 }
 
 export function moveCheckerDiv(initialCell, targetCellDiv) {
     targetCellDiv.appendChild(gameBoard.allCheckers[initialCell].firstChild);
+}
+
+export function goToNextMove() {
+    refreshScore();
+    changeTeam();
+    checkWin();
+}
+
+export function checkWin() {
+    if (player1.score === 12) {
+        alert("Победа белых");
+    } else if (player2.score === 12) {
+        alert("Победа чёрных");
+    }
 }
 
 const moveChecker = (event) => {
@@ -209,9 +223,8 @@ const moveChecker = (event) => {
         return;
     }
     clearHighlightedCells();
-    refreshScore();
     removeListeners(event);
-    changeTeam();
+    goToNextMove();
     startMove();
 }
 startMove();

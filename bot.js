@@ -5,9 +5,12 @@ import {
     moveCheckerDiv,
     getBeatPositions,
     calculateSimpleMoveVariants,
-    checkMoveVariants,
-    removeChecker,
-    setCurrentChecker
+    setCurrentChecker,
+    goToNextMove,
+    checkWin,
+    refreshScore,
+    changeTeam,
+    incCounter
 } from "./game.js"
 
 
@@ -16,11 +19,16 @@ export default class Bot extends Player {
         this.moveChecker(gameBoard.board[from],gameBoard,from,to);
         moveCheckerDiv(from,gameBoard.allCheckers[to]);
         setCurrentChecker(from);
-        let difference = to - from;
-        if(Math.abs(difference) > 9) {
-            console.log("difference",difference);
-            removeChecker(difference);
+        gameBoard.board[to].checkLady();
+        let pos = checker.beat(from,to);
+        refreshScore();
+        if (checker.canBeatOneMore(pos)) {
+            this.makeMove(to, pos[0]);
         }
+       // changeTeam();
+
+        refreshScore();
+
     }
 
     getListOfCanBeat() {
@@ -61,7 +69,6 @@ export default class Bot extends Player {
     moveClosestChecker() {
         let closest = this.getClosestBeatChecker();
         if (closest != null) {
-
             this.makeMove(closest,getBeatPositions(closest)[0]);
         } else {
             closest = this.getClosestChecker();
