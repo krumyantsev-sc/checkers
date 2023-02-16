@@ -10,7 +10,7 @@ import {
     checkWin,
     refreshScore,
     changeTeam,
-    incCounter
+    incCounter, removeChecker
 } from "./game.js"
 
 
@@ -19,15 +19,15 @@ export default class Bot extends Player {
         this.moveChecker(gameBoard.board[from],gameBoard,from,to);
         moveCheckerDiv(from,gameBoard.allCheckers[to]);
         setCurrentChecker(from);
-        gameBoard.board[to].checkLady();
-        let pos = checker.beat(from,to);
-        refreshScore();
-        if (checker.canBeatOneMore(pos)) {
-            this.makeMove(to, pos[0]);
+        let difference = to - from;
+        if(Math.abs(difference) > 9) {
+            console.log("difference", difference);
+            removeChecker(difference);
         }
+        gameBoard.board[to].checkLady();
        // changeTeam();
-
         refreshScore();
+        checkWin();
 
     }
 
