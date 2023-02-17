@@ -26,6 +26,7 @@ export default class Bot extends Player {
         console.log(pos);
         if(checker.canBeatOneMore(pos)) {
             this.makeMove(to, pos[0]);
+            return;
         }
        // changeTeam();
         refreshScore();
