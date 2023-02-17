@@ -10,24 +10,28 @@ import {
     checkWin,
     refreshScore,
     changeTeam,
-    incCounter, removeChecker
+    incCounter, removeChecker, startMove
 } from "./game.js"
 
 
 export default class Bot extends Player {
     makeMove(from, to) {
-        this.moveChecker(gameBoard.board[from],gameBoard,from,to);
-        moveCheckerDiv(from,gameBoard.allCheckers[to]);
+        let pos = [];
+        console.log("bot dvigaetsya");
         setCurrentChecker(from);
-        let difference = to - from;
-        if(Math.abs(difference) > 9) {
-            console.log("difference", difference);
-            removeChecker(difference);
-        }
+        this.moveChecker(gameBoard.board[from],gameBoard,from,to);
         gameBoard.board[to].checkLady();
+        moveCheckerDiv(from,gameBoard.allCheckers[to]);
+        pos = checker.beat(from, to);
+        console.log(pos);
+        if(checker.canBeatOneMore(pos)) {
+            this.makeMove(to, pos[0]);
+        }
        // changeTeam();
         refreshScore();
+        changeTeam();
         checkWin();
+        startMove();
 
     }
 
@@ -70,9 +74,11 @@ export default class Bot extends Player {
         let closest = this.getClosestBeatChecker();
         if (closest != null) {
             this.makeMove(closest,getBeatPositions(closest)[0]);
+            console.log("Бью")
         } else {
             closest = this.getClosestChecker();
             this.makeMove(closest,calculateSimpleMoveVariants(closest)[0]);
+            console.log("Просто хожу")
         }
     }
 }

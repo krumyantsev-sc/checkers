@@ -28,7 +28,7 @@ export function changeTeam() {
     currTeamDiv.innerHTML = (counter % 2 === 0) ? "Ходят черные" : "Ходят белые";
 }
 
-function startMove() {
+export function startMove() {
     giveListeners();
 }
 
@@ -38,10 +38,8 @@ function giveListeners() {
             item.div.addEventListener("click", checkPossibilities);
         }
     } else {
-        bot.moveClosestChecker();
-        refreshScore();
-        changeTeam();
-        startMove();
+        setTimeout(() => {bot.moveClosestChecker()}, 1000);
+
     }
 }
 
@@ -149,7 +147,6 @@ function addMoveListener(id, ways) {
 }
 
 function incrementScore(color) {
-    console.log(color);
     if (color === "Black") {
         player1.score++;
     }
@@ -166,30 +163,25 @@ export function refreshScore() {
 export function removeChecker(difference) {
     if (difference % 7 === 0) {
         if (difference > 0) {
-            console.log(gameBoard.board[currentChecker+7]);
             incrementScore(gameBoard.board[currentChecker + 7].color);
             gameBoard.board[currentChecker + 7] = null;
             gameBoard.allCheckers[currentChecker + 7].removeChild(gameBoard.allCheckers[currentChecker + 7].firstChild);
         } else {
-            console.log(gameBoard.board[currentChecker-7]);
             incrementScore(gameBoard.board[currentChecker - 7].color);
             gameBoard.board[currentChecker - 7] = null;
             gameBoard.allCheckers[currentChecker - 7].removeChild(gameBoard.allCheckers[currentChecker - 7].firstChild);
         }
     } else {
         if (difference > 0) {
-            console.log(gameBoard.board[currentChecker+9]);
             incrementScore(gameBoard.board[currentChecker + 9].color);
             gameBoard.board[currentChecker + 9] = null;
             gameBoard.allCheckers[currentChecker + 9].removeChild(gameBoard.allCheckers[currentChecker + 9].firstChild);
         } else {
-            console.log(gameBoard.board[currentChecker-9]);
             incrementScore(gameBoard.board[currentChecker - 9].color);
             gameBoard.board[currentChecker - 9] = null;
             gameBoard.allCheckers[currentChecker - 9].removeChild(gameBoard.allCheckers[currentChecker - 9].firstChild);
         }
     }
-    console.log(player1.score, player2.score);
 }
 
 export function moveCheckerDiv(initialCell, targetCellDiv) {

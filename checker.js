@@ -10,9 +10,11 @@ export default class checker {
     }
 
     move(gameBoard, from, to) {
-        gameBoard.board[to] = gameBoard.board[from];
-        gameBoard.board[to].position = to;
-        gameBoard.board[from] = null;
+        if(gameBoard.board[to] == null) {
+            gameBoard.board[to] = gameBoard.board[from];
+            gameBoard.board[to].position = to;
+            gameBoard.board[from] = null;
+        }
     }
 
     static beat(from, to) {
