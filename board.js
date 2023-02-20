@@ -39,10 +39,12 @@ export default class Board {
             for(let f = 0; f < this.board[i].length; f++) {
                 if (this.board[i][f] < 12 && this.board[i][f] != null) {
                     this.board[i][f] = this.whiteCheckers[k];
+                    this.board[i][f].position = {i:i,j:f};
                     k++;
                 } else {
                     if (this.board[i][f] >= 12 && this.board[i][f] != null) {
                         this.board[i][f] = this.blackCheckers[j];
+                        this.board[i][f].position = {i:i,j:f};
                         j++;
                     }
                 }

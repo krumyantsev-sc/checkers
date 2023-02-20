@@ -19,11 +19,11 @@ export default class checker {
     }
 
     static beat(from, to) {
-        let difference = to - from;
+        let difference = to.i - from.i;
         let pos = [];
-        if (Math.abs(difference) > 9) {
-            removeChecker(difference);
-            pos = getBeatPositions(to);
+        if (Math.abs(difference) > 1) {
+            removeChecker(from,to);
+            pos = getBeatPositions(to.i, to.j);
         }
         return pos;
     }

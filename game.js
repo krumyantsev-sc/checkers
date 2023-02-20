@@ -159,26 +159,26 @@ export function refreshScore() {
     blackScore.textContent = player2.score + "";
 }
 
-export function removeChecker(difference) {
-    if (difference % 7 === 0) {
-        if (difference > 0) {
-            incrementScore(gameBoard.board[currentChecker + 7].color);
-            gameBoard.board[currentChecker + 7] = null;
-            gameBoard.allCheckers[currentChecker + 7].removeChild(gameBoard.allCheckers[currentChecker + 7].firstChild);
+export function removeChecker(from, to) {
+    if (to.i - from.i > 0) {
+        if (to.j < from.j) {
+            incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j-1].color);
+            gameBoard.board[currentChecker.i+1][currentChecker.j-1] = null;
+            gameBoard.allCheckers[currentChecker.i+1][currentChecker.j-1].removeChild(gameBoard.allCheckers[currentChecker.i+1][currentChecker.j-1].firstChild);
         } else {
-            incrementScore(gameBoard.board[currentChecker - 7].color);
-            gameBoard.board[currentChecker - 7] = null;
-            gameBoard.allCheckers[currentChecker - 7].removeChild(gameBoard.allCheckers[currentChecker - 7].firstChild);
+            incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j+1].color);
+            gameBoard.board[currentChecker.i+1][currentChecker.j+1] = null;
+            gameBoard.allCheckers[currentChecker.i+1][currentChecker.j+1].removeChild(gameBoard.allCheckers[currentChecker.i+1][currentChecker.j+1].firstChild);
         }
     } else {
-        if (difference > 0) {
-            incrementScore(gameBoard.board[currentChecker + 9].color);
-            gameBoard.board[currentChecker + 9] = null;
-            gameBoard.allCheckers[currentChecker + 9].removeChild(gameBoard.allCheckers[currentChecker + 9].firstChild);
+        if (to.j < from.j) {
+            incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j-1].color);
+            gameBoard.board[currentChecker.i-1][currentChecker.j-1] = null;
+            gameBoard.allCheckers[currentChecker.i-1][currentChecker.j-1].removeChild(gameBoard.allCheckers[currentChecker.i-1][currentChecker.j-1].firstChild);
         } else {
-            incrementScore(gameBoard.board[currentChecker - 9].color);
-            gameBoard.board[currentChecker - 9] = null;
-            gameBoard.allCheckers[currentChecker - 9].removeChild(gameBoard.allCheckers[currentChecker - 9].firstChild);
+            incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j+1].color);
+            gameBoard.board[currentChecker.i-1][currentChecker.j+1] = null;
+            gameBoard.allCheckers[currentChecker.i-1][currentChecker.j+1].removeChild(gameBoard.allCheckers[currentChecker.i-1][currentChecker.j+1].firstChild);
         }
     }
 }
@@ -210,7 +210,7 @@ const moveChecker = (event) => {
     if(checker.canBeatOneMore(pos)) {
         clearHighlightedCells();
         currentChecker = newIndex;
-        checkMoveVariants(newIndex);
+        checkMoveVariants(newIndex.i,newIndex.j);
         return;
     }
     clearHighlightedCells();
