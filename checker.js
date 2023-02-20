@@ -10,10 +10,11 @@ export default class checker {
     }
 
     move(gameBoard, from, to) {
-        if(gameBoard.board[to] == null) {
-            gameBoard.board[to] = gameBoard.board[from];
-            gameBoard.board[to].position = to;
-            gameBoard.board[from] = null;
+
+        if(gameBoard.board[to.i][to.j] == null) {
+            gameBoard.board[to.i][to.j] = gameBoard.board[from.i][from.j];
+            gameBoard.board[to.i][to.j].position = to;
+            gameBoard.board[from.i][from.j] = null;
         }
     }
 
@@ -37,10 +38,10 @@ export default class checker {
     }
 
     checkLady() {
-        if (this.color === "Black" && this.position < 8) {
+        if (this.color === "Black" && this.position.i < 1) {
             this.makeLady();
         }
-        if (this.color === "White" && this.position > 55) {
+        if (this.color === "White" && this.position.j > 6) {
             this.makeLady();
         }
     }

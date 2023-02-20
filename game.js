@@ -54,68 +54,65 @@ function removeListeners(event) {
 }
 
 
-export function getBeatPositions(checkerId) {
+export function getBeatPositions(i,j) {
     let takenPositions = [];
-    if (gameBoard.board[checkerId].color === "White" || gameBoard.board[checkerId].isLady) {
-    if (gameBoard.allCheckers[checkerId + 7] !== undefined && gameBoard.board[checkerId + 7] != null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId+7].color) {
-        if (gameBoard.allCheckers[checkerId + 14] !== undefined && gameBoard.board[checkerId + 14] == null && !gameBoard.allCheckers[checkerId + 14].classList.contains("cleanCell")) {
-            takenPositions.push(checkerId + 14);
+    if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
+    if (gameBoard.allCheckers[i+1][j-1] !== undefined && gameBoard.board[i+1][j-1] != null && !gameBoard.allCheckers[i+1][j-1].classList.contains("cleanCell") && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
+        if (gameBoard.allCheckers[i+2][j-2] !== undefined && gameBoard.board[i+2][j-2] == null && !gameBoard.allCheckers[i+2][j-2].classList.contains("cleanCell")) {
+            takenPositions.push({i:i+2,j:j-2});
         }
         
     }
-    if (gameBoard.allCheckers[checkerId + 9] !== undefined && gameBoard.board[checkerId + 9] != null && !gameBoard.allCheckers[checkerId + 9].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId+9].color) {
-        if (gameBoard.allCheckers[checkerId + 18] !== undefined && gameBoard.board[checkerId + 18] == null && !gameBoard.allCheckers[checkerId + 18].classList.contains("cleanCell")) {
-            takenPositions.push(checkerId + 18);
+    if (gameBoard.allCheckers[i+1][j+1] !== undefined && gameBoard.board[i+1][j+1] != null && !gameBoard.allCheckers[i+1][j+1].classList.contains("cleanCell") && gameBoard.board[i][j].color !== gameBoard.board[i+1][j+1].color) {
+        if (gameBoard.allCheckers[i+2][j+2] !== undefined && gameBoard.board[i+2][j+2] == null && !gameBoard.allCheckers[i+2][j+2].classList.contains("cleanCell")) {
+            takenPositions.push({i:i+2,j:j+2});
         }
-        
     }
 }
-    if (gameBoard.board[checkerId].color === "Black" || gameBoard.board[checkerId].isLady) {
-        if (gameBoard.allCheckers[checkerId - 7] !== undefined && gameBoard.board[checkerId - 7] != null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-7].color) {
-            if (gameBoard.allCheckers[checkerId - 14] !== undefined && gameBoard.board[checkerId - 14] == null && !gameBoard.allCheckers[checkerId - 14].classList.contains("cleanCell")) {
-                takenPositions.push(checkerId - 14);
+    if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
+        if (gameBoard.allCheckers[i-1][j-1] !== undefined && gameBoard.board[i-1][j-1] != null && !gameBoard.allCheckers[i-1][j-1].classList.contains("cleanCell") && gameBoard.board[i][j].color !== gameBoard.board[i-1][j-1].color) {
+            if (gameBoard.allCheckers[i-2][j-2] !== undefined && gameBoard.board[i-2][j-2] == null && !gameBoard.allCheckers[i-2][j-2].classList.contains("cleanCell")) {
+                takenPositions.push({i:i-2,j:j-2});
             }
-
         }
-        if (gameBoard.allCheckers[checkerId - 9] !== undefined && gameBoard.board[checkerId - 9] != null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell") && gameBoard.board[checkerId].color !== gameBoard.board[checkerId-9].color) {
-            if (gameBoard.allCheckers[checkerId - 18] !== undefined && gameBoard.board[checkerId - 18] == null && !gameBoard.allCheckers[checkerId - 18].classList.contains("cleanCell")) {
-                takenPositions.push(checkerId - 18);
+        if (gameBoard.allCheckers[i-1][j+1] !== undefined && gameBoard.board[i-1][j+1] != null && !gameBoard.allCheckers[i-1][j+1].classList.contains("cleanCell") && gameBoard.board[i][j].color !== gameBoard.board[i-1][j+1].color) {
+            if (gameBoard.allCheckers[i-2][j+2] !== undefined && gameBoard.board[i-2][j+2] == null && !gameBoard.allCheckers[i-2][j+2].classList.contains("cleanCell")) {
+                takenPositions.push({i:i-2,j:j+2});
             }
-
         }
 }
     return takenPositions;
 }
 
-export function calculateSimpleMoveVariants(checkerId) {
+export function calculateSimpleMoveVariants(i,j) {
     let possibleWays = [];
-    if (gameBoard.board[checkerId].color === "White" || gameBoard.board[checkerId].isLady) {
-        if (gameBoard.allCheckers[checkerId + 7] !== undefined && gameBoard.board[checkerId + 7] == null && !gameBoard.allCheckers[checkerId + 7].classList.contains("cleanCell")) {
-            possibleWays.push(checkerId + 7);
+    if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
+        if (gameBoard.allCheckers[i+1][j-1] !== undefined && gameBoard.board[i+1][j-1] == null && !gameBoard.allCheckers[i+1][j-1].classList.contains("cleanCell")) {
+            possibleWays.push({i:i+1,j:j-1});
         }
-        if (gameBoard.allCheckers[checkerId + 9] !== undefined && gameBoard.board[checkerId + 9] == null && !gameBoard.allCheckers[checkerId + 9].classList.contains("cleanCell")) {
-            possibleWays.push(checkerId + 9);
+        if (gameBoard.allCheckers[i+1][j+1] !== undefined && gameBoard.board[i+1][j+1] == null && !gameBoard.allCheckers[i+1][j+1].classList.contains("cleanCell")) {
+            possibleWays.push({i:i+1,j:j+1});
         }
     }
-    if (gameBoard.board[checkerId].color === "Black" || gameBoard.board[checkerId].isLady) {
-        if (gameBoard.allCheckers[checkerId - 7] !== undefined && gameBoard.board[checkerId - 7] == null && !gameBoard.allCheckers[checkerId - 7].classList.contains("cleanCell")) {
-            possibleWays.push(checkerId - 7);
+    if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
+        if (gameBoard.allCheckers[i-1][j-1] !== undefined && gameBoard.board[i-1][j-1] != null && !gameBoard.allCheckers[i-1][j-1].classList.contains("cleanCell")) {
+            possibleWays.push({i:i-1,j:j-1});
         }
-        if (gameBoard.allCheckers[checkerId - 9] !== undefined && gameBoard.board[checkerId - 9] == null && !gameBoard.allCheckers[checkerId - 9].classList.contains("cleanCell")) {
-            possibleWays.push(checkerId - 9);
+        if (gameBoard.allCheckers[i-1][j+1] !== undefined && gameBoard.board[i-1][j+1] != null && !gameBoard.allCheckers[i-1][j+1].classList.contains("cleanCell")) {
+            possibleWays.push({i:i-1,j:j+1});
         }
     }
     return possibleWays;
 }
 
-export function checkMoveVariants(checkerId) {
-    let possibleWays = getBeatPositions(checkerId);
+export function checkMoveVariants(i,j) {
+    let possibleWays = getBeatPositions(i,j);
     if (possibleWays.length === 0) {
-        possibleWays = calculateSimpleMoveVariants(checkerId);
+        possibleWays = calculateSimpleMoveVariants(i,j);
     }
     if (possibleWays.length > 0) {
         highlightPossibleWays(possibleWays);
-        addMoveListener(checkerId, possibleWays);
+        addMoveListener(possibleWays);
     }
 }
 
@@ -124,25 +121,27 @@ function checkPossibilities(event) {
     let checker = event.target.id;
     let checkerId = gameBoard.getBoardIndex(checker);
     currentChecker = checkerId;
-    checkMoveVariants(checkerId);
+    checkMoveVariants(checkerId.i,checkerId.j);
 }
 
 function clearHighlightedCells() {
     for(let item of gameBoard.allCheckers) {
-        item.classList.remove("highlightedCell");
+        for(let i = 0; i < item.length; i++) {
+            item[i].classList.remove("highlightedCell");
+        }
     }
 }
 
 function highlightPossibleWays(ways) {
     for(let item of ways) {
-       gameBoard.allCheckers[item].classList.add("highlightedCell");
+       gameBoard.allCheckers[item.i][item.j].classList.add("highlightedCell");
     }
 }
 
-function addMoveListener(id, ways) {
+function addMoveListener(ways) {
     let item;
     for (item of ways) {
-        gameBoard.allCheckers[item].addEventListener("click", moveChecker);
+        gameBoard.allCheckers[item.i][item.j].addEventListener("click", moveChecker);
     }
 }
 
@@ -185,7 +184,7 @@ export function removeChecker(difference) {
 }
 
 export function moveCheckerDiv(initialCell, targetCellDiv) {
-    targetCellDiv.appendChild(gameBoard.allCheckers[initialCell].firstChild);
+    targetCellDiv.appendChild(gameBoard.allCheckers[initialCell.i][initialCell.j].firstChild);
 }
 
 export function goToNextMove() {
@@ -205,8 +204,8 @@ export function checkWin() {
 const moveChecker = (event) => {
     let newIndex = gameBoard.findIndexOfNode(event);
     moveCheckerDiv(currentChecker, event.target);
-    player1.moveChecker(gameBoard.board[currentChecker], gameBoard, currentChecker, newIndex);
-    gameBoard.board[newIndex].checkLady();
+    player1.moveChecker(gameBoard.board[currentChecker.i][currentChecker.j], gameBoard, currentChecker, newIndex);
+    gameBoard.board[newIndex.i][newIndex.j].checkLady();
     let pos = checker.beat(currentChecker, newIndex);
     if(checker.canBeatOneMore(pos)) {
         clearHighlightedCells();

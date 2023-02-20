@@ -3,6 +3,7 @@ import checker from './checker.js'
 export default class Board {
     whiteCheckers = [];
     blackCheckers = [];
+    allCheckers = [];
     board = [
         [null, 0, null, 1, null, 2, null, 3],
         [4, null, 5, null, 6, null, 7, null],
@@ -27,6 +28,8 @@ export default class Board {
             this.blackCheckers[i].div = blackCheckerSelectors[i];
         }
         this.createObjectsBoard();
+        this.parseCellDivs();
+        console.log(this.allCheckers);
     }
 
     createObjectsBoard() {
@@ -52,7 +55,7 @@ export default class Board {
         for(let i = 0; i < this.board.length; i++) {
             for(let j = 0; j < this.board[i].length; j++) {
                 if(this.board[i][j] != null && this.board[i][j].divId === id) {
-                    return this.board[i][j].position;
+                    return {i:i,j:j};
                 }
             }
         }
@@ -61,10 +64,25 @@ export default class Board {
 
     findIndexOfNode(event) {
         for (let i = 0; i < this.allCheckers.length; i++) {
-            if (this.allCheckers[i] === event.target) {
-                return i;
+            for (let j = 0; j < this.allCheckers[i].length; j++) {
+                if (this.allCheckers[i][j] === event.target) {
+                    return {i:i,j:j};
+                }
             }
         }
     }
-    allCheckers = document.querySelectorAll("td");
+
+    parseCellDivs() {
+        let temp = document.querySelectorAll("td");
+        let z = 0;
+        for (let i = 0; i < 8; i++) {
+            this.allCheckers[i] = [];
+            for(let j = 0; j < 8; j++) {
+                this.allCheckers[i][j] = temp[z];
+                z++;
+            }
+        }
+    }
+
+
 }
