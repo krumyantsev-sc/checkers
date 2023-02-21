@@ -95,10 +95,10 @@ export function calculateSimpleMoveVariants(i,j) {
         }
     }
     if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
-        if (gameBoard.allCheckers[i-1][j-1] !== undefined && gameBoard.board[i-1][j-1] != null && !gameBoard.allCheckers[i-1][j-1].classList.contains("cleanCell")) {
+        if (gameBoard.allCheckers[i-1][j-1] !== undefined && gameBoard.board[i-1][j-1] == null && !gameBoard.allCheckers[i-1][j-1].classList.contains("cleanCell")) {
             possibleWays.push({i:i-1,j:j-1});
         }
-        if (gameBoard.allCheckers[i-1][j+1] !== undefined && gameBoard.board[i-1][j+1] != null && !gameBoard.allCheckers[i-1][j+1].classList.contains("cleanCell")) {
+        if (gameBoard.allCheckers[i-1][j+1] !== undefined && gameBoard.board[i-1][j+1] == null && !gameBoard.allCheckers[i-1][j+1].classList.contains("cleanCell")) {
             possibleWays.push({i:i-1,j:j+1});
         }
     }

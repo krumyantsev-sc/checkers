@@ -61,11 +61,11 @@ export default class Bot extends Player {
     }
 
     getClosestChecker() {
-        let closestPosition = 7;
+        let closestPosition = {i:8,j:0};
         for (let i = 0; i < gameBoard.board.length; i++) {
             for(let j = 0; j < gameBoard.board[i].length; j++) {
-                if (gameBoard.board[i][j] !== null && gameBoard.board[i][j].color === "Black" && gameBoard.board[i][j].position.i < closestPosition && calculateSimpleMoveVariants(i,j).length > 0) {
-                    closestPosition = gameBoard.board[i][j].position;
+                if ((gameBoard.board[i][j] !== null) && (gameBoard.board[i][j].color === "Black") && (gameBoard.board[i][j].position.i < closestPosition.i) && (calculateSimpleMoveVariants(i,j).length > 0)) {
+                        closestPosition = gameBoard.board[i][j].position;
                 }
             }
         }
@@ -78,9 +78,7 @@ export default class Bot extends Player {
             this.makeMove(closest,getBeatPositions(closest.i,closest.j)[0]);
         } else {
             closest = this.getClosestChecker();
-            console.log(closest)
             this.makeMove(closest,calculateSimpleMoveVariants(closest.i,closest.j)[0]);
-
         }
     }
 }
