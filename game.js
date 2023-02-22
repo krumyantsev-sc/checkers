@@ -38,8 +38,7 @@ function giveListeners() {
             item.div.addEventListener("click", checkPossibilities);
         }
     } else {
-        setTimeout(() => {bot.moveClosestChecker()}, 1000);
-
+       setTimeout(() => {bot.moveClosestChecker()}, 1000);
     }
 }
 
@@ -53,30 +52,41 @@ function removeListeners(event) {
         event.target.removeEventListener("click", moveChecker);
 }
 
+function checkBorders(i,j) {
+    return (i > -1 && i < 8 && j > -1 && j < 8);
+}
+
+function isFreeCell(i,j) {
+    return (checkBorders(i,j) && gameBoard.board[i][j] == null && !gameBoard.allCheckers[i][j].classList.contains("cleanCell") && gameBoard.allCheckers[i][j] !== undefined);
+}
+
+function isCellTaken(i,j) {
+    return (checkBorders(i,j) && gameBoard.board[i][j] != null && !gameBoard.allCheckers[i][j].classList.contains("cleanCell") && gameBoard.allCheckers[i][j] !== undefined);
+}
 
 export function getBeatPositions(i,j) {
     let takenPositions = [];
-    if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
-    if (gameBoard.allCheckers[i+1][j-1] !== undefined && gameBoard.board[i+1][j-1] != null && !gameBoard.allCheckers[i+1][j-1].classList.contains("cleanCell") && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
-        if (gameBoard.allCheckers[i+2][j-2] !== undefined && gameBoard.board[i+2][j-2] == null && !gameBoard.allCheckers[i+2][j-2].classList.contains("cleanCell")) {
-            takenPositions.push({i:i+2,j:j-2});
+        if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
+            if (isCellTaken(i+1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
+                if (isFreeCell(i+2,j-2)) {
+                    takenPositions.push({i: i + 2, j: j - 2});
+                }
+
+            }
+            if (isCellTaken(i+1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j+1].color) {
+                if (isFreeCell(i+2,j+2)) {
+                    takenPositions.push({i: i + 2, j: j + 2});
+                }
+            }
         }
-        
-    }
-    if (gameBoard.allCheckers[i+1][j+1] !== undefined && gameBoard.board[i+1][j+1] != null && !gameBoard.allCheckers[i+1][j+1].classList.contains("cleanCell") && gameBoard.board[i][j].color !== gameBoard.board[i+1][j+1].color) {
-        if (gameBoard.allCheckers[i+2][j+2] !== undefined && gameBoard.board[i+2][j+2] == null && !gameBoard.allCheckers[i+2][j+2].classList.contains("cleanCell")) {
-            takenPositions.push({i:i+2,j:j+2});
-        }
-    }
-}
     if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
-        if (gameBoard.allCheckers[i-1][j-1] !== undefined && gameBoard.board[i-1][j-1] != null && !gameBoard.allCheckers[i-1][j-1].classList.contains("cleanCell") && gameBoard.board[i][j].color !== gameBoard.board[i-1][j-1].color) {
-            if (gameBoard.allCheckers[i-2][j-2] !== undefined && gameBoard.board[i-2][j-2] == null && !gameBoard.allCheckers[i-2][j-2].classList.contains("cleanCell")) {
+        if (isCellTaken(i-1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j-1].color) {
+            if (isFreeCell(i-2,j-2)) {
                 takenPositions.push({i:i-2,j:j-2});
             }
         }
-        if (gameBoard.allCheckers[i-1][j+1] !== undefined && gameBoard.board[i-1][j+1] != null && !gameBoard.allCheckers[i-1][j+1].classList.contains("cleanCell") && gameBoard.board[i][j].color !== gameBoard.board[i-1][j+1].color) {
-            if (gameBoard.allCheckers[i-2][j+2] !== undefined && gameBoard.board[i-2][j+2] == null && !gameBoard.allCheckers[i-2][j+2].classList.contains("cleanCell")) {
+        if (isCellTaken(i-1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j+1].color) {
+            if (isFreeCell(i-2,j+2)) {
                 takenPositions.push({i:i-2,j:j+2});
             }
         }
@@ -87,18 +97,18 @@ export function getBeatPositions(i,j) {
 export function calculateSimpleMoveVariants(i,j) {
     let possibleWays = [];
     if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
-        if (gameBoard.allCheckers[i+1][j-1] !== undefined && gameBoard.board[i+1][j-1] == null && !gameBoard.allCheckers[i+1][j-1].classList.contains("cleanCell")) {
+        if (isFreeCell(i+1,j-1)) {
             possibleWays.push({i:i+1,j:j-1});
         }
-        if (gameBoard.allCheckers[i+1][j+1] !== undefined && gameBoard.board[i+1][j+1] == null && !gameBoard.allCheckers[i+1][j+1].classList.contains("cleanCell")) {
+        if (isFreeCell(i+1,j+1)) {
             possibleWays.push({i:i+1,j:j+1});
         }
     }
     if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
-        if (gameBoard.allCheckers[i-1][j-1] !== undefined && gameBoard.board[i-1][j-1] == null && !gameBoard.allCheckers[i-1][j-1].classList.contains("cleanCell")) {
+        if (isFreeCell(i-1,j-1)) {
             possibleWays.push({i:i-1,j:j-1});
         }
-        if (gameBoard.allCheckers[i-1][j+1] !== undefined && gameBoard.board[i-1][j+1] == null && !gameBoard.allCheckers[i-1][j+1].classList.contains("cleanCell")) {
+        if (isFreeCell(i-1,j+1)) {
             possibleWays.push({i:i-1,j:j+1});
         }
     }
@@ -107,6 +117,7 @@ export function calculateSimpleMoveVariants(i,j) {
 
 export function checkMoveVariants(i,j) {
     let possibleWays = getBeatPositions(i,j);
+    console.log(possibleWays);
     if (possibleWays.length === 0) {
         possibleWays = calculateSimpleMoveVariants(i,j);
     }
@@ -141,6 +152,7 @@ function highlightPossibleWays(ways) {
 function addMoveListener(ways) {
     let item;
     for (item of ways) {
+        console.log("!!!", item);
         gameBoard.allCheckers[item.i][item.j].addEventListener("click", moveChecker);
     }
 }
@@ -210,6 +222,7 @@ const moveChecker = (event) => {
     if(checker.canBeatOneMore(pos)) {
         clearHighlightedCells();
         currentChecker = newIndex;
+        console.log(newIndex);
         checkMoveVariants(newIndex.i,newIndex.j);
         return;
     }

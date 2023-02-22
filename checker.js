@@ -41,7 +41,7 @@ export default class checker {
         if (this.color === "Black" && this.position.i < 1) {
             this.makeLady();
         }
-        if (this.color === "White" && this.position.j > 6) {
+        if (this.color === "White" && this.position.i > 6) {
             this.makeLady();
         }
     }

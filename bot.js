@@ -49,7 +49,7 @@ export default class Bot extends Player {
         let beatList = this.getListOfCanBeat();
         let closest = null;
         if (beatList.length > 0) {
-            closest = 7;
+            closest = 8;
             for (let i = 0; i < beatList.length; i++) {
                 if (beatList[i].position.i < closest) {
                     closest = beatList[i].position;
@@ -75,6 +75,7 @@ export default class Bot extends Player {
     moveClosestChecker() {
         let closest = this.getClosestBeatChecker();
         if (closest != null) {
+            console.log("vvvvv", gameBoard.board[closest.i][closest.j], closest);
             this.makeMove(closest,getBeatPositions(closest.i,closest.j)[0]);
         } else {
             closest = this.getClosestChecker();
