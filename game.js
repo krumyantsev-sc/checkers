@@ -15,6 +15,16 @@ let whiteScore = document.querySelector("#whiteSpan");
 let blackScore = document.querySelector("#blackSpan");
 
 
+let response = await fetch("http://localhost:3001/test");
+
+if (response.ok) { // если HTTP-статус в диапазоне 200-299
+                   // получаем тело ответа (см. про этот метод ниже)
+    let text = await response.text();
+    console.log(text);
+} else {
+    alert("Ошибка HTTP: " + response.status);
+}
+
 export function incCounter() {
     counter++;
 }
