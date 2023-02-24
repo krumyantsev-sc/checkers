@@ -29,7 +29,6 @@ export default class Board {
         }
         this.createObjectsBoard();
         this.parseCellDivs();
-        console.log(this.allCheckers);
     }
 
     createObjectsBoard() {

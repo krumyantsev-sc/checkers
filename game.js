@@ -18,12 +18,13 @@ let blackScore = document.querySelector("#blackSpan");
 let response = await fetch("http://localhost:3001/test");
 
 if (response.ok) { // если HTTP-статус в диапазоне 200-299
-                   // получаем тело ответа (см. про этот метод ниже)
+    // получаем тело ответа (см. про этот метод ниже)
     let text = await response.text();
     console.log(text);
 } else {
     alert("Ошибка HTTP: " + response.status);
 }
+
 
 export function incCounter() {
     counter++;
@@ -67,7 +68,7 @@ function checkBorders(i,j) {
 }
 
 function isFreeCell(i,j) {
-    return (checkBorders(i,j) && gameBoard.board[i][j] == null && !gameBoard.allCheckers[i][j].classList.contains("cleanCell") && gameBoard.allCheckers[i][j] !== undefined);
+    return (checkBorders(i,j) && gameBoard.board[i][j] == null);
 }
 
 function isCellTaken(i,j) {
@@ -126,8 +127,23 @@ export function calculateSimpleMoveVariants(i,j) {
 }
 
 export function checkMoveVariants(i,j) {
+    const data ="4";
+    const todo = {
+        title: 'Some really important work to finish'
+    };
+
+    fetch('http://localhost:3001/test', {
+        method: 'POST',
+        body: JSON.stringify(todo),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        }
+    })
+        .then(response => response.json())
+        .then(json => {
+            console.log(json);
+        });
     let possibleWays = getBeatPositions(i,j);
-    console.log(possibleWays);
     if (possibleWays.length === 0) {
         possibleWays = calculateSimpleMoveVariants(i,j);
     }
@@ -162,7 +178,6 @@ function highlightPossibleWays(ways) {
 function addMoveListener(ways) {
     let item;
     for (item of ways) {
-        console.log("!!!", item);
         gameBoard.allCheckers[item.i][item.j].addEventListener("click", moveChecker);
     }
 }
@@ -232,7 +247,6 @@ const moveChecker = (event) => {
     if(checker.canBeatOneMore(pos)) {
         clearHighlightedCells();
         currentChecker = newIndex;
-        console.log(newIndex);
         checkMoveVariants(newIndex.i,newIndex.j);
         return;
     }
