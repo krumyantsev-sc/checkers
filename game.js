@@ -127,7 +127,7 @@ export function calculateSimpleMoveVariants(i,j) {
 }
 
 export function checkMoveVariants(i,j) {
-    const data ="4";
+    const data ="one: two";
     const todo = {
         title: 'Some really important work to finish'
     };

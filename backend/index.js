@@ -1,17 +1,11 @@
 // подключение express
-
 const express = require("express");
-const bodyParser = require('body-parser')
-// создаем объект приложения
 const cors = require('cors')
-
 const app = express();
+app.use(express.json);
 app.use(cors({
     origin: ['http://localhost:63342']
 }));
-const urlencodedParser = bodyParser.urlencoded({
-    extended: false,
-})
 
 // определяем обработчик для маршрута "/"
 app.get("/test", function(request, response){
@@ -19,12 +13,9 @@ app.get("/test", function(request, response){
     response.send("Привет Express");
 });
 
-app.post("/test", urlencodedParser, function(request, response){
+app.post("/test", function(request, response){
     // отправляем ответ
-    console.log(request.body);
-    response.send(
-        `${request.body.title}`
-    )
+    response.status(200).send(request.body);
 });
 
 
