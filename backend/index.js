@@ -1,10 +1,12 @@
 // подключение express
+const checkersController = require("./controllers/checkersController.js");
+const board = require("./services/BoardService.js")
 const express = require("express");
 const cors = require('cors')
 const app = express();
-app.use(express.json);
+app.use(express.json());
 app.use(cors({
-    origin: ['http://localhost:63342']
+    origin: ['http://localhost:63343']
 }));
 
 // определяем обработчик для маршрута "/"
@@ -15,7 +17,11 @@ app.get("/test", function(request, response){
 
 app.post("/test", function(request, response){
     // отправляем ответ
-    response.status(200).send(request.body);
+    console.log(request.body);
+    console.log(request.body.i);
+    console.log(request.body.j);
+    console.log(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
+    response.status(200).send(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
 });
 
 

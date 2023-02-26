@@ -128,13 +128,14 @@ export function calculateSimpleMoveVariants(i,j) {
 
 export function checkMoveVariants(i,j) {
     const data ="one: two";
-    const todo = {
-        title: 'Some really important work to finish'
+    const position = {
+        i: i,
+        j: j
     };
 
     fetch('http://localhost:3001/test', {
         method: 'POST',
-        body: JSON.stringify(todo),
+        body: JSON.stringify(position),
         headers: {
             'Content-type': 'application/json; charset=UTF-8'
         }
