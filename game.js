@@ -49,7 +49,10 @@ function giveListeners() {
             item.div.addEventListener("click", checkPossibilities);
         }
     } else {
-       setTimeout(() => {bot.moveClosestChecker()}, 1000);
+        for (let item of gameBoard.blackCheckers) {
+            item.div.addEventListener("click", checkPossibilities);
+        }
+      // setTimeout(() => {bot.moveClosestChecker()}, 1000);
     }
 }
 
@@ -244,6 +247,17 @@ export function checkWin() {
 const moveChecker = (event) => {
     let newIndex = gameBoard.findIndexOfNode(event);
     moveCheckerDiv(currentChecker, event.target);
+    fetch('http://localhost:3001/checkers/updateBoard', {
+        method: 'POST',
+        body: JSON.stringify({fromI:currentChecker.i,fromJ:currentChecker.j,toI:newIndex.i,toJ:newIndex.j}),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        }
+    })
+        .then(response => response.json())
+        .then(json => {
+            console.log(json);
+        });
     player1.moveChecker(gameBoard.board[currentChecker.i][currentChecker.j], gameBoard, currentChecker, newIndex);
     gameBoard.board[newIndex.i][newIndex.j].checkLady();
     let pos = checker.beat(currentChecker, newIndex);

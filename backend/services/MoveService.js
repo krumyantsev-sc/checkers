@@ -34,4 +34,8 @@ function checkMoveVariants(i,j) {
     return possibleWays;
 }
 
-module.exports = {checkMoveVariants};
+function moveChecker(checker,to) {
+    checker.move(boardService,to);
+}
+
+module.exports = {checkMoveVariants, moveChecker};

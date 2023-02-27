@@ -10,7 +10,6 @@ export default class checker {
     }
 
     move(gameBoard, from, to) {
-
         if(gameBoard.board[to.i][to.j] == null) {
             gameBoard.board[to.i][to.j] = gameBoard.board[from.i][from.j];
             gameBoard.board[to.i][to.j].position = to;

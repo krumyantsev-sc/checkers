@@ -3,10 +3,11 @@ const checkersController = require("./controllers/checkersController.js");
 const board = require("./services/BoardService.js")
 const express = require("express");
 const cors = require('cors')
+const {moveCheckerOnBoard} = require("./controllers/checkersController");
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: ['http://localhost:63342']
+    origin: ['http://localhost:63343']
 }));
 
 // определяем обработчик для маршрута "/"
@@ -22,6 +23,10 @@ app.post("/checkers/getPossiblePositions", function(request, response){
     console.log(request.body.j);
     console.log(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
     response.status(200).send(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
+});
+
+app.post("/checkers/updateBoard", function(req,res) {
+    moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
 });
 
 
