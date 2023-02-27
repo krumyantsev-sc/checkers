@@ -6,7 +6,7 @@ const cors = require('cors')
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: ['http://localhost:63343']
+    origin: ['http://localhost:63342']
 }));
 
 // определяем обработчик для маршрута "/"
@@ -15,7 +15,7 @@ app.get("/test", function(request, response){
     response.send("Привет Express");
 });
 
-app.post("/test", function(request, response){
+app.post("/checkers/getPossiblePositions", function(request, response){
     // отправляем ответ
     console.log(request.body);
     console.log(request.body.i);

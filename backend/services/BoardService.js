@@ -24,5 +24,20 @@ class BoardService {
             }
         }
     }
+
+    checkBorders(i,j) {
+        return (i > -1 && i < 8 && j > -1 && j < 8);
+    }
+
+    isFreeCell(i,j) {
+        return (this.checkBorders(i,j) && this.board[i][j] == null);
+    }
+
+    isCellTaken(i,j) {
+        return (this.checkBorders(i,j) && this.board[i][j] != null); //&& !gameBoard.allCheckers[i][j].classList.contains("cleanCell") && gameBoard.allCheckers[i][j] !== undefined);
+    }
 }
-module.exports = BoardService;
+
+let bs = new BoardService();
+bs.init();
+module.exports = bs;

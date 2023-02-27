@@ -72,7 +72,7 @@ function isFreeCell(i,j) {
 }
 
 function isCellTaken(i,j) {
-    return (checkBorders(i,j) && gameBoard.board[i][j] != null && !gameBoard.allCheckers[i][j].classList.contains("cleanCell") && gameBoard.allCheckers[i][j] !== undefined);
+    return (checkBorders(i,j) && gameBoard.board[i][j] != null); //&& !gameBoard.allCheckers[i][j].classList.contains("cleanCell") && gameBoard.allCheckers[i][j] !== undefined);
 }
 
 export function getBeatPositions(i,j) {
@@ -127,13 +127,11 @@ export function calculateSimpleMoveVariants(i,j) {
 }
 
 export function checkMoveVariants(i,j) {
-    const data ="one: two";
     const position = {
         i: i,
         j: j
     };
-
-    fetch('http://localhost:3001/test', {
+    fetch('http://localhost:3001/checkers/getPossiblePositions', {
         method: 'POST',
         body: JSON.stringify(position),
         headers: {
@@ -142,16 +140,20 @@ export function checkMoveVariants(i,j) {
     })
         .then(response => response.json())
         .then(json => {
-            console.log(json);
+            if (json.length > 0) {
+                console.log(json);
+                highlightPossibleWays(json);
+                addMoveListener(json);
+            }
         });
-    let possibleWays = getBeatPositions(i,j);
-    if (possibleWays.length === 0) {
-        possibleWays = calculateSimpleMoveVariants(i,j);
-    }
-    if (possibleWays.length > 0) {
-        highlightPossibleWays(possibleWays);
-        addMoveListener(possibleWays);
-    }
+        // let possibleWays = getBeatPositions(i,j);
+        // if (possibleWays.length === 0) {
+        //     possibleWays = calculateSimpleMoveVariants(i,j);
+        // }
+        // if (possibleWays.length > 0) {
+        //     highlightPossibleWays(possibleWays);
+        //     addMoveListener(possibleWays);
+        // }
 }
 
 function checkPossibilities(event) {

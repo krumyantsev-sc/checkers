@@ -1,37 +1,37 @@
-let gameBoard = require("../services/BoardService.js")
+let boardService = require("../services/BoardService.js")
+const getBeatPositions = require("../services/BeatService");
 
-let board = new gameBoard();
-board.init();
-function checkBorders(i,j) {
-    return (i > -1 && i < 8 && j > -1 && j < 8);
-}
-
-function isFreeCell(i,j) {
-    return (checkBorders(i,j) && board.board[i][j] == null);
-}
 
 
 function getSimpleMoveVariants(i,j) {
     console.log("????",i,j);
     let possibleWays = [];
-    console.log(board);
-    if (board.board[i][j].color === "White" || board.board[i][j].isLady) {
-        if (isFreeCell(i+1,j-1)) {
+    console.log(boardService);
+    if (boardService.board[i][j].color === "White" || boardService.board[i][j].isLady) {
+        if (boardService.isFreeCell(i+1,j-1)) {
             possibleWays.push({i:i+1,j:j-1});
         }
-        if (isFreeCell(i+1,j+1)) {
+        if (boardService.isFreeCell(i+1,j+1)) {
             possibleWays.push({i:i+1,j:j+1});
         }
     }
-    if (board.board[i][j].color === "Black" || board.board[i][j].isLady) {
-        if (isFreeCell(i-1,j-1)) {
+    if (boardService.board[i][j].color === "Black" || boardService.board[i][j].isLady) {
+        if (boardService.isFreeCell(i-1,j-1)) {
             possibleWays.push({i:i-1,j:j-1});
         }
-        if (isFreeCell(i-1,j+1)) {
+        if (boardService.isFreeCell(i-1,j+1)) {
             possibleWays.push({i:i-1,j:j+1});
         }
     }
     return possibleWays;
 }
 
-module.exports = {getSimpleMoveVariants};
+function checkMoveVariants(i,j) {
+    let possibleWays = getBeatPositions(i,j);
+    if (possibleWays.length === 0) {
+        possibleWays = getSimpleMoveVariants(i,j);
+    }
+    return possibleWays;
+}
+
+module.exports = {checkMoveVariants};
