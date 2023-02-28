@@ -52,11 +52,15 @@ export default class Board {
     }
 
     getBoardIndex(id) {
-        id = +id;
-        for(let i = 0; i < this.board.length; i++) {
-            for(let j = 0; j < this.board[i].length; j++) {
-                if(this.board[i][j] != null && this.board[i][j].divId === id) {
-                    return {i:i,j:j};
+        //console.log(this.allCheckers);
+        for(let i = 0; i < this.allCheckers.length; i++) {
+            for(let j = 0; j < this.allCheckers[i].length; j++) {
+                if(this.allCheckers[i][j].firstChild != null && this.allCheckers[i][j].firstChild.id == id) {
+                     console.log(this.allCheckers[i][j].firstChild.id);
+                      return {i:i,j:j};
+                // }
+                //if(this.allCheckers[i][j].firstChild != null) {
+                //    console.log(this.allCheckers[i][j].firstChild);
                 }
             }
         }

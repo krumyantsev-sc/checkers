@@ -1,4 +1,4 @@
-import {removeChecker, getBeatPositions} from "./game.js";
+import {removeChecker, } from "./game.js";
 
 export default class checker {
     isLady = false;
@@ -21,8 +21,8 @@ export default class checker {
         let difference = to.i - from.i;
         let pos = [];
         if (Math.abs(difference) > 1) {
-            removeChecker(from,to);
-            pos = getBeatPositions(to.i, to.j);
+           removeChecker(from,to);
+            //pos = getBeatPositions(to.i, to.j);
         }
         return pos;
     }

@@ -3,8 +3,7 @@ import checker from "./checker.js";
 import {
     gameBoard,
     moveCheckerDiv,
-    getBeatPositions,
-    calculateSimpleMoveVariants,
+
     setCurrentChecker,
     goToNextMove,
     checkWin,

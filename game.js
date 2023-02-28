@@ -15,15 +15,15 @@ let whiteScore = document.querySelector("#whiteSpan");
 let blackScore = document.querySelector("#blackSpan");
 
 
-let response = await fetch("http://localhost:3001/test");
-
-if (response.ok) { // если HTTP-статус в диапазоне 200-299
-    // получаем тело ответа (см. про этот метод ниже)
-    let text = await response.text();
-    console.log(text);
-} else {
-    alert("Ошибка HTTP: " + response.status);
-}
+// let response = await fetch("http://localhost:3001/test");
+//
+// if (response.ok) { // если HTTP-статус в диапазоне 200-299
+//     // получаем тело ответа (см. про этот метод ниже)
+//     let text = await response.text();
+//     console.log(text);
+// } else {
+//     alert("Ошибка HTTP: " + response.status);
+// }
 
 
 export function incCounter() {
@@ -66,68 +66,68 @@ function removeListeners(event) {
         event.target.removeEventListener("click", moveChecker);
 }
 
-function checkBorders(i,j) {
-    return (i > -1 && i < 8 && j > -1 && j < 8);
-}
+// function checkBorders(i,j) {
+//     return (i > -1 && i < 8 && j > -1 && j < 8);
+// }
 
-function isFreeCell(i,j) {
-    return (checkBorders(i,j) && gameBoard.board[i][j] == null);
-}
-
-function isCellTaken(i,j) {
-    return (checkBorders(i,j) && gameBoard.board[i][j] != null); //&& !gameBoard.allCheckers[i][j].classList.contains("cleanCell") && gameBoard.allCheckers[i][j] !== undefined);
-}
-
-export function getBeatPositions(i,j) {
-    let takenPositions = [];
-        if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
-            if (isCellTaken(i+1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
-                if (isFreeCell(i+2,j-2)) {
-                    takenPositions.push({i: i + 2, j: j - 2});
-                }
-
-            }
-            if (isCellTaken(i+1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j+1].color) {
-                if (isFreeCell(i+2,j+2)) {
-                    takenPositions.push({i: i + 2, j: j + 2});
-                }
-            }
-        }
-    if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
-        if (isCellTaken(i-1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j-1].color) {
-            if (isFreeCell(i-2,j-2)) {
-                takenPositions.push({i:i-2,j:j-2});
-            }
-        }
-        if (isCellTaken(i-1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j+1].color) {
-            if (isFreeCell(i-2,j+2)) {
-                takenPositions.push({i:i-2,j:j+2});
-            }
-        }
-}
-    return takenPositions;
-}
-
-export function calculateSimpleMoveVariants(i,j) {
-    let possibleWays = [];
-    if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
-        if (isFreeCell(i+1,j-1)) {
-            possibleWays.push({i:i+1,j:j-1});
-        }
-        if (isFreeCell(i+1,j+1)) {
-            possibleWays.push({i:i+1,j:j+1});
-        }
-    }
-    if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
-        if (isFreeCell(i-1,j-1)) {
-            possibleWays.push({i:i-1,j:j-1});
-        }
-        if (isFreeCell(i-1,j+1)) {
-            possibleWays.push({i:i-1,j:j+1});
-        }
-    }
-    return possibleWays;
-}
+// function isFreeCell(i,j) {
+//     return (checkBorders(i,j) && gameBoard.board[i][j] == null);
+// }
+//
+// function isCellTaken(i,j) {
+//     return (checkBorders(i,j) && gameBoard.board[i][j] != null); //&& !gameBoard.allCheckers[i][j].classList.contains("cleanCell") && gameBoard.allCheckers[i][j] !== undefined);
+// }
+//
+// export function getBeatPositions(i,j) {
+//     let takenPositions = [];
+//         if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
+//             if (isCellTaken(i+1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
+//                 if (isFreeCell(i+2,j-2)) {
+//                     takenPositions.push({i: i + 2, j: j - 2});
+//                 }
+//
+//             }
+//             if (isCellTaken(i+1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j+1].color) {
+//                 if (isFreeCell(i+2,j+2)) {
+//                     takenPositions.push({i: i + 2, j: j + 2});
+//                 }
+//             }
+//         }
+//     if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
+//         if (isCellTaken(i-1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j-1].color) {
+//             if (isFreeCell(i-2,j-2)) {
+//                 takenPositions.push({i:i-2,j:j-2});
+//             }
+//         }
+//         if (isCellTaken(i-1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j+1].color) {
+//             if (isFreeCell(i-2,j+2)) {
+//                 takenPositions.push({i:i-2,j:j+2});
+//             }
+//         }
+// }
+//     return takenPositions;
+// }
+//
+// export function calculateSimpleMoveVariants(i,j) {
+//     let possibleWays = [];
+//     if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
+//         if (isFreeCell(i+1,j-1)) {
+//             possibleWays.push({i:i+1,j:j-1});
+//         }
+//         if (isFreeCell(i+1,j+1)) {
+//             possibleWays.push({i:i+1,j:j+1});
+//         }
+//     }
+//     if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
+//         if (isFreeCell(i-1,j-1)) {
+//             possibleWays.push({i:i-1,j:j-1});
+//         }
+//         if (isFreeCell(i-1,j+1)) {
+//             possibleWays.push({i:i-1,j:j+1});
+//         }
+//     }
+//     return possibleWays;
+// }
 
 export function checkMoveVariants(i,j) {
     const position = {
@@ -163,6 +163,7 @@ function checkPossibilities(event) {
     clearHighlightedCells();
     let checker = event.target.id;
     let checkerId = gameBoard.getBoardIndex(checker);
+    console.log(checkerId);
     currentChecker = checkerId;
     checkMoveVariants(checkerId.i,checkerId.j);
 }
@@ -205,22 +206,22 @@ export function refreshScore() {
 export function removeChecker(from, to) {
     if (to.i - from.i > 0) {
         if (to.j < from.j) {
-            incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j-1].color);
-            gameBoard.board[currentChecker.i+1][currentChecker.j-1] = null;
+            //incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j-1].color);
+            //gameBoard.board[currentChecker.i+1][currentChecker.j-1] = null;
             gameBoard.allCheckers[currentChecker.i+1][currentChecker.j-1].removeChild(gameBoard.allCheckers[currentChecker.i+1][currentChecker.j-1].firstChild);
         } else {
-            incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j+1].color);
-            gameBoard.board[currentChecker.i+1][currentChecker.j+1] = null;
+            //incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j+1].color);
+            //gameBoard.board[currentChecker.i+1][currentChecker.j+1] = null;
             gameBoard.allCheckers[currentChecker.i+1][currentChecker.j+1].removeChild(gameBoard.allCheckers[currentChecker.i+1][currentChecker.j+1].firstChild);
         }
     } else {
         if (to.j < from.j) {
-            incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j-1].color);
-            gameBoard.board[currentChecker.i-1][currentChecker.j-1] = null;
+            //incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j-1].color);
+            //gameBoard.board[currentChecker.i-1][currentChecker.j-1] = null;
             gameBoard.allCheckers[currentChecker.i-1][currentChecker.j-1].removeChild(gameBoard.allCheckers[currentChecker.i-1][currentChecker.j-1].firstChild);
         } else {
-            incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j+1].color);
-            gameBoard.board[currentChecker.i-1][currentChecker.j+1] = null;
+            //incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j+1].color);
+            //gameBoard.board[currentChecker.i-1][currentChecker.j+1] = null;
             gameBoard.allCheckers[currentChecker.i-1][currentChecker.j+1].removeChild(gameBoard.allCheckers[currentChecker.i-1][currentChecker.j+1].firstChild);
         }
     }
@@ -258,8 +259,8 @@ const moveChecker = (event) => {
         .then(json => {
             console.log(json);
         });
-    player1.moveChecker(gameBoard.board[currentChecker.i][currentChecker.j], gameBoard, currentChecker, newIndex);
-    gameBoard.board[newIndex.i][newIndex.j].checkLady();
+    //player1.moveChecker(gameBoard.board[currentChecker.i][currentChecker.j], gameBoard, currentChecker, newIndex);
+    //gameBoard.board[newIndex.i][newIndex.j].checkLady();
     let pos = checker.beat(currentChecker, newIndex);
     if(checker.canBeatOneMore(pos)) {
         clearHighlightedCells();

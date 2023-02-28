@@ -13,5 +13,6 @@ class checker {
             gameBoard.board[from.i][from.j] = null;
         }
     }
+
 }
 module.exports = checker;
