@@ -14,18 +14,18 @@ let currTeamDiv = document.querySelector(".current-team");
 let whiteScore = document.querySelector("#whiteSpan");
 let blackScore = document.querySelector("#blackSpan");
 
+async function test() {
+    let response = await fetch("http://localhost:3001/test");
 
-// let response = await fetch("http://localhost:3001/test");
-//
-// if (response.ok) { // если HTTP-статус в диапазоне 200-299
-//     // получаем тело ответа (см. про этот метод ниже)
-//     let text = await response.text();
-//     console.log(text);
-// } else {
-//     alert("Ошибка HTTP: " + response.status);
-// }
-
-
+    if (response.ok) { // если HTTP-статус в диапазоне 200-299
+        // получаем тело ответа (см. про этот метод ниже)
+        let text = await response.text();
+        console.log(text);
+    } else {
+        alert("Ошибка HTTP: " + response.status);
+    }
+}
+test();
 export function incCounter() {
     counter++;
 }
@@ -145,8 +145,8 @@ export function checkMoveVariants(i,j) {
         .then(json => {
             if (json.length > 0) {
                 console.log(json);
-                highlightPossibleWays(json);
-                addMoveListener(json);
+               highlightPossibleWays(json);
+               addMoveListener(json);
             }
         });
         // let possibleWays = getBeatPositions(i,j);

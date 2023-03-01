@@ -22,11 +22,12 @@ app.post("/checkers/getPossiblePositions", function(request, response){
     console.log(request.body.i);
     console.log(request.body.j);
     console.log(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
-    response.status(200).send(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
+    response.send(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
 });
 
 app.post("/checkers/updateBoard", function(req,res) {
     moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
+    res.send(200);
 });
 
 

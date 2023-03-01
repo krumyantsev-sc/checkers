@@ -39,8 +39,5 @@ class BoardService {
 }
 
 let bs = new BoardService();
-async function start() {
-    await bs.init();
-}
-start().then(r => console.log("Started"));
+bs.init();
 module.exports = bs;
