@@ -1,4 +1,5 @@
 import {removeChecker, } from "./game.js";
+import {post} from "./util.js"
 
 export default class checker {
     isLady = false;
@@ -20,9 +21,14 @@ export default class checker {
     static beat(from, to) {
         let difference = to.i - from.i;
         let pos = [];
+
         if (Math.abs(difference) > 1) {
            removeChecker(from,to);
-            //pos = getBeatPositions(to.i, to.j);
+           post({i:to.i,j:to.j},"http://localhost:3001/checkers/getBeatPositions")
+               .then(response => response.json())
+               .then(json => {
+                   pos.push(json[0]);
+               });
         }
         return pos;
     }

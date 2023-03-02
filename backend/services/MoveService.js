@@ -4,7 +4,7 @@ const {getBeatPositions} = require("../services/BeatService");
 
 
 function getSimpleMoveVariants(i,j) {
-    console.log("????",i,j);
+   // console.log("????",i,j);
     let possibleWays = [];
     if (boardService.board[i][j].color === "White" || boardService.board[i][j].isLady) {
         if (boardService.isFreeCell(i+1,j-1)) {

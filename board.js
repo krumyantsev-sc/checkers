@@ -55,7 +55,7 @@ export default class Board {
         //console.log(this.allCheckers);
         for(let i = 0; i < this.allCheckers.length; i++) {
             for(let j = 0; j < this.allCheckers[i].length; j++) {
-                if(this.allCheckers[i][j].firstChild != null && this.allCheckers[i][j].firstChild.id == id) {
+                if(this.allCheckers[i][j].firstChild != null && this.allCheckers[i][j].firstChild.id === id) {
                      console.log(this.allCheckers[i][j].firstChild.id);
                       return {i:i,j:j};
                 // }

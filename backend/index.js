@@ -3,7 +3,6 @@ const checkersController = require("./controllers/checkersController.js");
 const board = require("./services/BoardService.js")
 const express = require("express");
 const cors = require('cors')
-const {moveCheckerOnBoard} = require("./controllers/checkersController");
 const app = express();
 app.use(express.json());
 app.use(cors({
@@ -18,18 +17,18 @@ app.get("/test", function(request, response){
 
 app.post("/checkers/getPossiblePositions", function(request, response){
     // отправляем ответ
-    console.log(request.body);
-    console.log(request.body.i);
-    console.log(request.body.j);
-    console.log(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
     response.send(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
 });
 
 app.post("/checkers/updateBoard", function(req,res) {
-    moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
-    res.send(200);
+    console.log(req.body);
+    checkersController.moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
+    res.sendStatus(200);
 });
 
+app.post("/checkers/getBeatPositions", function(req,res) {
+    res.send(checkersController.getBeatPos(req.body));
+});
 
 
 // начинаем прослушивать подключения на 3000 порту

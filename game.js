@@ -1,7 +1,8 @@
 import Board from './board.js';
 import checker from './checker.js';
-import Player from './player.js'
-import Bot from './bot.js'
+import Player from './player.js';
+import Bot from './bot.js';
+import {post} from './util.js';
 
 let currentChecker;
 export let counter = 1;
@@ -14,18 +15,18 @@ let currTeamDiv = document.querySelector(".current-team");
 let whiteScore = document.querySelector("#whiteSpan");
 let blackScore = document.querySelector("#blackSpan");
 
-async function test() {
-    let response = await fetch("http://localhost:3001/test");
-
-    if (response.ok) { // если HTTP-статус в диапазоне 200-299
-        // получаем тело ответа (см. про этот метод ниже)
-        let text = await response.text();
-        console.log(text);
-    } else {
-        alert("Ошибка HTTP: " + response.status);
-    }
-}
-test();
+// async function test() {
+//     let response = await fetch("http://localhost:3001/test");
+//
+//     if (response.ok) { // если HTTP-статус в диапазоне 200-299
+//         // получаем тело ответа (см. про этот метод ниже)
+//         let text = await response.text();
+//         console.log(text);
+//     } else {
+//         alert("Ошибка HTTP: " + response.status);
+//     }
+// }
+// test();
 export function incCounter() {
     counter++;
 }
@@ -130,21 +131,14 @@ function removeListeners(event) {
 // }
 
 export function checkMoveVariants(i,j) {
-    const position = {
+    let position = {
         i: i,
         j: j
     };
-    fetch('http://localhost:3001/checkers/getPossiblePositions', {
-        method: 'POST',
-        body: JSON.stringify(position),
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8'
-        }
-    })
+    post(position,'http://localhost:3001/checkers/getPossiblePositions')
         .then(response => response.json())
         .then(json => {
             if (json.length > 0) {
-                console.log(json);
                highlightPossibleWays(json);
                addMoveListener(json);
             }
@@ -248,25 +242,19 @@ export function checkWin() {
 const moveChecker = (event) => {
     let newIndex = gameBoard.findIndexOfNode(event);
     moveCheckerDiv(currentChecker, event.target);
-    fetch('http://localhost:3001/checkers/updateBoard', {
-        method: 'POST',
-        body: JSON.stringify({fromI:currentChecker.i,fromJ:currentChecker.j,toI:newIndex.i,toJ:newIndex.j}),
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8'
-        }
-    })
-        .then(response => response.json())
-        .then(json => {
-            console.log(json);
-        });
+    post({fromI:currentChecker.i,fromJ:currentChecker.j,toI:newIndex.i,toJ:newIndex.j},'http://localhost:3001/checkers/updateBoard')
+        .then();
     //player1.moveChecker(gameBoard.board[currentChecker.i][currentChecker.j], gameBoard, currentChecker, newIndex);
     //gameBoard.board[newIndex.i][newIndex.j].checkLady();
     let pos = checker.beat(currentChecker, newIndex);
-    if(checker.canBeatOneMore(pos)) {
-        clearHighlightedCells();
-        currentChecker = newIndex;
-        checkMoveVariants(newIndex.i,newIndex.j);
-        return;
+    console.log("$$$$$$$", pos);
+    console.log(pos[0]);
+    if(pos.length > 0) {
+        console.log("tut")
+         clearHighlightedCells();
+         currentChecker = newIndex;
+         checkMoveVariants(newIndex.i,newIndex.j);
+         return;
     }
     clearHighlightedCells();
     removeListeners(event);

@@ -1,9 +1,6 @@
 let gameBoard = require("./BoardService.js");
 
 function getBeatPositions(i,j) {
-    console.log(i,j);
-    console.log(gameBoard.board);
-    console.log(gameBoard.board[+i][+j]);
     let takenPositions = [];
     if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
         if (gameBoard.isCellTaken(i+1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
