@@ -18,17 +18,17 @@ export default class checker {
         }
     }
 
-    static beat(from, to) {
+    static async beat(from, to) {
         let difference = to.i - from.i;
         let pos = [];
 
         if (Math.abs(difference) > 1) {
            removeChecker(from,to);
-           post({i:to.i,j:to.j},"http://localhost:3001/checkers/getBeatPositions")
-               .then(response => response.json())
-               .then(json => {
-                   pos.push(json[0]);
-               });
+           let response = await post({i:to.i,j:to.j},"http://localhost:3001/checkers/getBeatPositions");
+           let beatPos = await response.json();
+           if (beatPos.length > 0) {
+               pos.push(beatPos[0]);
+           }
         }
         return pos;
     }

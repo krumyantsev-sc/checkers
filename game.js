@@ -239,22 +239,28 @@ export function checkWin() {
     }
 }
 
-const moveChecker = (event) => {
+const moveChecker = async (event) => {
     let newIndex = gameBoard.findIndexOfNode(event);
     moveCheckerDiv(currentChecker, event.target);
-    post({fromI:currentChecker.i,fromJ:currentChecker.j,toI:newIndex.i,toJ:newIndex.j},'http://localhost:3001/checkers/updateBoard')
+    post({
+        fromI: currentChecker.i,
+        fromJ: currentChecker.j,
+        toI: newIndex.i,
+        toJ: newIndex.j
+    }, 'http://localhost:3001/checkers/updateBoard')
         .then();
     //player1.moveChecker(gameBoard.board[currentChecker.i][currentChecker.j], gameBoard, currentChecker, newIndex);
     //gameBoard.board[newIndex.i][newIndex.j].checkLady();
-    let pos = checker.beat(currentChecker, newIndex);
+    let pos = await checker.beat(currentChecker, newIndex);
     console.log("$$$$$$$", pos);
+    console.log(pos.length);
     console.log(pos[0]);
-    if(pos.length > 0) {
+    if (pos.length > 0) {
         console.log("tut")
-         clearHighlightedCells();
-         currentChecker = newIndex;
-         checkMoveVariants(newIndex.i,newIndex.j);
-         return;
+        clearHighlightedCells();
+        currentChecker = newIndex;
+        checkMoveVariants(newIndex.i, newIndex.j);
+        return;
     }
     clearHighlightedCells();
     removeListeners(event);
