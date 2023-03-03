@@ -11,6 +11,7 @@ const getPositionsForHighlighting = (i,j) => {
 const moveCheckerOnBoard = (fromI,fromJ,toI,toJ) => {
    // console.log("&&&&",fromI,fromJ,toI,toJ);
     moveChecker(boardService.board[fromI][fromJ], {i:toI,j:toJ});
+    boardService.board[toI][toJ].makeLady();
     return beat({i:fromI,j:fromJ},{i:toI,j:toJ});
 }
 

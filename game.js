@@ -15,18 +15,6 @@ let currTeamDiv = document.querySelector(".current-team");
 let whiteScore = document.querySelector("#whiteSpan");
 let blackScore = document.querySelector("#blackSpan");
 
-// async function test() {
-//     let response = await fetch("http://localhost:3001/test");
-//
-//     if (response.ok) { // если HTTP-статус в диапазоне 200-299
-//         // получаем тело ответа (см. про этот метод ниже)
-//         let text = await response.text();
-//         console.log(text);
-//     } else {
-//         alert("Ошибка HTTP: " + response.status);
-//     }
-// }
-// test();
 export function incCounter() {
     counter++;
 }
@@ -67,69 +55,6 @@ function removeListeners(event) {
         event.target.removeEventListener("click", moveChecker);
 }
 
-// function checkBorders(i,j) {
-//     return (i > -1 && i < 8 && j > -1 && j < 8);
-// }
-
-// function isFreeCell(i,j) {
-//     return (checkBorders(i,j) && gameBoard.board[i][j] == null);
-// }
-//
-// function isCellTaken(i,j) {
-//     return (checkBorders(i,j) && gameBoard.board[i][j] != null); //&& !gameBoard.allCheckers[i][j].classList.contains("cleanCell") && gameBoard.allCheckers[i][j] !== undefined);
-// }
-//
-// export function getBeatPositions(i,j) {
-//     let takenPositions = [];
-//         if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
-//             if (isCellTaken(i+1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
-//                 if (isFreeCell(i+2,j-2)) {
-//                     takenPositions.push({i: i + 2, j: j - 2});
-//                 }
-//
-//             }
-//             if (isCellTaken(i+1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j+1].color) {
-//                 if (isFreeCell(i+2,j+2)) {
-//                     takenPositions.push({i: i + 2, j: j + 2});
-//                 }
-//             }
-//         }
-//     if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
-//         if (isCellTaken(i-1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j-1].color) {
-//             if (isFreeCell(i-2,j-2)) {
-//                 takenPositions.push({i:i-2,j:j-2});
-//             }
-//         }
-//         if (isCellTaken(i-1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j+1].color) {
-//             if (isFreeCell(i-2,j+2)) {
-//                 takenPositions.push({i:i-2,j:j+2});
-//             }
-//         }
-// }
-//     return takenPositions;
-// }
-//
-// export function calculateSimpleMoveVariants(i,j) {
-//     let possibleWays = [];
-//     if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
-//         if (isFreeCell(i+1,j-1)) {
-//             possibleWays.push({i:i+1,j:j-1});
-//         }
-//         if (isFreeCell(i+1,j+1)) {
-//             possibleWays.push({i:i+1,j:j+1});
-//         }
-//     }
-//     if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
-//         if (isFreeCell(i-1,j-1)) {
-//             possibleWays.push({i:i-1,j:j-1});
-//         }
-//         if (isFreeCell(i-1,j+1)) {
-//             possibleWays.push({i:i-1,j:j+1});
-//         }
-//     }
-//     return possibleWays;
-// }
-
 export function checkMoveVariants(i,j) {
     let position = {
         i: i,
@@ -143,14 +68,6 @@ export function checkMoveVariants(i,j) {
                addMoveListener(json);
             }
         });
-        // let possibleWays = getBeatPositions(i,j);
-        // if (possibleWays.length === 0) {
-        //     possibleWays = calculateSimpleMoveVariants(i,j);
-        // }
-        // if (possibleWays.length > 0) {
-        //     highlightPossibleWays(possibleWays);
-        //     addMoveListener(possibleWays);
-        // }
 }
 
 function checkPossibilities(event) {
@@ -239,9 +156,20 @@ export function checkWin() {
     }
 }
 
+function checkLady(i,j) {
+    if (i > 6 && gameBoard.allCheckers[i][j].firstChild.classList.contains("white-checker")) {
+        gameBoard.allCheckers[i][j].firstChild.classList.add("lady");
+    }
+    if (i < 1 && gameBoard.allCheckers[i][j].firstChild.classList.contains("black-checker")) {
+        gameBoard.allCheckers[i][j].firstChild.classList.add("lady");
+    }
+}
+
 const moveChecker = async (event) => {
     let newIndex = gameBoard.findIndexOfNode(event);
     moveCheckerDiv(currentChecker, event.target);
+    checkLady(newIndex.i,newIndex.j);
+ //   if (newIndex.i > 6
     post({
         fromI: currentChecker.i,
         fromJ: currentChecker.j,
@@ -249,14 +177,8 @@ const moveChecker = async (event) => {
         toJ: newIndex.j
     }, 'http://localhost:3001/checkers/updateBoard')
         .then();
-    //player1.moveChecker(gameBoard.board[currentChecker.i][currentChecker.j], gameBoard, currentChecker, newIndex);
-    //gameBoard.board[newIndex.i][newIndex.j].checkLady();
     let pos = await checker.beat(currentChecker, newIndex);
-    console.log("$$$$$$$", pos);
-    console.log(pos.length);
-    console.log(pos[0]);
     if (pos.length > 0) {
-        console.log("tut")
         clearHighlightedCells();
         currentChecker = newIndex;
         checkMoveVariants(newIndex.i, newIndex.j);

@@ -14,5 +14,14 @@ class checker {
         }
     }
 
+    makeLady() {
+        if(this.position.i > 6 && this.color === "White") {
+            this.isLady = true;
+        }
+        if(this.position.i < 1 && this.color === "Black") {
+            this.isLady = true;
+        }
+    }
+
 }
 module.exports = checker;

@@ -37,18 +37,4 @@ export default class checker {
         return pos.length > 0;
     }
 
-    makeLady() {
-        this.isLady = true;
-        this.div.classList.add("lady");
-    }
-
-    checkLady() {
-        if (this.color === "Black" && this.position.i < 1) {
-            this.makeLady();
-        }
-        if (this.color === "White" && this.position.i > 6) {
-            this.makeLady();
-        }
-    }
-
 }
