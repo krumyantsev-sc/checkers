@@ -2,13 +2,20 @@
 const checkersController = require("./controllers/checkersController.js");
 const board = require("./services/BoardService.js")
 const express = require("express");
-const cors = require('cors')
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const cors = require('cors')
+
 app.use(express.json());
 app.use(cors({
     origin: ['http://localhost:63342']
 }));
-
+const io = new Server(server, {
+    cors: ['http://localhost:63342'],
+    serveClient: false
+});
 // определяем обработчик для маршрута "/"
 app.get("/test", function(request, response){
     // отправляем ответ
@@ -29,7 +36,17 @@ app.post("/checkers/updateBoard", function(req,res) {
 app.post("/checkers/getBeatPositions", function(req,res) {
     res.send(checkersController.getBeatPos(req.body));
 });
-
+let players = 0;
+io.on('connection', (socket) => {
+    console.log('a user connected', socket.id);
+    players++;
+    io.emit('getNumOfConnections', players)
+    // Что делать при случае дисконнекта
+    io.on('disconnect', () => {
+        // Выводи 'disconnected'
+        console.log('disconnected');
+    });
+});
 
 // начинаем прослушивать подключения на 3000 порту
-app.listen(3001);
+server.listen(3001);

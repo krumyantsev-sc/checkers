@@ -59,3 +59,73 @@ td {
     font-size: 25px;
     color: lightsalmon;
 }
+
+.wrapper__container {
+    margin: 50px auto;
+    display: flex;
+    justify-content: center;
+    width: 900px;
+    height: 600px;
+}
+
+#player1 {
+}
+
+.player__container {
+    padding-top: 30px;
+    text-align: center;
+    width:300px;
+    height: 450px;
+    border: 3px solid ;
+    border-radius: 30%;
+    margin: auto;
+    border-image: linear-gradient(45deg, purple, orange) 1;
+}
+
+.avatar {
+    margin-top: 15px;
+    width: 280px;
+    height: 300px;
+    margin-bottom: 15px;
+}
+
+.name {
+    font-family: 'Roboto', sans-serif;
+    font-size: 35px;
+    color: lightpink;
+}
+
+.status {
+    font-family: 'Roboto', sans-serif;
+    font-size: 35px;
+    color: orangered;
+}
+
+.start-game__button {
+    font-family: 'Roboto', sans-serif;
+    font-size: 35px;
+    color: white;
+    text-align: center;
+    padding-top: 10px;
+    margin: auto;
+    width: 150px;
+    height: 50px;
+    background-color: yellowgreen;
+    border-radius: 5%;
+}
+
+.info__panel {
+    margin: auto;
+}
+
+.room__info {
+    margin-bottom: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 35px;
+    color: cornsilk;
+    text-align: center;
+}
+
+.room__id {
+    color: palegreen;
+}
