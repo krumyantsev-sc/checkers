@@ -1,9 +1,35 @@
 import checker from './checker.js'
+import {get} from './util.js'
 
 export default class Board {
     whiteCheckers = [];
     blackCheckers = [];
     allCheckers = [];
+
+    async getBoardFromServer() {
+        return await get("http://localhost:3001/checkers/getBoard");
+    }
+
+    async generateCheckers() {
+        let serverCheckers = await this.getBoardFromServer();
+        console.log(serverCheckers);
+        for (let i = 0; i < serverCheckers.length; i++) {
+            for(let j = 0; j < serverCheckers[i].length; j++) {
+                if (serverCheckers[i][j] !== null) {
+                    console.log(serverCheckers[i][j]);
+                    let newCheckerDiv = document.createElement('div');
+                    newCheckerDiv.id = serverCheckers[i][j].id;
+                    if (serverCheckers[i][j].color === "Black") {
+                        newCheckerDiv.className = "black-checker";
+                    } else {
+                        newCheckerDiv.className = "white-checker";
+                    }
+                    this.allCheckers[serverCheckers[i][j].position.i][serverCheckers[i][j].position.j].appendChild(newCheckerDiv);
+                }
+            }
+        }
+    }
+
     board = [
         [null, 0, null, 1, null, 2, null, 3],
         [4, null, 5, null, 6, null, 7, null],
@@ -15,7 +41,12 @@ export default class Board {
         [20, null, 21, null, 22, null, 23, null]
     ];
 
+    async build() {
+        await this.generateCheckers();
+    }
+
     init() {
+        this.build();
         let whiteCheckerSelectors = document.querySelectorAll(".white-checker");
         for (let i = 0; i < 12; i++) {
             this.whiteCheckers.push(new checker("White", i, this.board.indexOf(i), whiteCheckerSelectors[i]));

@@ -7,3 +7,14 @@ export async function post(data, url) {
         }
     });
 }
+
+export async function get(url) {
+    let response = await fetch(url);
+    let json = null;
+    if (response.ok) {
+        json = await response.json();
+    } else {
+        alert("Ошибка HTTP: " + response.status);
+    }
+    return json;
+}

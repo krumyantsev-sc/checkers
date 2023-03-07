@@ -3,6 +3,7 @@ import checker from './checker.js';
 import Player from './player.js';
 import Bot from './bot.js';
 import {post} from './util.js';
+let socket = io('http://localhost:3001');
 
 let currentChecker;
 export let counter = 1;
@@ -169,7 +170,6 @@ const moveChecker = async (event) => {
     let newIndex = gameBoard.findIndexOfNode(event);
     moveCheckerDiv(currentChecker, event.target);
     checkLady(newIndex.i,newIndex.j);
- //   if (newIndex.i > 6
     post({
         fromI: currentChecker.i,
         fromJ: currentChecker.j,
@@ -189,5 +189,9 @@ const moveChecker = async (event) => {
     goToNextMove();
     startMove();
 }
+
+socket.on('checkerMoved', function(data) {
+    moveCheckerDiv({i:data.fromI,j:data.fromJ}, gameBoard.allCheckers[data.toI][data.toJ]);
+})
 startMove();
 

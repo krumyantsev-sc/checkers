@@ -1,8 +1,9 @@
 class checker {
     isLady = false;
-    constructor(color,position) {
+    constructor(color,position,id) {
         this.color = color;
         this.position = position;
+        this.id = id;
     }
 
     move(gameBoard, to) {

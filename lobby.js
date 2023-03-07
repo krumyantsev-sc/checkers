@@ -2,7 +2,7 @@ let socket = io('http://localhost:3001');
 let statuses = document.querySelectorAll(".status")
 socket.on('connect', function () {
     // Выводим сообщение подключение
-    console.log("Подключение прошло успешно<br>");
+    console.log("Подключение прошло успешно");
     // Отслеживание сообщения от сервера со заголовком 'hello'
     socket.on('getNumOfConnections', function (data) {
         // Выводим сообщение от сервера

@@ -7,6 +7,7 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const cors = require('cors')
+let secondPlayer;
 
 app.use(express.json());
 app.use(cors({
@@ -30,7 +31,12 @@ app.post("/checkers/getPossiblePositions", function(request, response){
 app.post("/checkers/updateBoard", function(req,res) {
     console.log(req.body);
     checkersController.moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
+    io.to(secondPlayer).emit('checkerMoved', req.body);
     res.sendStatus(200);
+});
+
+app.get("/checkers/getBoard", function(req,res) {
+    res.send(board.getBoard());
 });
 
 app.post("/checkers/getBeatPositions", function(req,res) {
@@ -39,6 +45,7 @@ app.post("/checkers/getBeatPositions", function(req,res) {
 let players = 0;
 io.on('connection', (socket) => {
     console.log('a user connected', socket.id);
+    secondPlayer = socket.id;
     players++;
     io.emit('getNumOfConnections', players)
     // Что делать при случае дисконнекта
@@ -47,6 +54,7 @@ io.on('connection', (socket) => {
         console.log('disconnected');
     });
 });
+
 
 // начинаем прослушивать подключения на 3000 порту
 server.listen(3001);

@@ -12,6 +12,10 @@ class BoardService {
         [20, null, 21, null, 22, null, 23, null]
     ];
 
+    getBoard() {
+        return this.board;
+    }
+
     init() {
         for (let i = 0; i < this.board.length; i++) {
             for (let j = 0; j < this.board[i].length; j++) {
@@ -19,7 +23,7 @@ class BoardService {
                     this.board[i][j] = this.board[i][j] <= 11 ? (new checker("White", {
                         i: i,
                         j: j
-                    })) : (new checker(("Black"), {i: i, j: j}));
+                    },this.board[i][j])) : (new checker(("Black"), {i: i, j: j},this.board[i][j]));
                 }
             }
         }
