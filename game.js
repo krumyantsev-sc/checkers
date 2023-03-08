@@ -11,7 +11,9 @@ export let gameBoard = new Board;
 let player1 = new Player();
 let player2 = new Player();
 let bot = new Bot();
-gameBoard.init();
+
+
+
 let currTeamDiv = document.querySelector(".current-team");
 let whiteScore = document.querySelector("#whiteSpan");
 let blackScore = document.querySelector("#blackSpan");
@@ -29,18 +31,22 @@ export function changeTeam() {
     currTeamDiv.innerHTML = (counter % 2 === 0) ? "Ходят черные" : "Ходят белые";
 }
 
-export function startMove() {
+export async function startMove() {
+    //await gameBoard.build();
+    //gameBoard.removeCheckers();
+    await gameBoard.init();
     giveListeners();
 }
 
 function giveListeners() {
+    console.log("aeeee");
     if (counter % 2 !== 0) {
         for (let item of gameBoard.whiteCheckers) {
-            item.div.addEventListener("click", checkPossibilities);
+            item.addEventListener("click", checkPossibilities);
         }
     } else {
         for (let item of gameBoard.blackCheckers) {
-            item.div.addEventListener("click", checkPossibilities);
+            item.addEventListener("click", checkPossibilities);
         }
       // setTimeout(() => {bot.moveClosestChecker()}, 1000);
     }
@@ -48,10 +54,10 @@ function giveListeners() {
 
 function removeListeners(event) {
         for (let item of gameBoard.whiteCheckers) {
-            item.div.removeEventListener("click", checkPossibilities);
+            item.removeEventListener("click", checkPossibilities);
         }
         for (let item of gameBoard.blackCheckers) {
-            item.div.removeEventListener("click", checkPossibilities);
+            item.removeEventListener("click", checkPossibilities);
         }
         event.target.removeEventListener("click", moveChecker);
 }
@@ -72,6 +78,7 @@ export function checkMoveVariants(i,j) {
 }
 
 function checkPossibilities(event) {
+    console.log("kkkk")
     clearHighlightedCells();
     let checker = event.target.id;
     let checkerId = gameBoard.getBoardIndex(checker);
@@ -140,6 +147,10 @@ export function removeChecker(from, to) {
 }
 
 export function moveCheckerDiv(initialCell, targetCellDiv) {
+    console.log("zzk");
+    console.log(gameBoard.allCheckers[initialCell.i][initialCell.j]);
+    console.log(targetCellDiv);
+
     targetCellDiv.appendChild(gameBoard.allCheckers[initialCell.i][initialCell.j].firstChild);
 }
 
@@ -187,11 +198,11 @@ const moveChecker = async (event) => {
     clearHighlightedCells();
     removeListeners(event);
     goToNextMove();
-    startMove();
+    await startMove();
 }
 
 socket.on('checkerMoved', function(data) {
     moveCheckerDiv({i:data.fromI,j:data.fromJ}, gameBoard.allCheckers[data.toI][data.toJ]);
 })
-startMove();
+startMove().then();
 

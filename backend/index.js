@@ -4,12 +4,15 @@ const board = require("./services/BoardService.js")
 const express = require("express");
 const app = express();
 const http = require('http');
+const mongoose = require('mongoose');
+const authRouter = require('./authRouter.js')
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const cors = require('cors')
 let secondPlayer;
 
 app.use(express.json());
+app.use("/auth", authRouter);
 app.use(cors({
     origin: ['http://localhost:63342']
 }));
@@ -57,4 +60,12 @@ io.on('connection', (socket) => {
 
 
 // начинаем прослушивать подключения на 3000 порту
-server.listen(3001);
+const start = async () => {
+    try {
+        await mongoose.connect(`mongodb+srv://rumik:13372281@cluster0.orq3t9o.mongodb.net/?retryWrites=true&w=majority`);
+        server.listen(3001);
+    } catch (e) {
+        console.log(e);
+    }
+}
+start();
