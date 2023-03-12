@@ -4,6 +4,11 @@ const router = new Router();
 const {check} = require("express-validator");
 const authMiddleWare = require("./middleware/authMiddleware")
 const roleMiddleware = require("./middleware/roleMiddleware")
+const cors = require("cors");
+
+router.use(cors({
+    origin: ['http://localhost:63342']
+}));
 
 router.post("/registration", [
     check("username","Имя пользователя не может быть пустым").notEmpty(),

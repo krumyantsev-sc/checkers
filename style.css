@@ -161,12 +161,12 @@ td {
     margin: 0 0 15px;
 }
 
-.form-control, .btn {
+.form-login, .form-password, .btn__login {
     min-height: 38px;
     border-radius: 2px;
 }
 
-.btn {
+.btn__login {
     font-size: 15px;
     font-weight: bold;
 }

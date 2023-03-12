@@ -1,5 +1,11 @@
+if (!localStorage.getItem('token')) {
+    window.location.href = './login.html';
+}
+
 let socket = io('http://localhost:3001');
-let statuses = document.querySelectorAll(".status")
+let statuses = document.querySelectorAll(".status");
+
+
 socket.on('connect', function () {
     // Выводим сообщение подключение
     console.log("Подключение прошло успешно");
