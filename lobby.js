@@ -10,11 +10,12 @@ socket.on('connect', function () {
     // Выводим сообщение подключение
     console.log("Подключение прошло успешно");
     // Отслеживание сообщения от сервера со заголовком 'hello'
-    socket.on('getNumOfConnections', function (data) {
-        // Выводим сообщение от сервера
-        console.log(data);
-        changeConnectionSpan(data);
-    });
+
+});
+socket.on('getNumOfConnections', function (data) {
+    // Выводим сообщение от сервера
+    console.log(data);
+    changeConnectionSpan(data);
 });
 
 function changeConnectionSpan(numOfConnections) {
