@@ -1,31 +1,29 @@
-// подключение express
 const checkersController = require("./controllers/checkersController.js");
 const board = require("./services/BoardService.js")
 const express = require("express");
 const app = express();
-const http = require('http');
-const mongoose = require('mongoose');
-const authRouter = require('./authRouter.js')
+const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const cors = require('cors')
-let secondPlayer;
-
-app.use(express.json());
-app.use("/auth", authRouter);
-app.use(cors({
-    origin: ['http://localhost:63342']
-}));
 const io = new Server(server, {
     cors: ['http://localhost:63342'],
     serveClient: false
 });
-// определяем обработчик для маршрута "/"
-app.get("/test", function(request, response){
-    // отправляем ответ
-    response.send("Привет Express");
-});
+const mongoose = require('mongoose');
+const cors = require('cors');
+const authRouter = require('./authRouter.js')
+const lobbyRouter = require('./lobbyRouter.js')
+let secondPlayer;
 
+app.use(express.json());
+app.use("/auth", authRouter);
+app.use("/lobby", lobbyRouter);
+app.use(cors({
+    origin: ['http://localhost:63342']
+}));
+app.get("/test", function(req, res) {
+    res.sendFile(__dirname + "/index.html");
+});
 app.post("/checkers/getPossiblePositions", function(request, response){
     // отправляем ответ
     response.send(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
@@ -46,28 +44,27 @@ app.post("/checkers/getBeatPositions", function(req,res) {
     res.send(checkersController.getBeatPos(req.body));
 });
 let players = 0;
-io.on('connection', (socket) => {
-    console.log('a user connected', socket.id);
+io.on("connection", function(socket) {
+    console.log("a user connected", socket.id);
     secondPlayer = socket.id;
     players++;
-    io.emit('getNumOfConnections', players)
-    // Что делать при случае дисконнекта
-    io.on('disconnect', () => {
-        // Выводи 'disconnected'
-        console.log('disconnected');
+    io.emit('getNumOfConnections', players);
+    socket.on("disconnect", function() {
+        console.log("user disconnected");
     });
 });
 
-
-// начинаем прослушивать подключения на 3000 порту
 const start = async () => {
     try {
         await mongoose.connect(`mongodb+srv://rumik:13372281@cluster0.orq3t9o.mongodb.net/?retryWrites=true&w=majority`);
-        server.listen(3001);
+        server.listen(3001, function() {
+            console.log("listening on *:3001");
+        });
     } catch (e) {
         console.log(e);
     }
 }
+
 start();
 
 module.exports = {io};
