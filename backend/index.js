@@ -12,13 +12,13 @@ const io = new Server(server, {
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRouter = require('./authRouter.js')
-const lobbyRouter = require('./lobbyRouter.js')
+const roomRouter = require('./roomRouter.js')
 const roleMiddleware = require('./middleware/roleMiddleware.js')
 let secondPlayer;
 
 app.use(express.json());
 app.use("/auth", authRouter);
-app.use("/lobby", lobbyRouter);
+app.use("/room", roomRouter);
 app.use(cors({
     origin: ['http://localhost:63342']
 }));

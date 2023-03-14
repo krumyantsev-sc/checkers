@@ -20,6 +20,7 @@ class roomController {
         if (this.firstPlayer !== null && this.secondPlayer !== null) {
             await this.createRoom()
         }
+        res.sendStatus(200);
     }
 
     async createRoom() {
@@ -28,4 +29,8 @@ class roomController {
         this.firstPlayer = null;
         this.secondPlayer = null;
     }
+
+
 }
+
+module.exports = new roomController();
