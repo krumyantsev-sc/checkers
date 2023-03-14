@@ -1,11 +1,21 @@
+import {get} from "./util.js"
+
 if (!localStorage.getItem('token')) {
     window.location.href = './login.html';
 }
 
 let socket = io('http://localhost:3001');
 let statuses = document.querySelectorAll(".status");
+let userNameSpan = document.querySelectorAll(".name");
 
+async function getUserName() {
+    return await get("http://localhost:3001/auth/getUserName");
+}
 
+const changeNameSpan = () => {
+    getUserName().then((result) => userNameSpan[0].textContent = result.username);
+}
+changeNameSpan();
 socket.on('connect', function () {
     // Выводим сообщение подключение
     console.log("Подключение прошло успешно");

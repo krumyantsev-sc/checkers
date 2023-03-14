@@ -65,6 +65,18 @@ class authController {
             console.log(e);
         }
     }
+
+    async getUserName(req,res) {
+        try {
+            const token = req.headers.authorization.split(' ')[1]
+            console.log(token);
+            const {id: userId} = jwt.verify(token, secret);
+            const candidate = await User.findById(userId);
+            res.json({username: candidate.username});
+        } catch (e) {
+            console.log(e);
+        }
+    }
 }
 
 module.exports = new authController();

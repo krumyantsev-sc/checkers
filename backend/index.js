@@ -13,6 +13,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authRouter = require('./authRouter.js')
 const lobbyRouter = require('./lobbyRouter.js')
+const roleMiddleware = require('./middleware/roleMiddleware.js')
 let secondPlayer;
 
 app.use(express.json());
@@ -21,7 +22,7 @@ app.use("/lobby", lobbyRouter);
 app.use(cors({
     origin: ['http://localhost:63342']
 }));
-app.get("/test", function(req, res) {
+app.get("/test", roleMiddleware(), function(req, res) {
     res.sendFile(__dirname + "/index.html");
 });
 app.post("/checkers/getPossiblePositions", function(request, response){
