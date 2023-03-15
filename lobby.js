@@ -4,7 +4,7 @@ if (!localStorage.getItem('token')) {
     window.location.href = './login.html';
 }
 
-let socket = io('http://localhost:3001');
+let socket = io.connect('http://localhost:3001',{query: {auth:localStorage.getItem('token')}});
 let statuses = document.querySelectorAll(".status");
 let userNameSpan = document.querySelectorAll(".name");
 

@@ -2,6 +2,7 @@ const User = require("../models/User")
 const Room = require("../models/Room")
 const jwt = require("jsonwebtoken");
 const {secret} = require("../config/config");
+const {io} = require("../index")
 
 class roomController {
     firstPlayer = null;
@@ -23,11 +24,19 @@ class roomController {
         res.sendStatus(200);
     }
 
-    async createRoom() {
-        const room = new Room({firstPlayerId: this.firstPlayer, secondPlayerId: this.secondPlayer});
+    async createRoom(req,res) {
+        const room = new Room();
         await room.save();
-        this.firstPlayer = null;
-        this.secondPlayer = null;
+        res.sendStatus(200);
+    }
+
+    async getRoomList(req,res) {
+        try {
+            const rooms = await Room.find();
+            res.json(rooms);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
 

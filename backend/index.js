@@ -13,6 +13,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authRouter = require('./authRouter.js')
 const roomRouter = require('./roomRouter.js')
+const {authenticateToken} = require('./jwtVerification.js')
 const roleMiddleware = require('./middleware/roleMiddleware.js')
 let secondPlayer;
 
@@ -46,10 +47,13 @@ app.post("/checkers/getBeatPositions", function(req,res) {
 });
 let players = 0;
 io.on("connection", function(socket) {
-    console.log("a user connected", socket.id);
-    secondPlayer = socket.id;
-    players++;
-    io.emit('getNumOfConnections', players);
+    console.log("user connected");
+    const token = socket.handshake.query.auth;
+    const playerId = authenticateToken(token);
+    if (playerId === null) {
+        socket.disconnect();
+    }
+    socket.join(playerId);
     socket.on("disconnect", function() {
         console.log("user disconnected");
     });

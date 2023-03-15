@@ -170,3 +170,26 @@ td {
     font-size: 15px;
     font-weight: bold;
 }
+
+.create-room__button {
+    border: 1px solid black;
+    width: 100px;
+    height: 40px;
+    background-color: limegreen;
+    text-align: center;
+    color: white;
+    margin-left: 75%;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.room-list__wrapper {
+    margin-top: 80px;
+}
+
+.room-list {
+    border: 1px solid black;
+    height: 650px;
+    width: 1200px;
+    margin: 0 auto;
+}
