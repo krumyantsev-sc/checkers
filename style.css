@@ -193,3 +193,21 @@ td {
     width: 1200px;
     margin: 0 auto;
 }
+
+.roomDiv {
+    height: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    color: cornsilk;
+    justify-content: center;
+    display: flex;
+}
+
+.roomDivBtn {
+    width: 120px;
+    height:25px;
+    text-align: center;
+    background-color: limegreen;
+    cursor: pointer;
+    margin-left: 50px;
+}
