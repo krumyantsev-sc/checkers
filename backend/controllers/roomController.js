@@ -13,14 +13,9 @@ class roomController {
         console.log(token);
         const {id: userId} = jwt.verify(token, secret);
         const candidate = await User.findById(userId);
-        if ((candidate) && (this.firstPlayer === null)) {
-            this.firstPlayer = userId;
-        } else if ((candidate) && (this.firstPlayer !== null) && (this.secondPlayer === null)) {
-            this.secondPlayer = userId;
-        }
-        if (this.firstPlayer !== null && this.secondPlayer !== null) {
-            await this.createRoom()
-        }
+        const roomId = req.body.roomId;
+        const room = await Room.findById(roomId);
+        console.log("zzzzzzaa",room.firstPlayerId);
         res.sendStatus(200);
     }
 
