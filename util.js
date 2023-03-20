@@ -1,11 +1,10 @@
 export async function post(data, url) {
     return await fetch(url, {
         method: 'POST',
-        accept: 'application/json;odata=verbose',
         body: JSON.stringify(data),
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
-            'Authorization': "Bearer " + localStorage.getItem("token")
+            'Authorization': "Bearer" + localStorage.getItem("token")
         }
     });
 }

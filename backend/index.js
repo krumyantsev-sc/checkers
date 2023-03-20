@@ -23,6 +23,7 @@ app.use("/room", roomRouter);
 app.use(cors({
     origin: ['http://localhost:63342']
 }));
+app.use(express.static(__dirname + '/public'));
 app.set("view engine", "hbs");
 app.set("views", "./views");
 app.get("/test", roleMiddleware(), function(req, res) {
