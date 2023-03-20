@@ -38,9 +38,9 @@ function createRoomDiv(roomInfo) {
 function addButtonsListeners() {
     connectButtons.forEach((btn) => {
         btn.addEventListener("click",  (event) => {
-            console.log("!")
-            post({roomId: getRoomId(event)}, "http://localhost:3001/room/connect").then(() => {
-                // window.location.href = './lobby.html';
+            let roomId = getRoomId(event);
+            post({roomId: roomId}, "http://localhost:3001/room/connect").then(() => {
+                window.location.href = 'http://localhost:3001/room/' + roomId;
             })
         })
     })
