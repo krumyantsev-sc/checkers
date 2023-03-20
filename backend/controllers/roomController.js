@@ -14,7 +14,13 @@ class roomController {
         const candidate = await User.findById(userId);
         const roomId = req.body.roomId;
         const room = await Room.findById(roomId);
-        console.log("zzzzzzaa",room.firstPlayerId);
+        if (room.firstPlayerId === "no player") {
+            room.firstPlayerId = candidate._id;
+            room.save();
+        } else if (room.secondPlayerId === "no player") {
+            room.secondPlayerId = candidate._id;
+            room.save();
+        }
         res.sendStatus(200);
     }
 
@@ -43,7 +49,20 @@ class roomController {
 
     async createLobbyPage(req,res) {
         let lobbyId = req.params.lobbyId;
+        const room = await Room.findById(lobbyId);
+        let firstPlayerName = "no player";
+        let secondPlayerName = "no player";
+        if (room.firstPlayerId !== "no player") {
+            let firstPlayer = await User.findById(room.firstPlayerId);
+             firstPlayerName = firstPlayer.username;
+        }
+        if (room.secondPlayerId !== "no player") {
+            let secondPlayer = await User.findById(room.secondPlayerId);
+            secondPlayerName = secondPlayer.username;
+        }
         res.render('main.hbs', {
+            firstPlayerName: firstPlayerName,
+            secondPlayerName: secondPlayerName,
             roomId: lobbyId
         })
     }

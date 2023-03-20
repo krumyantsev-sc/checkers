@@ -39,14 +39,14 @@ function addButtonsListeners() {
     connectButtons.forEach((btn) => {
         btn.addEventListener("click",  (event) => {
             console.log("!")
-            post({roomId: getRoomId(event)}, "http://localhost:3001/room/connectToRoom").then(() => {
+            post({roomId: getRoomId(event)}, "http://localhost:3001/room/connect").then(() => {
                 // window.location.href = './lobby.html';
             })
         })
     })
 }
 function getRoomId(event) {
-    let buttonNumber = connectButtons.indexOf(event);
+    let buttonNumber = connectButtons.indexOf(event.target);
     return roomIdArr[buttonNumber];
 }
 console.log(getLobbyList());

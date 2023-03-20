@@ -9,7 +9,7 @@ router.use(cors({
     origin: ['http://localhost:63342']
 }));
 
-router.post("/connect",roleMiddleware(["USER"]), controller.connect);
+router.post("/connect",roleMiddleware(["ADMIN", "USER"]), controller.connect);
 router.get("/createRoom", roleMiddleware(["ADMIN", "USER"]), controller.createRoom);
 router.get("/getRoomList", roleMiddleware(["ADMIN", "USER"]), controller.getRoomList);
 router.get("/:lobbyId", controller.createLobbyPage);
