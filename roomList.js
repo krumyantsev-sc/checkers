@@ -37,16 +37,20 @@ function createRoomDiv(roomInfo) {
 
 function addButtonsListeners() {
     connectButtons.forEach((btn) => {
-        btn.addEventListener("click",  (event) => {
+        btn.addEventListener("click", async (event) => {
             console.log("!")
-            post({roomId: getRoomId(event)}, "http://localhost:3001/room/connectToRoom").then(() => {
-                // window.location.href = './lobby.html';
-            })
+            const roomId = getRoomId(event);
+            // console.log("roomId",roomId);
+            // post({roomId: roomId}, "http://localhost:3001/room/connect").then(() => {
+            //     window.location.href = './lobby.html';
+            // })
+            get("http://localhost:3001/room/6411b026fce185b6ab32b11e").then((res) => console.log(res));
         })
     })
 }
 function getRoomId(event) {
-    let buttonNumber = connectButtons.indexOf(event);
+    console.log(connectButtons);
+    let buttonNumber = connectButtons.indexOf(event.target);
     return roomIdArr[buttonNumber];
 }
 console.log(getLobbyList());

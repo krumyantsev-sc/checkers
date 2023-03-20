@@ -23,6 +23,8 @@ app.use("/room", roomRouter);
 app.use(cors({
     origin: ['http://localhost:63342']
 }));
+app.set("view engine", "hbs");
+app.set("views", "./views");
 app.get("/test", roleMiddleware(), function(req, res) {
     res.sendFile(__dirname + "/index.html");
 });
@@ -32,7 +34,6 @@ app.post("/checkers/getPossiblePositions", function(request, response){
 });
 
 app.post("/checkers/updateBoard", function(req,res) {
-    console.log(req.body);
     checkersController.moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
     io.to(secondPlayer).emit('checkerMoved', req.body);
     res.sendStatus(200);

@@ -10,7 +10,6 @@ class roomController {
 
     async connect(req,res) {
         const token = req.headers.authorization.split(' ')[1]
-        console.log(token);
         const {id: userId} = jwt.verify(token, secret);
         const candidate = await User.findById(userId);
         const roomId = req.body.roomId;
@@ -33,8 +32,21 @@ class roomController {
             console.log(e);
         }
     }
+    async test(req,res) {
+        res.sendStatus(200);
+    }
 
+    async getRoomInfo(id) {
+        const room = await Room.findById(id);
+        return {firstPlayerId: room.firstPlayerId, secondPlayerId: room.secondPlayerId};
+    }
 
+    async createLobbyPage(req,res) {
+        let lobbyId = req.params.lobbyId;
+        res.render('main.hbs', {
+            roomId: lobbyId
+        })
+    }
 }
 
 module.exports = new roomController();

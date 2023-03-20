@@ -20,3 +20,9 @@ submitBtn.addEventListener('click', (event) => {
         })
 
 });
+
+async function test() {
+    await post({roomId: "123123"}, "http://localhost:3001/auth/test");
+}
+
+test();

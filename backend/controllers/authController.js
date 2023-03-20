@@ -77,6 +77,9 @@ class authController {
             console.log(e);
         }
     }
+    async test(req, res) {
+        res.sendStatus(200);
+    }
 }
 
 module.exports = new authController();
