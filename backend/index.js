@@ -2,19 +2,23 @@ const checkersController = require("./controllers/checkersController.js");
 const board = require("./services/BoardService.js")
 const express = require("express");
 const app = express();
-const http = require("http");
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server, {
-    cors: ['http://localhost:63342'],
-    serveClient: false
-});
+const server = require('http').Server(app);
+const SocketService = require("./io")
+app.set("socketService", new SocketService(server));
+// const http = require("http");
+// const server = http.createServer(app);
+// const { Server } = require("socket.io");
+// const io = new Server(server, {
+//     cors: ['http://localhost:63342'],
+//     serveClient: false
+// });
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRouter = require('./authRouter.js')
 const roomRouter = require('./roomRouter.js')
 const {authenticateToken} = require('./jwtVerification.js')
 const roleMiddleware = require('./middleware/roleMiddleware.js')
+const io = require('./io');
 let secondPlayer;
 
 app.use(express.json());
@@ -36,7 +40,7 @@ app.post("/checkers/getPossiblePositions", function(request, response){
 
 app.post("/checkers/updateBoard", function(req,res) {
     checkersController.moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
-    io.to(secondPlayer).emit('checkerMoved', req.body);
+   // io.to(secondPlayer).emit('checkerMoved', req.body);
     res.sendStatus(200);
 });
 
@@ -48,18 +52,19 @@ app.post("/checkers/getBeatPositions", function(req,res) {
     res.send(checkersController.getBeatPos(req.body));
 });
 let players = 0;
-io.on("connection", function(socket) {
-    console.log("user connected");
-    const token = socket.handshake.query.auth;
-    const playerId = authenticateToken(token);
-    if (playerId === null) {
-        socket.disconnect();
-    }
-    socket.join(playerId);
-    socket.on("disconnect", function() {
-        console.log("user disconnected");
-    });
-});
+
+// io.on("connection", function(socket) {
+//     console.log("user connected");
+//     const token = socket.handshake.query.auth;
+//     const playerId = authenticateToken(token);
+//     if (playerId === null) {
+//         socket.disconnect();
+//     }
+//     socket.join(playerId);
+//     socket.on("disconnect", function() {
+//         console.log("user disconnected");
+//     });
+// });
 
 const start = async () => {
     try {
@@ -74,4 +79,4 @@ const start = async () => {
 
 start();
 
-module.exports = {io};
+module.exports = app
