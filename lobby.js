@@ -8,6 +8,11 @@ let socket = io.connect('http://localhost:3001',{query: {auth:localStorage.getIt
 let statuses = document.querySelectorAll(".status");
 let userNameSpan = document.querySelectorAll(".name");
 
+socket.on('playersReady', function (roomInfo) {
+    // Выводим сообщение подключение
+    console.log("Gotovo");
+    // Отслеживание сообщения от сервера со заголовком 'hello'
+});
 async function getUserName() {
     return await get("http://localhost:3001/auth/getUserName");
 }

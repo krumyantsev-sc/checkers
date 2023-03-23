@@ -4,7 +4,6 @@ const express = require("express");
 const app = express();
 const server = require('http').Server(app);
 const SocketService = require("./io")
-app.set("socketService", new SocketService(server));
 // const http = require("http");
 // const server = http.createServer(app);
 // const { Server } = require("socket.io");
@@ -22,6 +21,7 @@ const io = require('./io');
 let secondPlayer;
 
 app.use(express.json());
+app.set("socketService", new SocketService(server));
 app.use("/auth", authRouter);
 app.use("/room", roomRouter);
 app.use(cors({

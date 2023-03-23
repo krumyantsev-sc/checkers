@@ -2,8 +2,7 @@ const User = require("../models/User")
 const Room = require("../models/Room")
 const jwt = require("jsonwebtoken");
 const {secret} = require("../config/config");
-const {authenticateToken} = require("../jwtVerification");
-const app = require("../index")
+const {io} = require("../index")
 
 class roomController {
     firstPlayer = null;
@@ -60,17 +59,14 @@ class roomController {
         if (room.secondPlayerId !== "no player") {
             let secondPlayer = await User.findById(room.secondPlayerId);
             secondPlayerName = secondPlayer.username;
-            app.get("socketService").emiter('message', req.body);
         }
+        req.app.get("socketService").emiter('playersReady', {"test":"test"});
         res.render('main.hbs', {
             firstPlayerName: firstPlayerName,
             secondPlayerName: secondPlayerName,
             roomId: lobbyId
         })
-        if (room.firstPlayerId !== "no player" && room.secondPlayerId !== "no player") {
-            req.app.get("socketService").emiter('playersReady', room.firstPlayerId, {roomId: lobbyId});
-            req.app.get("socketService").emiter('playersReady', room.secondPlayerId, {roomId: lobbyId});
-        }
+
     }
 }
 
