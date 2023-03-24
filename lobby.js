@@ -18,8 +18,8 @@ socket.on('updateLobbyData', function (roomInfo) {
 });
 
 socket.on('makeBtnActive', function () {
+    startBtn.style.cursor = "pointer";
     startBtn.addEventListener("click", () => {
-        startBtn.style.cursor = "pointer";
         socket.removeAllListeners();
         window.location.href = './index.html';
     })

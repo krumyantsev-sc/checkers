@@ -60,13 +60,15 @@ class roomController {
         if (currentRoom.secondPlayerId !== "no player") {
             secondPlayer = await User.findById(currentRoom.secondPlayerId);
             secondPlayer = secondPlayer.username;
-            console.log(currentRoom.firstPlayerId);
-            req.app.get("socketService").emiter('updateLobbyData',currentRoom.firstPlayerId,{roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
         }
         res.send({roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
-        if (currentRoom.secondPlayerId !== "no player") {
-            req.app.get("socketService").emiter('makeBtnActive',currentRoom.firstPlayerId,{roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
-            req.app.get("socketService").emiter('makeBtnActive',currentRoom.secondPlayerId,{roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
+        if (currentRoom.firstPlayerId !== "no player" && currentRoom.secondPlayerId !== "no player") {
+            req.app.get("socketService").emiter('updateLobbyData',currentRoom.firstPlayerId,
+                {roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
+            req.app.get("socketService").emiter('makeBtnActive',currentRoom.firstPlayerId,
+                {roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
+            req.app.get("socketService").emiter('makeBtnActive',currentRoom.secondPlayerId,
+                {roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
         }
     }
 }
