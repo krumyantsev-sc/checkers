@@ -7,24 +7,44 @@ if (!localStorage.getItem('token')) {
 let socket = io.connect('http://localhost:3001',{query: {auth:localStorage.getItem('token')}});
 let statuses = document.querySelectorAll(".status");
 let userNameSpan = document.querySelectorAll(".name");
+const roomIdSpan = document.querySelector(".room__id");
+const startBtn = document.querySelector(".start-game__button");
 
-socket.on('playersReady', function (roomInfo) {
-    // Выводим сообщение подключение
-    console.log("Gotovo");
-    // Отслеживание сообщения от сервера со заголовком 'hello'
+socket.on('updateLobbyData', function (roomInfo) {
+    console.log(roomInfo);
+    userNameSpan[0].textContent = roomInfo.firstPlayer;
+    userNameSpan[1].textContent = roomInfo.secondPlayer;
+    roomIdSpan.textContent = roomInfo.roomId;
+});
+
+socket.on('makeBtnActive', function () {
+    startBtn.addEventListener("click", () => {
+        startBtn.style.cursor = "pointer";
+        socket.removeAllListeners();
+        window.location.href = './index.html';
+    })
 });
 async function getUserName() {
-    return await get("http://localhost:3001/auth/getUserName");
+    return await get("http://localhost:3001/room/getLobbyInfo");
 }
 
+
 const changeNameSpan = () => {
-    getUserName().then((result) => userNameSpan[0].textContent = result.username);
+    getUserName().then((result) => {
+        userNameSpan[0].textContent = result.firstPlayer;
+        userNameSpan[1].textContent = result.secondPlayer;
+        roomIdSpan.textContent = result.roomId;
+    });
 }
 changeNameSpan();
 socket.on('connect', function () {
     // Выводим сообщение подключение
     console.log("Подключение прошло успешно");
     // Отслеживание сообщения от сервера со заголовком 'hello'
+
+});
+socket.on('disconnect', function () {
+    console.log("Отключено");
 
 });
 socket.on('getNumOfConnections', function (data) {

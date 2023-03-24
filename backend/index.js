@@ -15,10 +15,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authRouter = require('./authRouter.js')
 const roomRouter = require('./roomRouter.js')
-const {authenticateToken} = require('./jwtVerification.js')
 const roleMiddleware = require('./middleware/roleMiddleware.js')
-const io = require('./io');
-let secondPlayer;
+
 
 app.use(express.json());
 app.set("socketService", new SocketService(server));
@@ -28,8 +26,6 @@ app.use(cors({
     origin: ['http://localhost:63342']
 }));
 app.use(express.static(__dirname + '/public'));
-app.set("view engine", "hbs");
-app.set("views", "./views");
 app.get("/test", roleMiddleware(), function(req, res) {
     res.sendFile(__dirname + "/index.html");
 });

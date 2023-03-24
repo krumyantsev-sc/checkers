@@ -12,6 +12,6 @@ router.use(cors({
 router.post("/connect",roleMiddleware(["ADMIN", "USER"]), controller.connect);
 router.get("/createRoom", roleMiddleware(["ADMIN", "USER"]), controller.createRoom);
 router.get("/getRoomList", roleMiddleware(["ADMIN", "USER"]), controller.getRoomList);
-router.get("/:lobbyId", controller.createLobbyPage);
+router.get("/getLobbyInfo",roleMiddleware(["ADMIN", "USER"]), controller.getLobbyInfo);
 
 module.exports = router

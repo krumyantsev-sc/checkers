@@ -10,8 +10,8 @@ class SocketService {
         this.io.on('connection', socket => {
             console.log('user connected')
             const token = socket.handshake.query.auth;
-            console.log(token);
             const playerId = authenticateToken(token);
+            socket.join(playerId);
             if (playerId === null) {
                 socket.disconnect();
             }
@@ -22,8 +22,8 @@ class SocketService {
         });
     }
 
-    emiter(event, body) {
-            this.io.emit(event, body);
+    emiter(event, target, body) {
+            this.io.to(target).emit(event, body);
     }
 }
 

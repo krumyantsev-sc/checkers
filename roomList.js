@@ -40,7 +40,7 @@ function addButtonsListeners() {
         btn.addEventListener("click",  (event) => {
             let roomId = getRoomId(event);
             post({roomId: roomId}, "http://localhost:3001/room/connect").then(() => {
-                window.location.href = 'http://localhost:3001/room/' + roomId;
+                window.location.href = './lobby.html';
             })
         })
     })

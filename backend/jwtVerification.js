@@ -4,8 +4,8 @@ const User = require("./models/User");
 
 function authenticateToken(token) {
     try {
-        const payload = jwt.verify(token,secret);
-        return payload.id;
+        const {id: userId} = jwt.verify(token, secret)
+        return userId;
     } catch (e) {
         return null;
     }

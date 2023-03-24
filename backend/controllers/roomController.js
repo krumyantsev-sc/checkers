@@ -47,26 +47,27 @@ class roomController {
         return {firstPlayerId: room.firstPlayerId, secondPlayerId: room.secondPlayerId};
     }
 
-    async createLobbyPage(req,res) {
-        let lobbyId = req.params.lobbyId;
-        const room = await Room.findById(lobbyId);
-        let firstPlayerName = "no player";
-        let secondPlayerName = "no player";
-        if (room.firstPlayerId !== "no player") {
-            let firstPlayer = await User.findById(room.firstPlayerId);
-             firstPlayerName = firstPlayer.username;
+    async getLobbyInfo(req,res) {
+        const token = req.headers.authorization.split(' ')[1]
+        const {id: userId} = jwt.verify(token, secret);
+        let currentRoom = await Room.findOne({$or:[{'firstPlayerId': userId}, {'secondPlayerId': userId}]});
+        let firstPlayer = "no player";
+        let secondPlayer = "no player";
+        if (currentRoom.firstPlayerId !== "no player") {
+            firstPlayer = await User.findById(currentRoom.firstPlayerId);
+            firstPlayer = firstPlayer.username;
         }
-        if (room.secondPlayerId !== "no player") {
-            let secondPlayer = await User.findById(room.secondPlayerId);
-            secondPlayerName = secondPlayer.username;
+        if (currentRoom.secondPlayerId !== "no player") {
+            secondPlayer = await User.findById(currentRoom.secondPlayerId);
+            secondPlayer = secondPlayer.username;
+            console.log(currentRoom.firstPlayerId);
+            req.app.get("socketService").emiter('updateLobbyData',currentRoom.firstPlayerId,{roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
         }
-        req.app.get("socketService").emiter('playersReady', {"test":"test"});
-        res.render('main.hbs', {
-            firstPlayerName: firstPlayerName,
-            secondPlayerName: secondPlayerName,
-            roomId: lobbyId
-        })
-
+        res.send({roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
+        if (currentRoom.secondPlayerId !== "no player") {
+            req.app.get("socketService").emiter('makeBtnActive',currentRoom.firstPlayerId,{roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
+            req.app.get("socketService").emiter('makeBtnActive',currentRoom.secondPlayerId,{roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
+        }
     }
 }
 
