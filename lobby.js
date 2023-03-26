@@ -24,13 +24,14 @@ socket.on('makeBtnActive', function () {
         window.location.href = './index.html';
     })
 });
-async function getUserName() {
+async function getLobbyInfo() {
     return await get("http://localhost:3001/room/getLobbyInfo");
 }
 
 
 const changeNameSpan = () => {
-    getUserName().then((result) => {
+    getLobbyInfo().then((result) => {
+        console.log(result);
         userNameSpan[0].textContent = result.firstPlayer;
         userNameSpan[1].textContent = result.secondPlayer;
         roomIdSpan.textContent = result.roomId;
@@ -47,21 +48,3 @@ socket.on('disconnect', function () {
     console.log("Отключено");
 
 });
-socket.on('getNumOfConnections', function (data) {
-    // Выводим сообщение от сервера
-    console.log(data);
-    changeConnectionSpan(data);
-});
-
-function changeConnectionSpan(numOfConnections) {
-    if (numOfConnections === 1) {
-        statuses[0].textContent = "Connected";
-        statuses[0].style.color = "green";
-    }
-    if (numOfConnections === 2) {
-        statuses[1].textContent = "Connected";
-        statuses[0].textContent = "Connected";
-        statuses[0].style.color = "green";
-        statuses[1].style.color = "green";
-    }
-}

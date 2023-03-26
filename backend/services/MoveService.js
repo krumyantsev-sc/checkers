@@ -1,10 +1,9 @@
-let boardService = require("../services/BoardService.js")
+//let boardService = require("../services/BoardService.js")
 const {getBeatPositions} = require("../services/BeatService");
 
 
 
-function getSimpleMoveVariants(i,j) {
-   // console.log("????",i,j);
+function getSimpleMoveVariants(boardService,i,j) {
     let possibleWays = [];
     if (boardService.board[i][j].color === "White" || boardService.board[i][j].isLady) {
         if (boardService.isFreeCell(i+1,j-1)) {
@@ -25,16 +24,15 @@ function getSimpleMoveVariants(i,j) {
     return possibleWays;
 }
 
-function checkMoveVariants(i,j) {
-    //console.log("############",i,j)
-    let possibleWays = getBeatPositions(i,j);
+function checkMoveVariants(gameBoard,i,j) {
+    let possibleWays = getBeatPositions(gameBoard,i,j);
     if (possibleWays.length === 0) {
-        possibleWays = getSimpleMoveVariants(i,j);
+        possibleWays = getSimpleMoveVariants(gameBoard,i,j);
     }
     return possibleWays;
 }
 
-function moveChecker(checker,to) {
+function moveChecker(boardService,checker,to) {
     checker.move(boardService,to);
 }
 

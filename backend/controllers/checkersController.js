@@ -3,20 +3,27 @@ let boardService = require("../services/BoardService")
 const {moveChecker} = require("../services/MoveService");
 const {beat, getBeatPositions} = require("../services/BeatService.js")
 
-const getPositionsForHighlighting = (i,j) => {
-    //console.log(boardService.board);
-    return moveService.checkMoveVariants(i,j);
-}
+class checkersController {
+    boardService;
+    constructor() {
+        this.boardService = new boardService();
+    }
+    getPositionsForHighlighting = (i, j) => {
+        return moveService.checkMoveVariants(this.boardService, i, j);
+    }
 
-const moveCheckerOnBoard = (fromI,fromJ,toI,toJ) => {
-   // console.log("&&&&",fromI,fromJ,toI,toJ);
-    moveChecker(boardService.board[fromI][fromJ], {i:toI,j:toJ});
-    boardService.board[toI][toJ].makeLady();
-    return beat({i:fromI,j:fromJ},{i:toI,j:toJ});
-}
+    moveCheckerOnBoard = (fromI, fromJ, toI, toJ) => {
+        moveChecker(this.boardService, this.boardService.board[fromI][fromJ], {i: toI, j: toJ});
+        this.boardService.board[toI][toJ].makeLady();
+        return beat(this.boardService,{i: fromI, j: fromJ}, {i: toI, j: toJ});
+    }
 
-const getBeatPos = (position) => {
-    return getBeatPositions(position.i,position.j);
-}
+    getBeatPos = (position) => {
+        return getBeatPositions(this.boardService, position.i, position.j);
+    }
 
-module.exports = {getPositionsForHighlighting, moveCheckerOnBoard, getBeatPos};
+    getBoard = () => {
+        return this.boardService.getBoard();
+    }
+}
+module.exports = checkersController;

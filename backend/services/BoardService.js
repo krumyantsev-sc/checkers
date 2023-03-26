@@ -12,6 +12,9 @@ class BoardService {
         [20, null, 21, null, 22, null, 23, null]
     ];
 
+    constructor() {
+        this.init();
+    }
     getBoard() {
         return this.board;
     }
@@ -42,6 +45,6 @@ class BoardService {
     }
 }
 
-let bs = new BoardService();
-bs.init();
-module.exports = bs;
+//let bs = new BoardService();
+//bs.init();
+module.exports = BoardService;

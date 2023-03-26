@@ -3,7 +3,8 @@ const controller = require("./controllers/authController.js")
 const router = new Router();
 const cors = require("cors");
 const roleMiddleware = require("./middleware/roleMiddleware");
-const checkersController = require("./controllers/checkersController.js");
+const CheckersController = require("./controllers/checkersController.js");
+const checkersController = new CheckersController();
 const board = require("./services/BoardService.js");
 router.use(cors({
     origin: ['http://localhost:63342']
@@ -21,7 +22,7 @@ router.post("/updateBoard", function(req,res) {
 });
 
 router.get("/getBoard", function(req,res) {
-    res.send(board.getBoard());
+    res.send(checkersController.getBoard());
 });
 
 router.post("/getBeatPositions", function(req,res) {
