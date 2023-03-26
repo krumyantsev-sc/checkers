@@ -4,29 +4,42 @@ const router = new Router();
 const cors = require("cors");
 const roleMiddleware = require("./middleware/roleMiddleware");
 const CheckersController = require("./controllers/checkersController.js");
-const checkersController = new CheckersController();
 const board = require("./services/BoardService.js");
+const _ = require("lodash");
 router.use(cors({
     origin: ['http://localhost:63342']
 }));
 
-router.post("/getPossiblePositions", function(request, response){
+let activeGames = [];
+
+function findControllerByRoomId(activeGames, roomId) {
+    return activeGames[_.findIndex(activeGames, function(o) { return o.roomId === roomId; })];
+}
+
+router.post("/:roomId/getPossiblePositions", function(request, response){
     // отправляем ответ
-    response.send(checkersController.getPositionsForHighlighting(+request.body.i,+request.body.j));
+    response.send(findControllerByRoomId(activeGames,request.params.roomId).getPositionsForHighlighting(+request.body.i,+request.body.j));
 });
 
-router.post("/updateBoard", function(req,res) {
-    checkersController.moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
+router.post("/:roomId/updateBoard", function(req,res) {
+    findControllerByRoomId(activeGames,req.params.roomId).moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
     // io.to(secondPlayer).emit('checkerMoved', req.body);
     res.sendStatus(200);
 });
 
-router.get("/getBoard", function(req,res) {
-    res.send(checkersController.getBoard());
+router.get("/:roomId/getBoard", function(req,res) {
+    res.send(findControllerByRoomId(activeGames,req.params.roomId).getBoard());
 });
 
-router.post("/getBeatPositions", function(req,res) {
-    res.send(checkersController.getBeatPos(req.body));
+router.post("/:roomId/getBeatPositions", function(req,res) {
+    res.send(findControllerByRoomId(activeGames,req.params.roomId).getBeatPos(req.body));
+});
+
+router.get("/:roomId/initialize", async function(req,res) {
+    let checkersController = new CheckersController();
+    await checkersController.initializeGame(req.params.roomId);
+    activeGames.push(checkersController);
+    res.status(200).json({message:"Successfully"});
 });
 
 module.exports = router

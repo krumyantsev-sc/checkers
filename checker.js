@@ -23,7 +23,7 @@ export default class checker {
         let pos = [];
         if (Math.abs(difference) > 1) {
            removeChecker(from,to);
-           let response = await post({i:to.i,j:to.j},"http://localhost:3001/checkers/getBeatPositions");
+           let response = await post({i:to.i,j:to.j},`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getBeatPositions`);
            let beatPos = await response.json();
            if (beatPos.length > 0) {
                pos.push(beatPos[0]);

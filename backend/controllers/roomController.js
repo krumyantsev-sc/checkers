@@ -38,13 +38,11 @@ class roomController {
             console.log(e);
         }
     }
-    async test(req,res) {
-        res.sendStatus(200);
-    }
-
-    async getRoomInfo(id) {
-        const room = await Room.findById(id);
-        return {firstPlayerId: room.firstPlayerId, secondPlayerId: room.secondPlayerId};
+    async getRoomId(req,res) {
+        const token = req.headers.authorization.split(' ')[1]
+        const {id: userId} = jwt.verify(token, secret);
+        let currentRoom = await Room.findOne({$or:[{'firstPlayerId': userId}, {'secondPlayerId': userId}]});
+        res.send({roomId:currentRoom._id});
     }
 
     async getLobbyInfo(req,res) {

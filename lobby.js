@@ -10,6 +10,11 @@ let userNameSpan = document.querySelectorAll(".name");
 const roomIdSpan = document.querySelector(".room__id");
 const startBtn = document.querySelector(".start-game__button");
 
+get("http://localhost:3001/room/getRoomId").then((data) => {
+    localStorage.setItem("roomId", data.roomId);
+    console.log(data)
+});
+
 socket.on('updateLobbyData', function (roomInfo) {
     console.log(roomInfo);
     userNameSpan[0].textContent = roomInfo.firstPlayer;
@@ -20,8 +25,10 @@ socket.on('updateLobbyData', function (roomInfo) {
 socket.on('makeBtnActive', function () {
     startBtn.style.cursor = "pointer";
     startBtn.addEventListener("click", () => {
-        socket.removeAllListeners();
-        window.location.href = './index.html';
+        get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/initialize`).then(() => {
+            socket.removeAllListeners();
+            window.location.href = './index.html';
+        });
     })
 });
 async function getLobbyInfo() {

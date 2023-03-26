@@ -8,7 +8,7 @@ export default class Board {
 
 
     async getBoardFromServer() {
-       let res = get("http://localhost:3001/checkers/getBoard");
+       let res = get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getBoard`);
         let serverCheckers = await res;
         this.generateCheckers(serverCheckers)
     }

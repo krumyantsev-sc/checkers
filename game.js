@@ -2,7 +2,7 @@ import Board from './board.js';
 import checker from './checker.js';
 import Player from './player.js';
 import Bot from './bot.js';
-import {post} from './util.js';
+import {get, post} from './util.js';
 let socket = io('http://localhost:3001');
 
 let currentChecker;
@@ -67,7 +67,7 @@ export function checkMoveVariants(i,j) {
         i: i,
         j: j
     };
-    post(position,'http://localhost:3001/checkers/getPossiblePositions')
+    post(position,`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getPossiblePositions`)
         .then(response => response.json())
         .then(json => {
             if (json.length > 0) {
@@ -186,7 +186,7 @@ const moveChecker = async (event) => {
         fromJ: currentChecker.j,
         toI: newIndex.i,
         toJ: newIndex.j
-    }, 'http://localhost:3001/checkers/updateBoard')
+    }, `http://localhost:3001/checkers/${localStorage.getItem("roomId")}/updateBoard`)
         .then();
     let pos = await checker.beat(currentChecker, newIndex);
     if (pos.length > 0) {
