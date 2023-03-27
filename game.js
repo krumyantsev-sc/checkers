@@ -38,7 +38,6 @@ export async function startMove() {
 }
 
 async function giveListeners() {
-    console.log("aeeee");
     let cnt;
     await get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getCounter`).then((res) => {cnt = res.counterValue
     });
