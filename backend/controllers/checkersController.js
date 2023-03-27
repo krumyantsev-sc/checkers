@@ -4,12 +4,14 @@ const {moveChecker} = require("../services/MoveService");
 const {beat, getBeatPositions} = require("../services/BeatService.js")
 const User = require("../models/User")
 const Room = require("../models/Room")
+const Player = require("../entity/player")
 
 class checkersController {
+    counter = 1;
     roomId;
     boardService;
-    player1;
-    player2;
+    player1 = new Player("White");
+    player2 = new Player("Black");
     constructor() {
         this.boardService = new boardService();
     }
@@ -17,8 +19,8 @@ class checkersController {
     async initializeGame(roomId) {
         this.roomId = roomId;
         const room = await Room.findById(this.roomId);
-        this.player1 = room.firstPlayerId;
-        this.player2 = room.secondPlayerId;
+        this.player1.id = room.firstPlayerId;
+        this.player2.id = room.secondPlayerId;
     }
     getPositionsForHighlighting = (i, j) => {
         return moveService.checkMoveVariants(this.boardService, i, j);
@@ -27,7 +29,15 @@ class checkersController {
     moveCheckerOnBoard = (fromI, fromJ, toI, toJ) => {
         moveChecker(this.boardService, this.boardService.board[fromI][fromJ], {i: toI, j: toJ});
         this.boardService.board[toI][toJ].makeLady();
-        return beat(this.boardService,{i: fromI, j: fromJ}, {i: toI, j: toJ});
+        let pos = beat(this.boardService,{i: fromI, j: fromJ}, {i: toI, j: toJ});
+        if (pos.length === 0) {
+            this.counter++;
+        }
+        return pos;
+    }
+
+    getCounter = () => {
+        return this.counter;
     }
 
     getBeatPos = (position) => {

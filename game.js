@@ -4,7 +4,6 @@ import Player from './player.js';
 import Bot from './bot.js';
 import {get, post} from './util.js';
 let socket = io('http://localhost:3001');
-
 let currentChecker;
 export let counter = 1;
 export let gameBoard = new Board;
@@ -38,9 +37,13 @@ export async function startMove() {
     giveListeners();
 }
 
-function giveListeners() {
+async function giveListeners() {
     console.log("aeeee");
-    if (counter % 2 !== 0) {
+    let cnt;
+    await get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getCounter`).then((res) => {cnt = res.counterValue
+    });
+    console.log("counter" + cnt);
+    if (cnt % 2 !== 0) {
         for (let item of gameBoard.whiteCheckers) {
             item.addEventListener("click", checkPossibilities);
         }
