@@ -31,15 +31,12 @@ export function changeTeam() {
 }
 
 export async function startMove() {
-    //await gameBoard.build();
-    //gameBoard.removeCheckers();
     await gameBoard.init();
     await get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getCounter`).then((res) => (console.log(res)));
     giveListeners();
 }
 
 socket.on("giveListeners", (data) => {
-    console.log("rabotaet")
     if (data.color === "White") {
         for (let item of gameBoard.whiteCheckers) {
             item.addEventListener("click", checkPossibilities);
@@ -50,24 +47,6 @@ socket.on("giveListeners", (data) => {
         }
     }
 })
-
-
-async function giveListeners() {
-    // let cnt;
-    // await get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getCounter`).then((res) => {cnt = res.counterValue
-    // });
-    // console.log("counter" + cnt);
-    // if (cnt % 2 !== 0) {
-    //     for (let item of gameBoard.whiteCheckers) {
-    //         item.addEventListener("click", checkPossibilities);
-    //     }
-    // } else {
-    //     for (let item of gameBoard.blackCheckers) {
-    //         item.addEventListener("click", checkPossibilities);
-    //     }
-    //   // setTimeout(() => {bot.moveClosestChecker()}, 1000);
-    // }
-}
 
 function removeListeners(event) {
         for (let item of gameBoard.whiteCheckers) {
@@ -95,7 +74,6 @@ export function checkMoveVariants(i,j) {
 }
 
 function checkPossibilities(event) {
-    console.log("kkkk")
     clearHighlightedCells();
     let checker = event.target.id;
     let checkerId = gameBoard.getBoardIndex(checker);
@@ -142,32 +120,20 @@ export function refreshScore() {
 export function removeChecker(from, to) {
     if (to.i - from.i > 0) {
         if (to.j < from.j) {
-            //incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j-1].color);
-            //gameBoard.board[currentChecker.i+1][currentChecker.j-1] = null;
             gameBoard.allCheckers[currentChecker.i+1][currentChecker.j-1].removeChild(gameBoard.allCheckers[currentChecker.i+1][currentChecker.j-1].firstChild);
         } else {
-            //incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j+1].color);
-            //gameBoard.board[currentChecker.i+1][currentChecker.j+1] = null;
             gameBoard.allCheckers[currentChecker.i+1][currentChecker.j+1].removeChild(gameBoard.allCheckers[currentChecker.i+1][currentChecker.j+1].firstChild);
         }
     } else {
         if (to.j < from.j) {
-            //incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j-1].color);
-            //gameBoard.board[currentChecker.i-1][currentChecker.j-1] = null;
             gameBoard.allCheckers[currentChecker.i-1][currentChecker.j-1].removeChild(gameBoard.allCheckers[currentChecker.i-1][currentChecker.j-1].firstChild);
         } else {
-            //incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j+1].color);
-            //gameBoard.board[currentChecker.i-1][currentChecker.j+1] = null;
             gameBoard.allCheckers[currentChecker.i-1][currentChecker.j+1].removeChild(gameBoard.allCheckers[currentChecker.i-1][currentChecker.j+1].firstChild);
         }
     }
 }
 
 export function moveCheckerDiv(initialCell, targetCellDiv) {
-    console.log("zzk");
-    console.log(gameBoard.allCheckers[initialCell.i][initialCell.j]);
-    console.log(targetCellDiv);
-
     targetCellDiv.appendChild(gameBoard.allCheckers[initialCell.i][initialCell.j].firstChild);
 }
 
@@ -219,7 +185,12 @@ const moveChecker = async (event) => {
 }
 
 socket.on('checkerMoved', function(data) {
-    moveCheckerDiv({i:data.fromI,j:data.fromJ}, gameBoard.allCheckers[data.toI][data.toJ]);
+    if (gameBoard.allCheckers[data.fromI][data.fromJ].firstChild)
+        moveCheckerDiv({i:data.fromI,j:data.fromJ}, gameBoard.allCheckers[data.toI][data.toJ]);
+})
+
+socket.on('removeChecker', function(data) {
+    gameBoard.allCheckers[data.i][data.j].removeChild(gameBoard.allCheckers[data.i][data.j].firstChild);
 })
 startMove().then();
 

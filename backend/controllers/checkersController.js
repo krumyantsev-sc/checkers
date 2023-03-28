@@ -28,14 +28,25 @@ class checkersController {
         return moveService.checkMoveVariants(this.boardService, i, j);
     }
 
-    moveCheckerOnBoard = (fromI, fromJ, toI, toJ) => {
+    moveCheckerOnBoard = (req, fromI, fromJ, toI, toJ) => {
         moveChecker(this.boardService, this.boardService.board[fromI][fromJ], {i: toI, j: toJ});
+        req.app.get("socketService").emiter('checkerMoved',this.player1.id, req.body);
+        req.app.get("socketService").emiter('checkerMoved',this.player2.id, req.body);
         this.boardService.board[toI][toJ].makeLady();
-        let pos = beat(this.boardService,{i: fromI, j: fromJ}, {i: toI, j: toJ});
-        if (pos.length === 0) {
-            this.counter++;
+        let moveResult = beat(this.boardService,{i: fromI, j: fromJ}, {i: toI, j: toJ});
+        let nextBeatPositions = moveResult[0];
+        let removedChecker = moveResult[1];
+        if (removedChecker !== undefined) {
+            req.app.get("socketService").emiter("removeChecker",this.player1.id,removedChecker);
+            req.app.get("socketService").emiter("removeChecker",this.player2.id,removedChecker);
         }
-        return pos;
+        if (nextBeatPositions.length === 0) {
+            this.counter++;
+            (this.counter % 2 !== 0) ?
+                req.app.get("socketService").emiter("giveListeners",this.player1.id,{color: this.player1.color}) :
+                req.app.get("socketService").emiter("giveListeners",this.player2.id,{color: this.player2.color});
+        }
+        return nextBeatPositions;
     }
 
     getCounter = (req) => {

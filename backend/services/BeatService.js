@@ -33,32 +33,39 @@ function getBeatPositions(gameBoard,i,j) {
 function beat(gameBoard, from, to) {
     let difference = to.i - from.i;
     let pos = [];
+    let removedChecker;
     if (Math.abs(difference) > 1) {
-        removeChecker(gameBoard,from,to);
+        removedChecker = removeChecker(gameBoard,from,to);
         pos = getBeatPositions(gameBoard,to.i, to.j);
     }
-    return pos;
+    return [pos,removedChecker];
 }
 
 function removeChecker(gameBoard, from, to) {
     let currentChecker = {i:from.i,j:from.j};
+    let removedChecker;
     if (to.i - from.i > 0) {
         if (to.j < from.j) {
            // incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j-1].color);
             gameBoard.board[currentChecker.i+1][currentChecker.j-1] = null;
+            removedChecker = {i:currentChecker.i+1,j:currentChecker.j-1};
         } else {
            // incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j+1].color);
             gameBoard.board[currentChecker.i+1][currentChecker.j+1] = null;
+            removedChecker = {i:currentChecker.i+1,j:currentChecker.j+1};
         }
     } else {
         if (to.j < from.j) {
             //incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j-1].color);
             gameBoard.board[currentChecker.i-1][currentChecker.j-1] = null;
+            removedChecker = {i:currentChecker.i-1,j:currentChecker.j-1};
         } else {
             //incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j+1].color);
             gameBoard.board[currentChecker.i-1][currentChecker.j+1] = null;
+            removedChecker = {i:currentChecker.i-1,j:currentChecker.j+1};
         }
     }
+    return removedChecker;
 }
 
 module.exports = {getBeatPositions, beat};

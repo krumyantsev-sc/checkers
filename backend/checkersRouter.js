@@ -22,7 +22,7 @@ router.post("/:roomId/getPossiblePositions", function(request, response){
 });
 
 router.post("/:roomId/updateBoard", function(req,res) {
-    findControllerByRoomId(activeGames,req.params.roomId).moveCheckerOnBoard(req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
+    findControllerByRoomId(activeGames,req.params.roomId).moveCheckerOnBoard(req, req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
     // io.to(secondPlayer).emit('checkerMoved', req.body);
     res.sendStatus(200);
 });
