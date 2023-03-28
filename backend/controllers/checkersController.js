@@ -6,6 +6,7 @@ const User = require("../models/User")
 const Room = require("../models/Room")
 const Player = require("../entity/player")
 
+
 class checkersController {
     counter = 1;
     roomId;
@@ -21,6 +22,7 @@ class checkersController {
         const room = await Room.findById(this.roomId);
         this.player1.id = room.firstPlayerId;
         this.player2.id = room.secondPlayerId;
+
     }
     getPositionsForHighlighting = (i, j) => {
         return moveService.checkMoveVariants(this.boardService, i, j);
@@ -36,7 +38,11 @@ class checkersController {
         return pos;
     }
 
-    getCounter = () => {
+    getCounter = (req) => {
+        if (this.counter === 1) {
+            req.app.get("socketService").emiter("giveListeners",this.player1.id,{color: "White"});
+            console.log(this.player1.id);
+        }
         return this.counter;
     }
 

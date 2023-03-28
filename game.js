@@ -3,7 +3,7 @@ import checker from './checker.js';
 import Player from './player.js';
 import Bot from './bot.js';
 import {get, post} from './util.js';
-let socket = io('http://localhost:3001');
+let socket = io.connect('http://localhost:3001',{query: {auth:localStorage.getItem('token')}});
 let currentChecker;
 export let counter = 1;
 export let gameBoard = new Board;
@@ -34,15 +34,13 @@ export async function startMove() {
     //await gameBoard.build();
     //gameBoard.removeCheckers();
     await gameBoard.init();
+    await get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getCounter`).then((res) => (console.log(res)));
     giveListeners();
 }
 
-async function giveListeners() {
-    let cnt;
-    await get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getCounter`).then((res) => {cnt = res.counterValue
-    });
-    console.log("counter" + cnt);
-    if (cnt % 2 !== 0) {
+socket.on("giveListeners", (data) => {
+    console.log("rabotaet")
+    if (data.color === "White") {
         for (let item of gameBoard.whiteCheckers) {
             item.addEventListener("click", checkPossibilities);
         }
@@ -50,8 +48,25 @@ async function giveListeners() {
         for (let item of gameBoard.blackCheckers) {
             item.addEventListener("click", checkPossibilities);
         }
-      // setTimeout(() => {bot.moveClosestChecker()}, 1000);
     }
+})
+
+
+async function giveListeners() {
+    // let cnt;
+    // await get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getCounter`).then((res) => {cnt = res.counterValue
+    // });
+    // console.log("counter" + cnt);
+    // if (cnt % 2 !== 0) {
+    //     for (let item of gameBoard.whiteCheckers) {
+    //         item.addEventListener("click", checkPossibilities);
+    //     }
+    // } else {
+    //     for (let item of gameBoard.blackCheckers) {
+    //         item.addEventListener("click", checkPossibilities);
+    //     }
+    //   // setTimeout(() => {bot.moveClosestChecker()}, 1000);
+    // }
 }
 
 function removeListeners(event) {

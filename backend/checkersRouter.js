@@ -36,7 +36,7 @@ router.post("/:roomId/getBeatPositions", function(req,res) {
 });
 
 router.get("/:roomId/getCounter", function(req,res) {
-    res.send({counterValue: findControllerByRoomId(activeGames,req.params.roomId).getCounter()});
+    res.send({counterValue: findControllerByRoomId(activeGames,req.params.roomId).getCounter(req)});
 });
 
 router.get("/:roomId/initialize", async function(req,res) {
