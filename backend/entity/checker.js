@@ -15,13 +15,17 @@ class checker {
         }
     }
 
-    makeLady() {
-        if(this.position.i > 6 && this.color === "White") {
+    canMakeLady() {
+        let needToEmit = false;
+        if(this.isLady === false && this.position.i > 6 && this.color === "White") {
             this.isLady = true;
+            needToEmit = true;
         }
-        if(this.position.i < 1 && this.color === "Black") {
+        if(this.isLady === false && this.position.i < 1 && this.color === "Black") {
             this.isLady = true;
+            needToEmit = true;
         }
+        return needToEmit;
     }
 
 }

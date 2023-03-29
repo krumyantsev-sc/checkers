@@ -22,9 +22,10 @@ router.post("/:roomId/getPossiblePositions", function(request, response){
 });
 
 router.post("/:roomId/updateBoard", function(req,res) {
-    findControllerByRoomId(activeGames,req.params.roomId).moveCheckerOnBoard(req, req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
+    let beatPositions = findControllerByRoomId(activeGames,req.params.roomId).moveCheckerOnBoard(req, req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
+    console.log(beatPositions);
     // io.to(secondPlayer).emit('checkerMoved', req.body);
-    res.sendStatus(200);
+    res.send(beatPositions);
 });
 
 router.get("/:roomId/getBoard", function(req,res) {
@@ -45,5 +46,9 @@ router.get("/:roomId/initialize", async function(req,res) {
     activeGames.push(checkersController);
     res.status(200).json({message:"Successfully"});
 });
+
+router.get("/:roomId/getMoveStatusInfo", function (req,res) {
+    res.send(findControllerByRoomId(activeGames,req.params.roomId).getMoveStatusInfo(req))
+})
 
 module.exports = router

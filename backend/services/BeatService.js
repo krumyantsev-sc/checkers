@@ -44,25 +44,26 @@ function beat(gameBoard, from, to) {
 function removeChecker(gameBoard, from, to) {
     let currentChecker = {i:from.i,j:from.j};
     let removedChecker;
+    let removedColor;
     if (to.i - from.i > 0) {
         if (to.j < from.j) {
-           // incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j-1].color);
+            removedColor = gameBoard.board[currentChecker.i+1][currentChecker.j-1].color;
             gameBoard.board[currentChecker.i+1][currentChecker.j-1] = null;
-            removedChecker = {i:currentChecker.i+1,j:currentChecker.j-1};
+            removedChecker = {i:currentChecker.i+1,j:currentChecker.j-1,color: removedColor};
         } else {
-           // incrementScore(gameBoard.board[currentChecker.i+1][currentChecker.j+1].color);
+            removedColor = gameBoard.board[currentChecker.i+1][currentChecker.j+1].color;
             gameBoard.board[currentChecker.i+1][currentChecker.j+1] = null;
-            removedChecker = {i:currentChecker.i+1,j:currentChecker.j+1};
+            removedChecker = {i:currentChecker.i+1,j:currentChecker.j+1,color: removedColor};
         }
     } else {
         if (to.j < from.j) {
-            //incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j-1].color);
+            removedColor = gameBoard.board[currentChecker.i-1][currentChecker.j-1].color;
             gameBoard.board[currentChecker.i-1][currentChecker.j-1] = null;
-            removedChecker = {i:currentChecker.i-1,j:currentChecker.j-1};
+            removedChecker = {i:currentChecker.i-1,j:currentChecker.j-1,color: removedColor};
         } else {
-            //incrementScore(gameBoard.board[currentChecker.i-1][currentChecker.j+1].color);
+            removedColor = gameBoard.board[currentChecker.i-1][currentChecker.j-1].color;
             gameBoard.board[currentChecker.i-1][currentChecker.j+1] = null;
-            removedChecker = {i:currentChecker.i-1,j:currentChecker.j+1};
+            removedChecker = {i:currentChecker.i-1,j:currentChecker.j+1,color: removedColor};
         }
     }
     return removedChecker;

@@ -24,21 +24,42 @@ class checkersController {
         this.player2.id = room.secondPlayerId;
 
     }
+
+    getMoveStatusInfo(req) {
+        return {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score};
+    }
+
     getPositionsForHighlighting = (i, j) => {
         return moveService.checkMoveVariants(this.boardService, i, j);
+    }
+
+    updateScore = (removedChecker, req) => {
+        if (removedChecker.color === this.player1.color) {
+            this.player2.score++;
+        } else {
+            this.player1.score++;
+        }
+        req.app.get("socketService").emiter('refreshScore',this.player1.id,
+            {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score});
+        req.app.get("socketService").emiter('refreshScore',this.player2.id,
+            {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score});
     }
 
     moveCheckerOnBoard = (req, fromI, fromJ, toI, toJ) => {
         moveChecker(this.boardService, this.boardService.board[fromI][fromJ], {i: toI, j: toJ});
         req.app.get("socketService").emiter('checkerMoved',this.player1.id, req.body);
         req.app.get("socketService").emiter('checkerMoved',this.player2.id, req.body);
-        this.boardService.board[toI][toJ].makeLady();
+        if (this.boardService.board[toI][toJ].canMakeLady()) {
+            req.app.get("socketService").emiter("makeLady",this.player1.id,{i: toI, j: toJ});
+            req.app.get("socketService").emiter("makeLady",this.player2.id,{i: toI, j: toJ});
+        }
         let moveResult = beat(this.boardService,{i: fromI, j: fromJ}, {i: toI, j: toJ});
         let nextBeatPositions = moveResult[0];
         let removedChecker = moveResult[1];
         if (removedChecker !== undefined) {
             req.app.get("socketService").emiter("removeChecker",this.player1.id,removedChecker);
             req.app.get("socketService").emiter("removeChecker",this.player2.id,removedChecker);
+            this.updateScore(removedChecker, req);
         }
         if (nextBeatPositions.length === 0) {
             this.counter++;
