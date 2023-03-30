@@ -138,5 +138,13 @@ socket.on('refreshScore', function(data) {
 socket.on('switchTeam', function(data) {
     currTeamDiv.innerHTML = (data.color === "White") ? "Ходят белые" : "Ходят черные";
 })
+
+socket.on('gameFinished', function(data) {
+    alert(data.message);
+    setTimeout(() => {
+        window.location.href = './roomList.html';
+    })
+})
+
 startMove().then();
 

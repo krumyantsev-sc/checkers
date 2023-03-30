@@ -41,11 +41,24 @@ class checkersController {
         return moveService.checkMoveVariants(this.boardService, i, j);
     }
 
+    checkWin = (req) => {
+        if (this.player1.score === 12) {
+            emitToPlayers(req,[this.player1.id,this.player2.id],'gameFinished',
+                {message: "Победа белых"});
+        }
+        if (this.player2.score === 12) {
+            emitToPlayers(req,[this.player1.id,this.player2.id],'gameFinished',
+                {message: "Победа черных"});
+        }
+    }
+
     updateScore = (removedChecker, req) => {
         if (removedChecker.color === this.player1.color) {
             this.player2.score++;
+            this.checkWin(req);
         } else {
             this.player1.score++;
+            this.checkWin(req);
         }
         emitToPlayers(req,[this.player1.id,this.player2.id],'refreshScore',
             {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score});
