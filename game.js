@@ -11,11 +11,12 @@ let whiteScore = document.querySelector("#whiteSpan");
 let blackScore = document.querySelector("#blackSpan");
 
 
-
-async function getMoveStatusInfo() {
+ async function getMoveStatusInfo() {
     let res = await get(`http://localhost:3001/checkers/${localStorage.getItem("roomId")}/getMoveStatusInfo`);
-    let moveInfo = await res.json;
-    console.log(moveInfo)
+    console.log(res);
+     whiteScore.textContent = res.firstPlayerScore;
+     blackScore.textContent = res.secondPlayerScore;
+     currTeamDiv.innerHTML = (res.color === "White") ? "Ходят белые" : "Ходят черные";
 }
 
 
@@ -27,12 +28,10 @@ export async function startMove() {
 
 socket.on("giveListeners", (data) => {
     if (data.color === "White") {
-        currTeamDiv.innerHTML = "Ходят белые";
         for (let item of gameBoard.whiteCheckers) {
             item.addEventListener("click", checkPossibilities);
         }
     } else {
-        currTeamDiv.innerHTML = "Ходят черные";
         for (let item of gameBoard.blackCheckers) {
             item.addEventListener("click", checkPossibilities);
         }
@@ -135,6 +134,10 @@ socket.on('makeLady', function(data) {
 socket.on('refreshScore', function(data) {
     whiteScore.textContent = data.firstPlayerScore;
     blackScore.textContent = data.secondPlayerScore;
+})
+
+socket.on('switchTeam', function(data) {
+    currTeamDiv.innerHTML = (data.color === "White") ? "Ходят белые" : "Ходят черные";
 })
 startMove().then();
 

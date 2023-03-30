@@ -25,8 +25,17 @@ class checkersController {
 
     }
 
+    switchTeam(req) {
+        let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
+        req.app.get("socketService").emiter("switchTeam",this.player1.id,{color: currColor});
+        req.app.get("socketService").emiter("switchTeam",this.player2.id,{color: currColor});
+    }
     getMoveStatusInfo(req) {
-        return {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score};
+        let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
+        (this.counter % 2 !== 0) ?
+            req.app.get("socketService").emiter("giveListeners",this.player1.id,{color: this.player1.color}) :
+            req.app.get("socketService").emiter("giveListeners",this.player2.id,{color: this.player2.color});
+        return {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor};
     }
 
     getPositionsForHighlighting = (i, j) => {
@@ -63,6 +72,7 @@ class checkersController {
         }
         if (nextBeatPositions.length === 0) {
             this.counter++;
+            this.switchTeam(req);
             (this.counter % 2 !== 0) ?
                 req.app.get("socketService").emiter("giveListeners",this.player1.id,{color: this.player1.color}) :
                 req.app.get("socketService").emiter("giveListeners",this.player2.id,{color: this.player2.color});

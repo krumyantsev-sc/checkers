@@ -48,7 +48,9 @@ router.get("/:roomId/initialize", async function(req,res) {
 });
 
 router.get("/:roomId/getMoveStatusInfo", function (req,res) {
-    res.send(findControllerByRoomId(activeGames,req.params.roomId).getMoveStatusInfo(req))
+    let status = findControllerByRoomId(activeGames,req.params.roomId).getMoveStatusInfo(req);
+    console.log(status)
+    res.json(status)
 })
 
 module.exports = router
