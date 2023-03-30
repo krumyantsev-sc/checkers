@@ -2,7 +2,7 @@ const User = require("../models/User")
 const Room = require("../models/Room")
 const jwt = require("jsonwebtoken");
 const {secret} = require("../config/config");
-const {io} = require("../index")
+const emitToPlayers = require("../util/util");
 
 class roomController {
     firstPlayer = null;
@@ -61,12 +61,9 @@ class roomController {
         }
         res.send({roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
         if (currentRoom.firstPlayerId !== "no player" && currentRoom.secondPlayerId !== "no player") {
-            req.app.get("socketService").emiter('updateLobbyData',currentRoom.firstPlayerId,
+            emitToPlayers(req,[currentRoom.firstPlayerId],'updateLobbyData',
                 {roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
-            req.app.get("socketService").emiter('makeBtnActive',currentRoom.firstPlayerId,
-                {roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
-            req.app.get("socketService").emiter('makeBtnActive',currentRoom.secondPlayerId,
-                {roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
+            emitToPlayers(req,[currentRoom.firstPlayerId, currentRoom.secondPlayerId],'makeBtnActive',{});
         }
     }
 }

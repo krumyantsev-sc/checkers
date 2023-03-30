@@ -2,8 +2,7 @@ import Board from './board.js';
 import {get, post} from './util.js';
 let socket = io.connect('http://localhost:3001',{query: {auth:localStorage.getItem('token')}});
 let currentChecker;
-export let counter = 1;
-export let gameBoard = new Board;
+let gameBoard = new Board;
 
 
 let currTeamDiv = document.querySelector(".current-team");

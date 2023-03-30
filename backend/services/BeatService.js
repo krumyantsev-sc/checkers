@@ -61,7 +61,7 @@ function removeChecker(gameBoard, from, to) {
             gameBoard.board[currentChecker.i-1][currentChecker.j-1] = null;
             removedChecker = {i:currentChecker.i-1,j:currentChecker.j-1,color: removedColor};
         } else {
-            removedColor = gameBoard.board[currentChecker.i-1][currentChecker.j-1].color;
+            removedColor = gameBoard.board[currentChecker.i-1][currentChecker.j+1].color;
             gameBoard.board[currentChecker.i-1][currentChecker.j+1] = null;
             removedChecker = {i:currentChecker.i-1,j:currentChecker.j+1,color: removedColor};
         }
