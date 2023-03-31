@@ -2,7 +2,6 @@ const Router = require("express");
 const router = new Router();
 const controller = require("./controllers/roomController.js")
 const cors = require("cors");
-const {io} = require("./index.js")
 const authMiddleWare = require("./middleware/authMiddleware")
 const roleMiddleware = require("./middleware/roleMiddleware");
 router.use(cors({
