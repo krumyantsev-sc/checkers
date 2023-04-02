@@ -1,3 +1,3 @@
 const secret: string = "SECRET_KEY_RANDOM";
-module.exports = secret
+module.exports = secret;
 export {};

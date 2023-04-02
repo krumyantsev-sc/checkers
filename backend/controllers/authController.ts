@@ -1,4 +1,4 @@
-const User = require("../models/User")
+import User from "../models/User"
 const Role = require("../models/Role")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
@@ -11,7 +11,6 @@ const generateAccessToken = (id: string, roles: string[]): string => {
         id,
         roles,
     };
-
     return jwt.sign(payload, secret, { expiresIn: "24h" });
 };
 
@@ -29,7 +28,7 @@ class authController {
             }
             const hashPassword = bcrypt.hashSync(password, 7);
             const userRole = await Role.findOne({value: "USER"});
-            const user = new User({username, password: hashPassword, role: [userRole?.value]});
+            const user = new User({username, password: hashPassword, role: [userRole.value]});
             await user.save();
             return res.json({message: "Пользователь успешно зарегистрирован"});
         } catch (e) {
@@ -42,6 +41,7 @@ class authController {
         try {
             const {username, password} = req.body;
             const user = await User.findOne({username});
+            console.log(user);
             if (!user) {
                 return res.status(400).json({message: "Пользователь не найден"});
             }
@@ -69,7 +69,6 @@ class authController {
     public getUserName = async (req: any, res: any) => {
         try {
             const token = req.headers.authorization?.split(' ')[1];
-            console.log(token);
             const { id: userId } = jwt.verify(token, secret) as { id: string };
             const candidate = await User.findById(userId);
             res.json({ username: candidate?.username });

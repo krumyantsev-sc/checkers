@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,7 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const User = require("../models/User");
+Object.defineProperty(exports, "__esModule", { value: true });
+const User_1 = require("../models/User");
 const Role = require("../models/Role");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -29,13 +31,13 @@ class authController {
                     return res.status(400).json({ message: "Ошибка при регистрации", errors });
                 }
                 const { username, password } = req.body;
-                const candidate = yield User.findOne({ username });
+                const candidate = yield User_1.default.findOne({ username });
                 if (candidate) {
                     return res.status(400).json({ message: "Пользователь с таким именем уже существует" });
                 }
                 const hashPassword = bcrypt.hashSync(password, 7);
                 const userRole = yield Role.findOne({ value: "USER" });
-                const user = new User({ username, password: hashPassword, role: [userRole === null || userRole === void 0 ? void 0 : userRole.value] });
+                const user = new User_1.default({ username, password: hashPassword, role: [userRole.value] });
                 yield user.save();
                 return res.json({ message: "Пользователь успешно зарегистрирован" });
             }
@@ -47,7 +49,8 @@ class authController {
         this.login = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { username, password } = req.body;
-                const user = yield User.findOne({ username });
+                const user = yield User_1.default.findOne({ username });
+                console.log(user);
                 if (!user) {
                     return res.status(400).json({ message: "Пользователь не найден" });
                 }
@@ -65,7 +68,7 @@ class authController {
         });
         this.getUsers = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const users = yield User.find();
+                const users = yield User_1.default.find();
                 res.json(users);
             }
             catch (e) {
@@ -76,9 +79,8 @@ class authController {
             var _a;
             try {
                 const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
-                console.log(token);
                 const { id: userId } = jwt.verify(token, secret);
-                const candidate = yield User.findById(userId);
+                const candidate = yield User_1.default.findById(userId);
                 res.json({ username: candidate === null || candidate === void 0 ? void 0 : candidate.username });
             }
             catch (e) {

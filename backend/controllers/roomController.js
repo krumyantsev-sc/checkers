@@ -1,7 +1,7 @@
-const User = require("../models/User")
+import User from "../models/User"
 const Room = require("../models/Room")
 const jwt = require("jsonwebtoken");
-const {secret} = require("../config/config");
+const secret = require("../config/config");
 const emitToPlayers = require("../util/util");
 
 class roomController {
