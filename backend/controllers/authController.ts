@@ -3,7 +3,7 @@ const Role = require("../models/Role")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { validationResult } = require("express-validator")
-const {secret} = require("../config/config")
+const secret = require("../config/config")
 
 
 const generateAccessToken = (id: string, roles: string[]): string => {
@@ -16,7 +16,7 @@ const generateAccessToken = (id: string, roles: string[]): string => {
 };
 
 class authController {
-    async registration(req: any, res: any): Promise<any> {
+    public registration = async (req: any, res: any) => {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -38,7 +38,7 @@ class authController {
         }
     }
 
-    async login(req: any, res: any): Promise<any> {
+    public login = async (req: any, res: any) => {
         try {
             const {username, password} = req.body;
             const user = await User.findOne({username});
@@ -57,7 +57,7 @@ class authController {
         }
     }
 
-    async getUsers(req: any, res: any): Promise<void> {
+    public getUsers = async (req: any, res: any) => {
         try {
             const users = await User.find();
             res.json(users);
@@ -66,7 +66,7 @@ class authController {
         }
     }
 
-    async getUserName(req: any, res: any): Promise<void> {
+    public getUserName = async (req: any, res: any) => {
         try {
             const token = req.headers.authorization?.split(' ')[1];
             console.log(token);

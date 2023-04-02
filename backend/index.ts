@@ -10,7 +10,7 @@ const roomRouter = require('./roomRouter.js')
 
 app.use(express.json());
 app.set("socketService", new SocketService(server));
-//app.use("/auth", authRouter);
+app.use("/auth", authRouter);
 app.use("/room", roomRouter);
 app.use("/checkers", checkersRouter);
 app.use(cors({
