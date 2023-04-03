@@ -4,7 +4,9 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { validationResult } = require("express-validator")
 const secret = require("../config/config")
-
+import { Request, Response } from 'express';
+import {IUser} from "../models/User"
+import {IRole} from "../models/Role"
 
 const generateAccessToken = (id: string, roles: string[]): string => {
     const payload = {
@@ -15,20 +17,20 @@ const generateAccessToken = (id: string, roles: string[]): string => {
 };
 
 class authController {
-    public registration = async (req: any, res: any) => {
+    public registration = async (req: Request, res: Response) => {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({message: "Ошибка при регистрации", errors});
             }
             const {username, password} = req.body;
-            const candidate = await User.findOne({username});
+            const candidate: IUser = await User.findOne({username});
             if (candidate) {
                 return res.status(400).json({message: "Пользователь с таким именем уже существует"});
             }
-            const hashPassword = bcrypt.hashSync(password, 7);
-            const userRole = await Role.findOne({value: "USER"});
-            const user = new User({username, password: hashPassword, role: [userRole.value]});
+            const hashPassword: string = bcrypt.hashSync(password, 7);
+            const userRole: IRole = await Role.findOne({value: "USER"});
+            const user: IUser = new User({username, password: hashPassword, role: [userRole.value]});
             await user.save();
             return res.json({message: "Пользователь успешно зарегистрирован"});
         } catch (e) {
@@ -37,19 +39,18 @@ class authController {
         }
     }
 
-    public login = async (req: any, res: any) => {
+    public login = async (req: Request, res: Response) => {
         try {
             const {username, password} = req.body;
-            const user = await User.findOne({username});
-            console.log(user);
+            const user: IUser = await User.findOne({username});
             if (!user) {
                 return res.status(400).json({message: "Пользователь не найден"});
             }
-            const validPassword = bcrypt.compareSync(password, user.password);
+            const validPassword: boolean = bcrypt.compareSync(password, user.password);
             if (!validPassword) {
                 return res.status(400).json({message: "Неверный пароль"});
             }
-            const token = generateAccessToken(user._id, user.role);
+            const token: string = generateAccessToken(user._id, user.role);
             return res.json({token});
         } catch (e) {
             console.log(e);
@@ -57,20 +58,20 @@ class authController {
         }
     }
 
-    public getUsers = async (req: any, res: any) => {
+    public getUsers = async (req: Request, res: Response) => {
         try {
-            const users = await User.find();
+            const users: IUser[] = await User.find();
             res.json(users);
         } catch (e) {
             console.log(e);
         }
     }
 
-    public getUserName = async (req: any, res: any) => {
+    public getUserName = async (req: Request, res: Response) => {
         try {
-            const token = req.headers.authorization?.split(' ')[1];
-            const { id: userId } = jwt.verify(token, secret) as { id: string };
-            const candidate = await User.findById(userId);
+            const token: string = req.headers.authorization?.split(' ')[1];
+            const { id: userId }: {id: string} = jwt.verify(token, secret) as { id: string };
+            const candidate: IUser = await User.findById(userId);
             res.json({ username: candidate?.username });
         } catch (e) {
             console.log(e);

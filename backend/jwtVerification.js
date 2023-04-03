@@ -1,14 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const jwt = require("jsonwebtoken");
-const {secret} = require("./config/config");
-const User = require("./models/User");
-
-function authenticateToken(token) {
+const secret = require("./config/config");
+const authenticateToken = (token) => {
     try {
-        const {id: userId} = jwt.verify(token, secret)
+        const { id: userId } = jwt.verify(token, secret);
         return userId;
-    } catch (e) {
+    }
+    catch (e) {
         return null;
     }
-}
-
-module.exports = {authenticateToken};
+};
+exports.default = authenticateToken;
+//# sourceMappingURL=jwtVerification.js.map

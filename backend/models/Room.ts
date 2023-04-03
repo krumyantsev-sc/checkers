@@ -1,4 +1,10 @@
-import { Schema, model } from 'mongoose';
+import {Schema, model, Document} from 'mongoose';
+
+export interface IRoom extends Document {
+    firstPlayerId: string;
+    secondPlayerId: string;
+    winner: string;
+}
 
 const RoomSchema = new Schema({
     firstPlayerId: {type: String, default: "no player"},
@@ -6,6 +12,6 @@ const RoomSchema = new Schema({
     winner: {type: String, default: "no winner"}
 });
 
-const RoomModel = model('Room', RoomSchema);
+const RoomModel = model<IRoom>('Room', RoomSchema);
 
 export default RoomModel;

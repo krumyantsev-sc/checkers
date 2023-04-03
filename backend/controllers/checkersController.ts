@@ -1,17 +1,19 @@
 import boardService from "../services/BoardService"
 import {moveChecker,checkMoveVariants} from "../services/MoveService";
 import {beat, getBeatPositions} from "../services/BeatService";
-import User from "../models/User"
 import Room from "../models/Room"
+import {IRoom} from "../models/Room"
 import Player from "../entity/player"
-const emitToPlayers = require("../util/util");
+import emitToPlayers from "../util/util";
+import checker from "../entity/checker";
+import {Request} from "express";
 
 class checkersController {
     private counter: number = 1;
     private roomId!: string;
-    private readonly boardService;
-    private player1 = new Player("White");
-    private player2 = new Player("Black");
+    private readonly boardService: boardService;
+    private player1: Player = new Player("White");
+    private player2: Player = new Player("Black");
 
     constructor() {
         this.boardService = new boardService();
@@ -24,12 +26,12 @@ class checkersController {
         this.player2.id = room?.secondPlayerId!;
     }
 
-    private switchTeam = (req: any): void => {
+    private switchTeam = (req: Request): void => {
         let currColor: string = (this.counter % 2 !== 0) ? "White" : "Black";
         emitToPlayers(req,[this.player1.id, this.player2.id],'switchTeam',{color: currColor});
     }
 
-    public getMoveStatusInfo = (req: any): {firstPlayerScore: number, secondPlayerScore: number, color: string} => {
+    public getMoveStatusInfo = (req: Request): {firstPlayerScore: number, secondPlayerScore: number, color: string} => {
         let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
         (this.counter % 2 !== 0) ?
             emitToPlayers(req,[this.player1.id],'giveListeners',{color: this.player1.color}) :
@@ -41,7 +43,7 @@ class checkersController {
         return checkMoveVariants(this.boardService, i, j);
     }
 
-    private checkWin = (req: any) => {
+    private checkWin = (req: Request) => {
         if (this.player1.score === 12) {
             emitToPlayers(req,[this.player1.id,this.player2.id],'gameFinished',
                 {message: "Победа белых"});
@@ -52,7 +54,7 @@ class checkersController {
         }
     }
 
-    private updateScore = (removedChecker: any, req: any) => {
+    private updateScore = (removedChecker: {i: number, j: number, color: string}, req: Request) => {
         if (removedChecker.color === this.player1.color) {
             this.player2.score++;
             this.checkWin(req);
@@ -64,12 +66,17 @@ class checkersController {
             {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score});
     }
 
-    public moveCheckerOnBoard = (req: any, fromI: number, fromJ: number, toI: number, toJ: number) => {
+    public moveCheckerOnBoard = (req: Request, fromI: number, fromJ: number, toI: number, toJ: number) => {
         moveChecker(this.boardService, this.boardService.board[fromI][fromJ], {i: toI, j: toJ});
         emitToPlayers(req,[this.player1.id,this.player2.id],'checkerMoved',req.body);
-        if (this.boardService.board[toI][toJ].canMakeLady()) {
-            emitToPlayers(req,[this.player1.id,this.player2.id],'makeLady',{i: toI, j: toJ});
+        let check: checker;
+        if (typeof this.boardService.board[toI][toJ] !== 'number') {
+            check = this.boardService.board[toI][toJ] as checker;
         }
+            if (this.boardService.board[toI][toJ].canMakeLady()) {
+                emitToPlayers(req, [this.player1.id, this.player2.id], 'makeLady', {i: toI, j: toJ});
+            }
+
         let moveResult = beat(this.boardService,{i: fromI, j: fromJ}, {i: toI, j: toJ});
         let nextBeatPositions = moveResult[0];
         let removedChecker = moveResult[1];

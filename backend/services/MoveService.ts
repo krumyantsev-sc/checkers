@@ -1,5 +1,7 @@
 import {getBeatPositions} from "./BeatService";
 import checker from "../entity/checker";
+import boardService from "./BoardService";
+import BoardService from "./BoardService";
 
 function getSimpleMoveVariants(boardService: any, i: number, j: number): {i: number, j: number}[] {
     let possibleWays: {i: number, j: number}[] = [];
@@ -30,7 +32,7 @@ function checkMoveVariants(gameBoard: any, i: number, j: number): {i: number, j:
     return possibleWays;
 }
 
-function moveChecker(boardService: any,checker: checker, to: {i: number, j: number}): void {
+function moveChecker(boardService: BoardService, checker: number | checker | null, to: { i: number; j: number }): void {
     checker.move(boardService,to);
 }
 

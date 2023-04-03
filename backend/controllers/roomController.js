@@ -13,7 +13,7 @@ const User_1 = require("../models/User");
 const Room_1 = require("../models/Room");
 const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
-const emitToPlayers = require("../util/util");
+const util_1 = require("../util/util");
 class roomController {
     constructor() {
         this.firstPlayer = null;
@@ -86,8 +86,8 @@ class roomController {
                 }
                 res.send({ roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer });
                 if (currentRoom.firstPlayerId !== "no player" && currentRoom.secondPlayerId !== "no player") {
-                    emitToPlayers(req, [currentRoom.firstPlayerId], 'updateLobbyData', { roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer });
-                    emitToPlayers(req, [currentRoom.firstPlayerId, currentRoom.secondPlayerId], 'makeBtnActive', {});
+                    (0, util_1.default)(req, [currentRoom.firstPlayerId], 'updateLobbyData', { roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer });
+                    (0, util_1.default)(req, [currentRoom.firstPlayerId, currentRoom.secondPlayerId], 'makeBtnActive', {});
                 }
             }
             catch (error) {

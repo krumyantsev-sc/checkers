@@ -2,7 +2,7 @@ import User from "../models/User"
 import Room from "../models/Room"
 const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
-const emitToPlayers = require("../util/util");
+import emitToPlayers from "../util/util";
 
 class roomController {
     firstPlayer: any = null;

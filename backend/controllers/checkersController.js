@@ -14,7 +14,7 @@ const MoveService_1 = require("../services/MoveService");
 const BeatService_1 = require("../services/BeatService");
 const Room_1 = require("../models/Room");
 const player_1 = require("../entity/player");
-const emitToPlayers = require("../util/util");
+const util_1 = require("../util/util");
 class checkersController {
     constructor() {
         this.counter = 1;
@@ -28,13 +28,13 @@ class checkersController {
         });
         this.switchTeam = (req) => {
             let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
-            emitToPlayers(req, [this.player1.id, this.player2.id], 'switchTeam', { color: currColor });
+            (0, util_1.default)(req, [this.player1.id, this.player2.id], 'switchTeam', { color: currColor });
         };
         this.getMoveStatusInfo = (req) => {
             let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
             (this.counter % 2 !== 0) ?
-                emitToPlayers(req, [this.player1.id], 'giveListeners', { color: this.player1.color }) :
-                emitToPlayers(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
+                (0, util_1.default)(req, [this.player1.id], 'giveListeners', { color: this.player1.color }) :
+                (0, util_1.default)(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
             return { firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor };
         };
         this.getPositionsForHighlighting = (i, j) => {
@@ -42,10 +42,10 @@ class checkersController {
         };
         this.checkWin = (req) => {
             if (this.player1.score === 12) {
-                emitToPlayers(req, [this.player1.id, this.player2.id], 'gameFinished', { message: "Победа белых" });
+                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'gameFinished', { message: "Победа белых" });
             }
             if (this.player2.score === 12) {
-                emitToPlayers(req, [this.player1.id, this.player2.id], 'gameFinished', { message: "Победа черных" });
+                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'gameFinished', { message: "Победа черных" });
             }
         };
         this.updateScore = (removedChecker, req) => {
@@ -57,27 +57,27 @@ class checkersController {
                 this.player1.score++;
                 this.checkWin(req);
             }
-            emitToPlayers(req, [this.player1.id, this.player2.id], 'refreshScore', { firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score });
+            (0, util_1.default)(req, [this.player1.id, this.player2.id], 'refreshScore', { firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score });
         };
         this.moveCheckerOnBoard = (req, fromI, fromJ, toI, toJ) => {
             (0, MoveService_1.moveChecker)(this.boardService, this.boardService.board[fromI][fromJ], { i: toI, j: toJ });
-            emitToPlayers(req, [this.player1.id, this.player2.id], 'checkerMoved', req.body);
+            (0, util_1.default)(req, [this.player1.id, this.player2.id], 'checkerMoved', req.body);
             if (this.boardService.board[toI][toJ].canMakeLady()) {
-                emitToPlayers(req, [this.player1.id, this.player2.id], 'makeLady', { i: toI, j: toJ });
+                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'makeLady', { i: toI, j: toJ });
             }
             let moveResult = (0, BeatService_1.beat)(this.boardService, { i: fromI, j: fromJ }, { i: toI, j: toJ });
             let nextBeatPositions = moveResult[0];
             let removedChecker = moveResult[1];
             if (removedChecker !== undefined) {
-                emitToPlayers(req, [this.player1.id, this.player2.id], 'removeChecker', removedChecker);
+                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'removeChecker', removedChecker);
                 this.updateScore(removedChecker, req);
             }
             if (nextBeatPositions.length === 0) {
                 this.counter++;
                 this.switchTeam(req);
                 (this.counter % 2 !== 0) ?
-                    emitToPlayers(req, [this.player1.id], 'giveListeners', { color: this.player1.color }) :
-                    emitToPlayers(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
+                    (0, util_1.default)(req, [this.player1.id], 'giveListeners', { color: this.player1.color }) :
+                    (0, util_1.default)(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
             }
             return nextBeatPositions;
         };

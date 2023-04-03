@@ -1,30 +1,35 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const socketIo = require('socket.io');
-const jwtVerification_1 = require("./jwtVerification");
-class SocketService {
-    constructor(server) {
+import authenticateToken from './jwtVerification';
+import {Server, Socket} from "socket.io";
+
+export default class SocketService {
+    private io: Server;
+
+    constructor(server: any) {
         this.io = socketIo(server, {
             cors: ['http://localhost:63342'],
             serveClient: false
         });
-        this.io.on('connection', (socket) => {
+
+        this.io.on('connection', (socket: Socket) => {
             console.log('user connected');
-            const token = socket.handshake.query.auth;
-            const playerId = (0, jwtVerification_1.default)(token);
+            const token = socket.handshake.query.auth as string;
+            const playerId = authenticateToken(token);
             socket.join(playerId);
+
             if (playerId === null) {
                 socket.disconnect();
             }
+
             socket.join(playerId);
+
             socket.on('disconnect', () => {
                 console.log('user disconnected');
             });
         });
     }
-    emiter(event, target, body) {
+
+    emiter(event: string, target: string, body: any): void {
         this.io.to(target).emit(event, body);
     }
 }
-exports.default = SocketService;
-//# sourceMappingURL=io.js.map
