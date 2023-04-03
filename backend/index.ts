@@ -4,9 +4,9 @@ const server = require('http').Server(app);
 const SocketService = require("./io")
 const mongoose = require('mongoose');
 const cors = require('cors');
-const authRouter = require('./authRouter')
-const checkersRouter = require("./checkersRouter");
-const roomRouter = require('./roomRouter.js')
+import authRouter from './authRouter'
+import checkersRouter from "./checkersRouter";
+import roomRouter from './roomRouter.js';
 
 app.use(express.json());
 app.set("socketService", new SocketService(server));

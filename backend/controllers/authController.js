@@ -89,5 +89,5 @@ class authController {
         });
     }
 }
-module.exports = new authController();
+exports.default = new authController();
 //# sourceMappingURL=authController.js.map

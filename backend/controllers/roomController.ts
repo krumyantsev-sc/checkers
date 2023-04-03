@@ -71,8 +71,8 @@ class roomController {
             const token = req.headers.authorization.split(' ')[1];
             const {id: userId} = jwt.verify(token, secret);
             let currentRoom = await Room.findOne({$or:[{'firstPlayerId': userId}, {'secondPlayerId': userId}]});
-            let firstPlayer = "no player";
-            let secondPlayer = "no player";
+            let firstPlayer: any = "no player";
+            let secondPlayer: any = "no player";
             if (currentRoom.firstPlayerId !== "no player") {
                 firstPlayer = await User.findById(currentRoom.firstPlayerId);
                 firstPlayer = firstPlayer.username;

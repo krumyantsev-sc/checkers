@@ -1,18 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Router = require("express");
 const router = new Router();
-import controller from "./controllers/roomController"
+const roomController_1 = require("./controllers/roomController");
 const cors = require("cors");
-const authMiddleWare = require("./middleware/authMiddleware")
-import roleMiddleware from "./middleware/roleMiddleware"
+const roleMiddleware_1 = require("./middleware/roleMiddleware");
 router.use(cors({
     origin: ['http://localhost:63342']
 }));
-
-router.post("/connect",roleMiddleware(["ADMIN", "USER"]), controller.connect);
-router.get("/createRoom", roleMiddleware(["ADMIN", "USER"]), controller.createRoom);
-router.get("/getRoomList", roleMiddleware(["ADMIN", "USER"]), controller.getRoomList);
-router.get("/getLobbyInfo",roleMiddleware(["ADMIN", "USER"]), controller.getLobbyInfo);
-router.get("/getRoomId",roleMiddleware(["ADMIN", "USER"]), controller.getRoomId);
-
-
-module.exports = router
+router.post("/connect", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.connect);
+router.get("/createRoom", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.createRoom);
+router.get("/getRoomList", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.getRoomList);
+router.get("/getLobbyInfo", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.getLobbyInfo);
+router.get("/getRoomId", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.getRoomId);
+exports.default = router;
+//# sourceMappingURL=roomRouter.js.map

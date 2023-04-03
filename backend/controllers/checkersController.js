@@ -9,10 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const moveService = require("../services/MoveService");
-let boardService = require("../services/BoardService");
-const { moveChecker } = require("../services/MoveService");
-const { beat, getBeatPositions } = require("../services/BeatService.js");
+const BoardService_1 = require("../services/BoardService");
+const MoveService_1 = require("../services/MoveService");
+const BeatService_1 = require("../services/BeatService");
 const Room_1 = require("../models/Room");
 const player_1 = require("../entity/player");
 const emitToPlayers = require("../util/util");
@@ -39,7 +38,7 @@ class checkersController {
             return { firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor };
         };
         this.getPositionsForHighlighting = (i, j) => {
-            return moveService.checkMoveVariants(this.boardService, i, j);
+            return (0, MoveService_1.checkMoveVariants)(this.boardService, i, j);
         };
         this.checkWin = (req) => {
             if (this.player1.score === 12) {
@@ -61,12 +60,12 @@ class checkersController {
             emitToPlayers(req, [this.player1.id, this.player2.id], 'refreshScore', { firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score });
         };
         this.moveCheckerOnBoard = (req, fromI, fromJ, toI, toJ) => {
-            moveChecker(this.boardService, this.boardService.board[fromI][fromJ], { i: toI, j: toJ });
+            (0, MoveService_1.moveChecker)(this.boardService, this.boardService.board[fromI][fromJ], { i: toI, j: toJ });
             emitToPlayers(req, [this.player1.id, this.player2.id], 'checkerMoved', req.body);
             if (this.boardService.board[toI][toJ].canMakeLady()) {
                 emitToPlayers(req, [this.player1.id, this.player2.id], 'makeLady', { i: toI, j: toJ });
             }
-            let moveResult = beat(this.boardService, { i: fromI, j: fromJ }, { i: toI, j: toJ });
+            let moveResult = (0, BeatService_1.beat)(this.boardService, { i: fromI, j: fromJ }, { i: toI, j: toJ });
             let nextBeatPositions = moveResult[0];
             let removedChecker = moveResult[1];
             if (removedChecker !== undefined) {
@@ -83,13 +82,13 @@ class checkersController {
             return nextBeatPositions;
         };
         this.getBeatPos = (position) => {
-            return getBeatPositions(this.boardService, position.i, position.j);
+            return (0, BeatService_1.getBeatPositions)(this.boardService, position.i, position.j);
         };
         this.getBoard = () => {
             return this.boardService.getBoard();
         };
-        this.boardService = new boardService();
+        this.boardService = new BoardService_1.default();
     }
 }
-module.exports = checkersController;
+exports.default = checkersController;
 //# sourceMappingURL=checkersController.js.map

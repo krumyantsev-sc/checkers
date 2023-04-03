@@ -1,7 +1,6 @@
-const moveService = require("../services/MoveService")
-let boardService = require("../services/BoardService")
-const {moveChecker} = require("../services/MoveService");
-const {beat, getBeatPositions} = require("../services/BeatService.js")
+import boardService from "../services/BoardService"
+import {moveChecker,checkMoveVariants} from "../services/MoveService";
+import {beat, getBeatPositions} from "../services/BeatService";
 import User from "../models/User"
 import Room from "../models/Room"
 import Player from "../entity/player"
@@ -39,7 +38,7 @@ class checkersController {
     }
 
     public getPositionsForHighlighting = (i: number, j: number) => {
-        return moveService.checkMoveVariants(this.boardService, i, j);
+        return checkMoveVariants(this.boardService, i, j);
     }
 
     private checkWin = (req: any) => {
@@ -97,4 +96,4 @@ class checkersController {
         return this.boardService.getBoard();
     }
 }
-module.exports = checkersController;
+export default checkersController;
