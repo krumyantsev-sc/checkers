@@ -1,7 +1,9 @@
-const {Schema, model} = require('mongoose');
-
-const Role = new Schema({
-    value: {type: String, unique: true, default: "USER"},
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = require("mongoose");
+const RoleSchema = new mongoose_1.Schema({
+    value: { type: String, unique: true, default: 'USER' },
 });
-
-module.exports = model("Role",Role);
+const RoleModel = (0, mongoose_1.model)('Role', RoleSchema);
+exports.default = RoleModel;
+//# sourceMappingURL=Role.js.map

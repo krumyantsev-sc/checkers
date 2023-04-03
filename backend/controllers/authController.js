@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = require("../models/User");
-const Role = require("../models/Role");
+const Role_1 = require("../models/Role");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
@@ -36,7 +36,7 @@ class authController {
                     return res.status(400).json({ message: "Пользователь с таким именем уже существует" });
                 }
                 const hashPassword = bcrypt.hashSync(password, 7);
-                const userRole = yield Role.findOne({ value: "USER" });
+                const userRole = yield Role_1.default.findOne({ value: "USER" });
                 const user = new User_1.default({ username, password: hashPassword, role: [userRole.value] });
                 yield user.save();
                 return res.json({ message: "Пользователь успешно зарегистрирован" });

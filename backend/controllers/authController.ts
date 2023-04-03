@@ -1,5 +1,5 @@
 import User from "../models/User"
-const Role = require("../models/Role")
+import Role from "../models/Role"
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { validationResult } = require("express-validator")

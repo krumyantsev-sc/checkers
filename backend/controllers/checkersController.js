@@ -13,17 +13,17 @@ const moveService = require("../services/MoveService");
 let boardService = require("../services/BoardService");
 const { moveChecker } = require("../services/MoveService");
 const { beat, getBeatPositions } = require("../services/BeatService.js");
-const Room = require("../models/Room");
-const Player = require("../entity/player");
+const Room_1 = require("../models/Room");
+const player_1 = require("../entity/player");
 const emitToPlayers = require("../util/util");
 class checkersController {
     constructor() {
         this.counter = 1;
-        this.player1 = new Player("White");
-        this.player2 = new Player("Black");
+        this.player1 = new player_1.default("White");
+        this.player2 = new player_1.default("Black");
         this.initializeGame = (roomId) => __awaiter(this, void 0, void 0, function* () {
             this.roomId = roomId;
-            const room = yield Room.findById(this.roomId);
+            const room = yield Room_1.default.findById(this.roomId);
             this.player1.id = room === null || room === void 0 ? void 0 : room.firstPlayerId;
             this.player2.id = room === null || room === void 0 ? void 0 : room.secondPlayerId;
         });

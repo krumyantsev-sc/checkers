@@ -1,9 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class Player {
     constructor(color) {
+        this.score = 0;
         this.color = color;
     }
-    id;
-    score = 0;
 }
-
-module.exports = Player;
+exports.default = Player;
+//# sourceMappingURL=player.js.map

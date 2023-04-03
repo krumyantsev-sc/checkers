@@ -3,8 +3,8 @@ let boardService = require("../services/BoardService")
 const {moveChecker} = require("../services/MoveService");
 const {beat, getBeatPositions} = require("../services/BeatService.js")
 import User from "../models/User"
-const Room = require("../models/Room")
-const Player = require("../entity/player")
+import Room from "../models/Room"
+import Player from "../entity/player"
 const emitToPlayers = require("../util/util");
 
 class checkersController {

@@ -1,9 +1,9 @@
 const Router = require("express");
 const router = new Router();
-const controller = require("./controllers/roomController.js")
+import controller from "./controllers/roomController"
 const cors = require("cors");
 const authMiddleWare = require("./middleware/authMiddleware")
-const roleMiddleware = require("./middleware/roleMiddleware");
+import roleMiddleware from "./middleware/roleMiddleware"
 router.use(cors({
     origin: ['http://localhost:63342']
 }));

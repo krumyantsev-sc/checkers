@@ -3,7 +3,7 @@ const controller = require("./controllers/authController")
 const router = new Router();
 const {check} = require("express-validator");
 const authMiddleWare = require("./middleware/authMiddleware")
-const roleMiddleware = require("./middleware/roleMiddleware")
+import roleMiddleware from "./middleware/roleMiddleware"
 const cors = require("cors");
 
 router.use(cors({

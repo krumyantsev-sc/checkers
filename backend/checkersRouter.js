@@ -2,7 +2,7 @@ const Router = require("express");
 const controller = require("./controllers/authController.js")
 const router = new Router();
 const cors = require("cors");
-const roleMiddleware = require("./middleware/roleMiddleware");
+import roleMiddleware from "./middleware/roleMiddleware"
 const CheckersController = require("./controllers/checkersController.js");
 const board = require("./services/BoardService.js");
 const _ = require("lodash");

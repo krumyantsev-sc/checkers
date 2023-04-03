@@ -6,7 +6,7 @@ interface IUser extends Document {
     role: Array<string>;
 }
 
-const UserSchema: Schema = new Schema({
+const UserSchema = new Schema({
     username: {type: String, unique: true, required: true},
     password: {type: String, required: true},
     role: [{type:String, ref:'Role'}]
