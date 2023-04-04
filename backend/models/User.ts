@@ -1,6 +1,7 @@
 import {Schema, model, Document} from "mongoose";
 
-export interface IUser extends Document {
+export interface IUser {
+    documents: Document;
     username: string;
     password: string;
     role: Array<string>;

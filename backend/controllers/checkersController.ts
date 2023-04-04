@@ -6,7 +6,7 @@ import {IRoom} from "../models/Room"
 import Player from "../entity/player"
 import emitToPlayers from "../util/util";
 import checker from "../entity/checker";
-import {Request} from "express";
+import {Request} from 'express';
 
 class checkersController {
     private counter: number = 1;
@@ -66,20 +66,16 @@ class checkersController {
             {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score});
     }
 
+
     public moveCheckerOnBoard = (req: Request, fromI: number, fromJ: number, toI: number, toJ: number) => {
         moveChecker(this.boardService, this.boardService.board[fromI][fromJ], {i: toI, j: toJ});
         emitToPlayers(req,[this.player1.id,this.player2.id],'checkerMoved',req.body);
-        let check: checker;
-        if (typeof this.boardService.board[toI][toJ] !== 'number') {
-            check = this.boardService.board[toI][toJ] as checker;
+        if (this.boardService.board[toI][toJ].canMakeLady()) {
+            emitToPlayers(req, [this.player1.id, this.player2.id], 'makeLady', {i: toI, j: toJ});
         }
-            if (this.boardService.board[toI][toJ].canMakeLady()) {
-                emitToPlayers(req, [this.player1.id, this.player2.id], 'makeLady', {i: toI, j: toJ});
-            }
-
-        let moveResult = beat(this.boardService,{i: fromI, j: fromJ}, {i: toI, j: toJ});
-        let nextBeatPositions = moveResult[0];
-        let removedChecker = moveResult[1];
+        let moveResult: [{i:number,j:number}[], ({i:number,j:number,color:string} | undefined)] = beat(this.boardService,{i: fromI, j: fromJ}, {i: toI, j: toJ});
+        let nextBeatPositions: {i:number,j:number}[] = moveResult[0];
+        let removedChecker: {i:number,j:number,color:string} | undefined = moveResult[1];
         if (removedChecker !== undefined) {
             emitToPlayers(req,[this.player1.id,this.player2.id],'removeChecker',removedChecker);
             this.updateScore(removedChecker, req);

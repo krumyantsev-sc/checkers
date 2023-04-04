@@ -1,12 +1,18 @@
-function getBeatPositions(gameBoard: any, i: number, j: number) {
-    let takenPositions: {i: number, j: number}[] = [];
+import BoardService from "./BoardService";
 
+type checkerCoords = {i: number, j: number};
+
+interface IGetBeatPositions {
+    (gameBoard: BoardService, i: number, j: number): checkerCoords[];
+}
+
+const getBeatPositions: IGetBeatPositions = (gameBoard, i, j) => {
+    let takenPositions: checkerCoords[] = [];
     if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
         if (gameBoard.isCellTaken(i+1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
             if (gameBoard.isFreeCell(i+2,j-2)) {
                 takenPositions.push({i: i + 2, j: j - 2});
             }
-
         }
         if (gameBoard.isCellTaken(i+1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j+1].color) {
             if (gameBoard.isFreeCell(i+2,j+2)) {
@@ -27,20 +33,28 @@ function getBeatPositions(gameBoard: any, i: number, j: number) {
             }
         }
     }
-
     return takenPositions;
 }
 
-function beat(gameBoard: any, from: {i: number, j: number}, to: {i: number, j: number}) {
+interface IBeat {
+    (gameBoard: BoardService, from: checkerCoords, to: checkerCoords): [
+        checkerCoords[],
+        ({
+            i:number,
+            j:number,
+            color:string
+        } | undefined)
+    ];
+}
+
+const beat: IBeat = (gameBoard, from, to) => {
     let difference = to.i - from.i;
     let pos = [];
     let removedChecker;
-
     if (Math.abs(difference) > 1) {
         removedChecker = removeChecker(gameBoard, from, to);
         pos = getBeatPositions(gameBoard, to.i, to.j);
     }
-
     return [pos,removedChecker];
 }
 

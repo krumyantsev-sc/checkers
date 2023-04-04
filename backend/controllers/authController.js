@@ -38,7 +38,7 @@ class authController {
                 const hashPassword = bcrypt.hashSync(password, 7);
                 const userRole = yield Role_1.default.findOne({ value: "USER" });
                 const user = new User_1.default({ username, password: hashPassword, role: [userRole.value] });
-                yield user.save();
+                yield user.documents.save();
                 return res.json({ message: "Пользователь успешно зарегистрирован" });
             }
             catch (e) {
@@ -57,7 +57,7 @@ class authController {
                 if (!validPassword) {
                     return res.status(400).json({ message: "Неверный пароль" });
                 }
-                const token = generateAccessToken(user._id, user.role);
+                const token = generateAccessToken(user.documents._id, user.role);
                 return res.json({ token });
             }
             catch (e) {

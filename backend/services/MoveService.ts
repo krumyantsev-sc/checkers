@@ -32,7 +32,7 @@ function checkMoveVariants(gameBoard: any, i: number, j: number): {i: number, j:
     return possibleWays;
 }
 
-function moveChecker(boardService: BoardService, checker: number | checker | null, to: { i: number; j: number }): void {
+function moveChecker(boardService: BoardService, checker: checker | null, to: { i: number; j: number }): void {
     checker.move(boardService,to);
 }
 

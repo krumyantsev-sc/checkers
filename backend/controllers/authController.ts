@@ -31,7 +31,7 @@ class authController {
             const hashPassword: string = bcrypt.hashSync(password, 7);
             const userRole: IRole = await Role.findOne({value: "USER"});
             const user: IUser = new User({username, password: hashPassword, role: [userRole.value]});
-            await user.save();
+            await user.documents.save();
             return res.json({message: "Пользователь успешно зарегистрирован"});
         } catch (e) {
             console.log(e);
@@ -50,7 +50,7 @@ class authController {
             if (!validPassword) {
                 return res.status(400).json({message: "Неверный пароль"});
             }
-            const token: string = generateAccessToken(user._id, user.role);
+            const token: string = generateAccessToken(user.documents._id, user.role);
             return res.json({token});
         } catch (e) {
             console.log(e);

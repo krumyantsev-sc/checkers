@@ -8,9 +8,10 @@ const roleMiddleware_1 = require("./middleware/roleMiddleware");
 router.use(cors({
     origin: ['http://localhost:63342']
 }));
+const fullRolesList = ["ADMIN", "USER"];
 router.post("/connect", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.connect);
 router.get("/createRoom", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.createRoom);
-router.get("/getRoomList", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.getRoomList);
+router.get("/getRoomList", (0, roleMiddleware_1.default)(fullRolesList), roomController_1.default.getRoomList);
 router.get("/getLobbyInfo", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.getLobbyInfo);
 router.get("/getRoomId", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.getRoomId);
 exports.default = router;

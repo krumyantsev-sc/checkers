@@ -1,8 +1,9 @@
+import BoardService from "../services/BoardService";
 class checker {
     color: string;
     position: {i: number, j: number};
     id: number;
-    isLady = false;
+    isLady: boolean = false;
 
     constructor(color: string, position: {i: number, j: number}, id: number) {
         this.color = color;
@@ -10,9 +11,8 @@ class checker {
         this.id = id;
     }
 
-    move(gameBoard: any, to: {i: number, j: number}) {
+    move(gameBoard: BoardService, to: {i: number, j: number}) {
         let from = this.position;
-
         if(gameBoard.board[to.i][to.j] == null) {
             gameBoard.board[to.i][to.j] = gameBoard.board[from.i][from.j];
             gameBoard.board[to.i][to.j].position = to;
@@ -21,8 +21,7 @@ class checker {
     }
 
     canMakeLady() {
-        let needToEmit = false;
-
+        let needToEmit: boolean = false;
         if(this.isLady === false && this.position.i > 6 && this.color === "White") {
             this.isLady = true;
             needToEmit = true;
@@ -32,7 +31,6 @@ class checker {
             this.isLady = true;
             needToEmit = true;
         }
-
         return needToEmit;
     }
 }
