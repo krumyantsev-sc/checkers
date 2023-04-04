@@ -2,10 +2,8 @@ import boardService from "../services/BoardService"
 import {moveChecker,checkMoveVariants} from "../services/MoveService";
 import {beat, getBeatPositions} from "../services/BeatService";
 import Room from "../models/Room"
-import {IRoom} from "../models/Room"
 import Player from "../entity/player"
 import emitToPlayers from "../util/util";
-import checker from "../entity/checker";
 import {Request} from 'express';
 
 class checkersController {
@@ -39,8 +37,8 @@ class checkersController {
         return {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor};
     }
 
-    public getPositionsForHighlighting = (i: number, j: number) => {
-        return checkMoveVariants(this.boardService, i, j);
+    public getPositionsForHighlighting = (req) => {
+        return checkMoveVariants(this.boardService, req.body);
     }
 
     private checkWin = (req: Request) => {
@@ -91,7 +89,7 @@ class checkersController {
     }
 
     public getBeatPos = (position: {i: number, j: number}): Array<{i: number, j: number}> => {
-        return getBeatPositions(this.boardService, position.i, position.j);
+        return getBeatPositions(this.boardService, position);
     }
 
 

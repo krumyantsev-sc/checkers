@@ -2,37 +2,40 @@ import {getBeatPositions} from "./BeatService";
 import checker from "../entity/checker";
 import boardService from "./BoardService";
 import BoardService from "./BoardService";
+import {checkerCoords} from "../types/checkersTypes";
+import {IMoveChecker, IMoveVariants} from "./interfaces/IMoveService";
 
-function getSimpleMoveVariants(boardService: any, i: number, j: number): {i: number, j: number}[] {
-    let possibleWays: {i: number, j: number}[] = [];
+const getSimpleMoveVariants: IMoveVariants = (boardService, position) => {
+    let possibleWays: checkerCoords[] = [];
+    const {i,j} = position;
     if (boardService.board[i][j].color === "White" || boardService.board[i][j].isLady) {
-        if (boardService.isFreeCell(i+1,j-1)) {
+        if (boardService.isFreeCell({i: i+1, j: j-1})) {
             possibleWays.push({i:i+1,j:j-1});
         }
-        if (boardService.isFreeCell(i+1,j+1)) {
-            possibleWays.push({i:i+1,j:j+1});
+        if (boardService.isFreeCell({i: i+1, j: j+1})) {
+            possibleWays.push({i: i+1, j: j+1});
         }
     }
     if (boardService.board[i][j].color === "Black" || boardService.board[i][j].isLady) {
-        if (boardService.isFreeCell(i-1,j-1)) {
-            possibleWays.push({i:i-1,j:j-1});
+        if (boardService.isFreeCell({i: i-1, j: j-1})) {
+            possibleWays.push({i: i-1, j: j-1});
         }
-        if (boardService.isFreeCell(i-1,j+1)) {
-            possibleWays.push({i:i-1,j:j+1});
+        if (boardService.isFreeCell({i: i-1, j: j+1})) {
+            possibleWays.push({i: i-1, j: j+1});
         }
     }
     return possibleWays;
 }
 
-function checkMoveVariants(gameBoard: any, i: number, j: number): {i: number, j: number}[] {
-    let possibleWays: {i: number, j: number}[] = getBeatPositions(gameBoard,i,j);
+const checkMoveVariants: IMoveVariants = (gameBoard, position) => {
+    let possibleWays: {i: number, j: number}[] = getBeatPositions(gameBoard,position);
     if (possibleWays.length === 0) {
-        possibleWays = getSimpleMoveVariants(gameBoard,i,j);
+        possibleWays = getSimpleMoveVariants(gameBoard,position);
     }
     return possibleWays;
 }
 
-function moveChecker(boardService: BoardService, checker: checker | null, to: { i: number; j: number }): void {
+const moveChecker: IMoveChecker = (boardService, checker, to) => {
     checker.move(boardService,to);
 }
 

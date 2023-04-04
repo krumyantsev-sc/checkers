@@ -1,50 +1,37 @@
 import BoardService from "./BoardService";
+import {IBeat, IGetBeatPositions} from "./interfaces/IBeatService";
+import {checkerCoords, checkerCoordsWithColor} from "../types/checkersTypes";
+import {IRemoveChecker} from "./interfaces/IBeatService";
 
-type checkerCoords = {i: number, j: number};
-
-interface IGetBeatPositions {
-    (gameBoard: BoardService, i: number, j: number): checkerCoords[];
-}
-
-const getBeatPositions: IGetBeatPositions = (gameBoard, i, j) => {
+const getBeatPositions: IGetBeatPositions = (gameBoard, position) => {
     let takenPositions: checkerCoords[] = [];
+    const {i,j} = position; // maybe problem
     if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
-        if (gameBoard.isCellTaken(i+1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
-            if (gameBoard.isFreeCell(i+2,j-2)) {
-                takenPositions.push({i: i + 2, j: j - 2});
+        if (gameBoard.isCellTaken({i: i+1, j: j-1}) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j-1].color) {
+            if (gameBoard.isFreeCell({i: i+2, j: j-2})) {
+                takenPositions.push({i: i+2, j: j-2});
             }
         }
-        if (gameBoard.isCellTaken(i+1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j+1].color) {
-            if (gameBoard.isFreeCell(i+2,j+2)) {
-                takenPositions.push({i: i + 2, j: j + 2});
+        if (gameBoard.isCellTaken({i: i+1,j: j+1}) && gameBoard.board[i][j].color !== gameBoard.board[i+1][j+1].color) {
+            if (gameBoard.isFreeCell({i: i+2,j: j+2})) {
+                takenPositions.push({i: i+2, j: j+2});
             }
         }
     }
 
     if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
-        if (gameBoard.isCellTaken(i-1,j-1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j-1].color) {
-            if (gameBoard.isFreeCell(i-2,j-2)) {
-                takenPositions.push({i:i-2,j:j-2});
+        if (gameBoard.isCellTaken({i: i-1, j: j-1}) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j-1].color) {
+            if (gameBoard.isFreeCell({i: i-2, j: j-2})) {
+                takenPositions.push({i: i-2, j: j-2});
             }
         }
-        if (gameBoard.isCellTaken(i-1,j+1) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j+1].color) {
-            if (gameBoard.isFreeCell(i-2,j+2)) {
-                takenPositions.push({i:i-2,j:j+2});
+        if (gameBoard.isCellTaken({i: i-1, j: j+1}) && gameBoard.board[i][j].color !== gameBoard.board[i-1][j+1].color) {
+            if (gameBoard.isFreeCell({i: i-2, j: j+2})) {
+                takenPositions.push({i: i-2, j: j+2});
             }
         }
     }
     return takenPositions;
-}
-
-interface IBeat {
-    (gameBoard: BoardService, from: checkerCoords, to: checkerCoords): [
-        checkerCoords[],
-        ({
-            i:number,
-            j:number,
-            color:string
-        } | undefined)
-    ];
 }
 
 const beat: IBeat = (gameBoard, from, to) => {
@@ -53,14 +40,14 @@ const beat: IBeat = (gameBoard, from, to) => {
     let removedChecker;
     if (Math.abs(difference) > 1) {
         removedChecker = removeChecker(gameBoard, from, to);
-        pos = getBeatPositions(gameBoard, to.i, to.j);
+        pos = getBeatPositions(gameBoard, to);
     }
     return [pos,removedChecker];
 }
 
-function removeChecker(gameBoard: any, from: {i: number, j: number}, to: {i: number, j: number}) {
-    let currentChecker = {i:from.i,j:from.j};
-    let removedChecker: {i: number, j: number, color: string};
+const removeChecker: IRemoveChecker = (gameBoard, from, to) => {
+    let currentChecker: checkerCoords = {i:from.i, j:from.j};
+    let removedChecker: checkerCoordsWithColor;
     let removedColor: string;
     if (to.i - from.i > 0) {
         if (to.j < from.j) {

@@ -19,7 +19,7 @@ function findControllerByRoomId(activeGames: CheckersController[], roomId: strin
 
 router.post("/:roomId/getPossiblePositions", function(request: any, response: any){
     // отправляем ответ
-    response.send(findControllerByRoomId(activeGames,request.params.roomId).getPositionsForHighlighting(+request.body.i,+request.body.j));
+    response.send(findControllerByRoomId(activeGames,request.params.roomId).getPositionsForHighlighting(request));
 });
 
 router.post("/:roomId/updateBoard", function(req: any,res: any) {
