@@ -6,9 +6,11 @@ const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
 import emitToPlayers from "../util/util";
 import {Request, Response} from 'express';
+import IRoomController from "./interfaces/IRoomController";
+import {HydratedDocument} from "mongoose";
 
-class roomController {
-    connect = async (req: Request, res: Response) => {
+class roomController implements IRoomController{
+    connect = async (req: Request, res: Response): Promise<any> => {
         try {
             const token: string = req.headers.authorization.split(' ')[1];
             const {id: userId} = jwt.verify(token, secret);
@@ -16,32 +18,32 @@ class roomController {
             const roomId: string = req.body.roomId;
             const room: IRoom = await Room.findById(roomId);
             if (room.firstPlayerId === "no player") {
-                room.firstPlayerId = candidate.documents._id;
-                await room.documents.save();
+                room.firstPlayerId = candidate._id;
+                await room.save();
             }
             else if (room.secondPlayerId === "no player") {
-                room.secondPlayerId = candidate.documents._id;
-                await room.documents.save();
+                room.secondPlayerId = candidate._id;
+                await room.save();
             }
-            res.sendStatus(200);
+            res.sendStatus(200).json({status: "connected"});
         }
         catch (error) {
             console.log(error);
         }
     }
 
-    createRoom = async (req: Request, res: Response) => {
+    createRoom = async (req: Request, res: Response): Promise<any> => {
         try {
-            const room: IRoom = new Room();
-            await room.documents.save();
-            res.sendStatus(200);
+            const room: HydratedDocument<IRoom> = new Room();
+            await room.save();
+            res.sendStatus(200).json({status: "room created"});
         }
         catch (error) {
             console.log(error);
         }
     }
 
-    getRoomList = async (req: Request, res: Response) => {
+    getRoomList = async (req: Request, res: Response): Promise<any> => {
         try {
             const rooms: IRoom[] = await Room.find();
             res.json(rooms);
@@ -51,19 +53,19 @@ class roomController {
         }
     }
 
-    getRoomId = async (req: Request, res: Response) => {
+    getRoomId = async (req: Request, res: Response): Promise<any> => {
         try {
             const token: string = req.headers.authorization.split(' ')[1];
             const {id: userId} = jwt.verify(token, secret);
             let currentRoom: IRoom = await Room.findOne({$or:[{'firstPlayerId': userId}, {'secondPlayerId': userId}]});
-            res.send({roomId:currentRoom.documents._id});
+            res.send({roomId:currentRoom._id});
         }
         catch (error) {
             console.log(error);
         }
     }
 
-    getLobbyInfo = async (req: Request, res: Response) => {
+    getLobbyInfo = async (req: Request, res: Response): Promise<any> => {
         try {
             const token: string = req.headers.authorization.split(' ')[1];
             const {id: userId} = jwt.verify(token, secret);
@@ -78,9 +80,9 @@ class roomController {
                 let secondPlayerDoc: IUser = await User.findById(currentRoom.secondPlayerId);
                 secondPlayer = secondPlayerDoc.username;
             }
-            res.send({roomId: currentRoom.documents._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
+            res.send({roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
             if (currentRoom.firstPlayerId !== "no player" && currentRoom.secondPlayerId !== "no player") {
-                emitToPlayers(req,[currentRoom.firstPlayerId],'updateLobbyData', {roomId: currentRoom.documents._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
+                emitToPlayers(req,[currentRoom.firstPlayerId],'updateLobbyData', {roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer});
                 emitToPlayers(req,[currentRoom.firstPlayerId, currentRoom.secondPlayerId],'makeBtnActive',{});
             }
         }

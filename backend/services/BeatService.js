@@ -1,47 +1,48 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.beat = exports.getBeatPositions = void 0;
-function getBeatPositions(gameBoard, i, j) {
+const getBeatPositions = (gameBoard, position) => {
     let takenPositions = [];
+    const { i, j } = position; // maybe problem
     if (gameBoard.board[i][j].color === "White" || gameBoard.board[i][j].isLady) {
-        if (gameBoard.isCellTaken(i + 1, j - 1) && gameBoard.board[i][j].color !== gameBoard.board[i + 1][j - 1].color) {
-            if (gameBoard.isFreeCell(i + 2, j - 2)) {
+        if (gameBoard.isCellTaken({ i: i + 1, j: j - 1 }) && gameBoard.board[i][j].color !== gameBoard.board[i + 1][j - 1].color) {
+            if (gameBoard.isFreeCell({ i: i + 2, j: j - 2 })) {
                 takenPositions.push({ i: i + 2, j: j - 2 });
             }
         }
-        if (gameBoard.isCellTaken(i + 1, j + 1) && gameBoard.board[i][j].color !== gameBoard.board[i + 1][j + 1].color) {
-            if (gameBoard.isFreeCell(i + 2, j + 2)) {
+        if (gameBoard.isCellTaken({ i: i + 1, j: j + 1 }) && gameBoard.board[i][j].color !== gameBoard.board[i + 1][j + 1].color) {
+            if (gameBoard.isFreeCell({ i: i + 2, j: j + 2 })) {
                 takenPositions.push({ i: i + 2, j: j + 2 });
             }
         }
     }
     if (gameBoard.board[i][j].color === "Black" || gameBoard.board[i][j].isLady) {
-        if (gameBoard.isCellTaken(i - 1, j - 1) && gameBoard.board[i][j].color !== gameBoard.board[i - 1][j - 1].color) {
-            if (gameBoard.isFreeCell(i - 2, j - 2)) {
+        if (gameBoard.isCellTaken({ i: i - 1, j: j - 1 }) && gameBoard.board[i][j].color !== gameBoard.board[i - 1][j - 1].color) {
+            if (gameBoard.isFreeCell({ i: i - 2, j: j - 2 })) {
                 takenPositions.push({ i: i - 2, j: j - 2 });
             }
         }
-        if (gameBoard.isCellTaken(i - 1, j + 1) && gameBoard.board[i][j].color !== gameBoard.board[i - 1][j + 1].color) {
-            if (gameBoard.isFreeCell(i - 2, j + 2)) {
+        if (gameBoard.isCellTaken({ i: i - 1, j: j + 1 }) && gameBoard.board[i][j].color !== gameBoard.board[i - 1][j + 1].color) {
+            if (gameBoard.isFreeCell({ i: i - 2, j: j + 2 })) {
                 takenPositions.push({ i: i - 2, j: j + 2 });
             }
         }
     }
     return takenPositions;
-}
+};
 exports.getBeatPositions = getBeatPositions;
-function beat(gameBoard, from, to) {
+const beat = (gameBoard, from, to) => {
     let difference = to.i - from.i;
     let pos = [];
     let removedChecker;
     if (Math.abs(difference) > 1) {
         removedChecker = removeChecker(gameBoard, from, to);
-        pos = getBeatPositions(gameBoard, to.i, to.j);
+        pos = getBeatPositions(gameBoard, to);
     }
     return [pos, removedChecker];
-}
+};
 exports.beat = beat;
-function removeChecker(gameBoard, from, to) {
+const removeChecker = (gameBoard, from, to) => {
     let currentChecker = { i: from.i, j: from.j };
     let removedChecker;
     let removedColor;
@@ -70,5 +71,5 @@ function removeChecker(gameBoard, from, to) {
         }
     }
     return removedChecker;
-}
+};
 //# sourceMappingURL=BeatService.js.map

@@ -1,5 +1,6 @@
+import IPlayer from "./interfaces/IPlayer";
 
-class Player {
+class Player implements IPlayer {
     color: string;
     id: string;
     score: number = 0;

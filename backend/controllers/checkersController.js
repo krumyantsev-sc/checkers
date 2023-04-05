@@ -37,8 +37,8 @@ class checkersController {
                 (0, util_1.default)(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
             return { firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor };
         };
-        this.getPositionsForHighlighting = (i, j) => {
-            return (0, MoveService_1.checkMoveVariants)(this.boardService, i, j);
+        this.getPositionsForHighlighting = (req) => {
+            return (0, MoveService_1.checkMoveVariants)(this.boardService, req.body);
         };
         this.checkWin = (req) => {
             if (this.player1.score === 12) {
@@ -59,13 +59,16 @@ class checkersController {
             }
             (0, util_1.default)(req, [this.player1.id, this.player2.id], 'refreshScore', { firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score });
         };
-        this.moveCheckerOnBoard = (req, fromI, fromJ, toI, toJ) => {
-            (0, MoveService_1.moveChecker)(this.boardService, this.boardService.board[fromI][fromJ], { i: toI, j: toJ });
+        this.moveCheckerOnBoard = (req) => {
+            const { fromI, fromJ, toI, toJ } = req.body;
+            const fromObj = { i: fromI, j: fromJ };
+            const toObj = { i: toI, j: toJ };
+            (0, MoveService_1.moveChecker)(this.boardService, this.boardService.board[fromI][fromJ], toObj);
             (0, util_1.default)(req, [this.player1.id, this.player2.id], 'checkerMoved', req.body);
             if (this.boardService.board[toI][toJ].canMakeLady()) {
-                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'makeLady', { i: toI, j: toJ });
+                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'makeLady', toObj);
             }
-            let moveResult = (0, BeatService_1.beat)(this.boardService, { i: fromI, j: fromJ }, { i: toI, j: toJ });
+            let moveResult = (0, BeatService_1.beat)(this.boardService, fromObj, toObj);
             let nextBeatPositions = moveResult[0];
             let removedChecker = moveResult[1];
             if (removedChecker !== undefined) {
@@ -82,7 +85,7 @@ class checkersController {
             return nextBeatPositions;
         };
         this.getBeatPos = (position) => {
-            return (0, BeatService_1.getBeatPositions)(this.boardService, position.i, position.j);
+            return (0, BeatService_1.getBeatPositions)(this.boardService, position);
         };
         this.getBoard = () => {
             return this.boardService.getBoard();

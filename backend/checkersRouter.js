@@ -23,10 +23,10 @@ function findControllerByRoomId(activeGames, roomId) {
 }
 router.post("/:roomId/getPossiblePositions", function (request, response) {
     // отправляем ответ
-    response.send(findControllerByRoomId(activeGames, request.params.roomId).getPositionsForHighlighting(+request.body.i, +request.body.j));
+    response.send(findControllerByRoomId(activeGames, request.params.roomId).getPositionsForHighlighting(request));
 });
 router.post("/:roomId/updateBoard", function (req, res) {
-    let beatPositions = findControllerByRoomId(activeGames, req.params.roomId).moveCheckerOnBoard(req, req.body.fromI, req.body.fromJ, req.body.toI, req.body.toJ);
+    let beatPositions = findControllerByRoomId(activeGames, req.params.roomId).moveCheckerOnBoard(req);
     console.log(beatPositions);
     // io.to(secondPlayer).emit('checkerMoved', req.body);
     res.send(beatPositions);

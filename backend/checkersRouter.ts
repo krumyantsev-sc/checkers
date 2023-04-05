@@ -23,7 +23,7 @@ router.post("/:roomId/getPossiblePositions", function(request: any, response: an
 });
 
 router.post("/:roomId/updateBoard", function(req: any,res: any) {
-    let beatPositions = findControllerByRoomId(activeGames,req.params.roomId).moveCheckerOnBoard(req, req.body.fromI,req.body.fromJ,req.body.toI,req.body.toJ);
+    let beatPositions = findControllerByRoomId(activeGames,req.params.roomId).moveCheckerOnBoard(req);
     console.log(beatPositions);
     // io.to(secondPlayer).emit('checkerMoved', req.body);
     res.send(beatPositions);

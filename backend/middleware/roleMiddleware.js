@@ -13,16 +13,8 @@ const checkRole = (roles) => {
             if (!token) {
                 return res.status(403).json({ message: "Пользователь не авторизован" });
             }
-            console.log(roles, typeof roles);
             const { roles: userRole } = jwt.verify(token, secret);
-            console.log(roles, typeof roles);
             let hasRole = false;
-            console.log("2", roles[0]);
-            for (let role in roles) {
-                console.log("!", role);
-            }
-            console.log(typeof userRole);
-            console.log(userRole);
             userRole.forEach(role => {
                 if (roles.includes(role)) {
                     hasRole = true;

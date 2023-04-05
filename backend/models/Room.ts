@@ -1,7 +1,6 @@
 import {Schema, model, Document} from 'mongoose';
 
-export interface IRoom  {
-    documents: Document;
+export interface IRoom extends Document{
     firstPlayerId: string;
     secondPlayerId: string;
     winner: string;

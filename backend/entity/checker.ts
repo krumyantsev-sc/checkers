@@ -1,17 +1,19 @@
 import BoardService from "../services/BoardService";
-class checker {
+import {checkerCoords} from "../types/checkersTypes";
+import IChecker from "./interfaces/IChecker";
+class checker implements IChecker{
     color: string;
-    position: {i: number, j: number};
+    position: checkerCoords;
     id: number;
     isLady: boolean = false;
 
-    constructor(color: string, position: {i: number, j: number}, id: number) {
+    constructor(color: string, position: checkerCoords, id: number) {
         this.color = color;
         this.position = position;
         this.id = id;
     }
 
-    move(gameBoard: BoardService, to: {i: number, j: number}) {
+    move = (gameBoard: BoardService, to: checkerCoords): void => {
         let from = this.position;
         if(gameBoard.board[to.i][to.j] == null) {
             gameBoard.board[to.i][to.j] = gameBoard.board[from.i][from.j];
@@ -20,7 +22,7 @@ class checker {
         }
     }
 
-    canMakeLady() {
+    canMakeLady = (): boolean => {
         let needToEmit: boolean = false;
         if(this.isLady === false && this.position.i > 6 && this.color === "White") {
             this.isLady = true;
