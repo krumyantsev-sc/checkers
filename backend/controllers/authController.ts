@@ -7,7 +7,6 @@ const secret = require("../config/config")
 import { Request, Response } from 'express';
 import {IUser} from "../models/User"
 import {IRole} from "../models/Role"
-import IAuthController from "./interfaces/IAuthController";
 import {HydratedDocument} from "mongoose";
 
 const generateAccessToken = (id: string, roles: string[]): string => {
@@ -18,7 +17,7 @@ const generateAccessToken = (id: string, roles: string[]): string => {
     return jwt.sign(payload, secret, { expiresIn: "24h" });
 };
 
-class authController implements IAuthController{
+class authController{
     public registration = async (req: Request, res: Response): Promise<any> => {
         try {
             const errors = validationResult(req);

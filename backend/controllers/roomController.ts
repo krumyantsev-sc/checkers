@@ -6,11 +6,10 @@ const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
 import emitToPlayers from "../util/util";
 import {Request, Response} from 'express';
-import IRoomController from "./interfaces/IRoomController";
 import {HydratedDocument} from "mongoose";
 
-class roomController implements IRoomController{
-    connect = async (req: Request, res: Response): Promise<any> => {
+class roomController{
+    public connect = async (req: Request, res: Response): Promise<any> => {
         try {
             const token: string = req.headers.authorization.split(' ')[1];
             const {id: userId} = jwt.verify(token, secret);
@@ -32,7 +31,7 @@ class roomController implements IRoomController{
         }
     }
 
-    createRoom = async (req: Request, res: Response): Promise<any> => {
+    public createRoom = async (req: Request, res: Response): Promise<any> => {
         try {
             const room: HydratedDocument<IRoom> = new Room();
             await room.save();
@@ -43,7 +42,7 @@ class roomController implements IRoomController{
         }
     }
 
-    getRoomList = async (req: Request, res: Response): Promise<any> => {
+    public getRoomList = async (req: Request, res: Response): Promise<any> => {
         try {
             const rooms: IRoom[] = await Room.find();
             res.json(rooms);
@@ -53,7 +52,7 @@ class roomController implements IRoomController{
         }
     }
 
-    getRoomId = async (req: Request, res: Response): Promise<any> => {
+    public getRoomId = async (req: Request, res: Response): Promise<any> => {
         try {
             const token: string = req.headers.authorization.split(' ')[1];
             const {id: userId} = jwt.verify(token, secret);
@@ -65,7 +64,7 @@ class roomController implements IRoomController{
         }
     }
 
-    getLobbyInfo = async (req: Request, res: Response): Promise<any> => {
+    public getLobbyInfo = async (req: Request, res: Response): Promise<any> => {
         try {
             const token: string = req.headers.authorization.split(' ')[1];
             const {id: userId} = jwt.verify(token, secret);

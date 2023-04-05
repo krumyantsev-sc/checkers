@@ -1,9 +1,10 @@
 import {Schema, model, Document} from "mongoose";
+import {IRole} from "./Role";
 
 export interface IUser extends Document{
     username: string;
     password: string;
-    role: Array<string>;
+    role: Array<IRole>;
 }
 
 const UserSchema = new Schema({

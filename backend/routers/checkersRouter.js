@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Router = require("express");
 const router = new Router();
 const cors = require("cors");
-const checkersController_1 = require("./controllers/checkersController");
+const checkersController_1 = require("../controllers/checkersController");
 const _ = require("lodash");
 router.use(cors({
     origin: ['http://localhost:63342']

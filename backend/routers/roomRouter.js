@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Router = require("express");
 const router = new Router();
-const roomController_1 = require("./controllers/roomController");
+const roomController_1 = require("../controllers/roomController");
 const cors = require("cors");
-const roleMiddleware_1 = require("./middleware/roleMiddleware");
+const roleMiddleware_1 = require("../middleware/roleMiddleware");
 router.use(cors({
     origin: ['http://localhost:63342']
 }));

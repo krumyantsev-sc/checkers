@@ -7,32 +7,31 @@ import emitToPlayers from "../util/util";
 import {Request} from 'express';
 import {checkerCoords, checkerCoordsWithColor, score} from "../types/checkersTypes";
 import checker from "../entity/checker";
-import ICheckersController from "./interfaces/ICheckersController";
 
-class checkersController implements ICheckersController {
-    counter: number = 1;
-    roomId!: string;
-    readonly boardService: boardService;
-    player1: Player = new Player("White");
-    player2: Player = new Player("Black");
+class checkersController {
+    private counter: number = 1;
+    private roomId!: string;
+    private readonly boardService: boardService;
+    private player1: Player = new Player("White");
+    private player2: Player = new Player("Black");
 
     constructor() {
         this.boardService = new boardService();
     }
 
-    initializeGame = async (roomId: string): Promise<void> => {
+    public initializeGame = async (roomId: string): Promise<void> => {
         this.roomId = roomId;
         const room = await Room.findById(this.roomId);
         this.player1.id = room?.firstPlayerId!;
         this.player2.id = room?.secondPlayerId!;
     }
 
-    switchTeam = (req: Request): void => {
+    private switchTeam = (req: Request): void => {
         let currColor: string = (this.counter % 2 !== 0) ? "White" : "Black";
         emitToPlayers(req,[this.player1.id, this.player2.id],'switchTeam',{color: currColor});
     }
 
-    getMoveStatusInfo = (req: Request): score => {
+    public getMoveStatusInfo = (req: Request): score => {
         let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
         (this.counter % 2 !== 0) ?
             emitToPlayers(req,[this.player1.id],'giveListeners',{color: this.player1.color}) :
@@ -40,11 +39,11 @@ class checkersController implements ICheckersController {
         return {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor};
     }
 
-    getPositionsForHighlighting = (req: Request): checkerCoords[] => {
+    public getPositionsForHighlighting = (req: Request): checkerCoords[] => {
         return checkMoveVariants(this.boardService, req.body);
     }
 
-    checkWin = (req: Request): void => {
+    private checkWin = (req: Request): void => {
         if (this.player1.score === 12) {
             emitToPlayers(req,[this.player1.id,this.player2.id],'gameFinished',
                 {message: "Победа белых"});
@@ -55,7 +54,7 @@ class checkersController implements ICheckersController {
         }
     }
 
-    updateScore = (removedChecker: checkerCoordsWithColor, req: Request): void => {
+    private updateScore = (removedChecker: checkerCoordsWithColor, req: Request): void => {
         if (removedChecker.color === this.player1.color) {
             this.player2.score++;
             this.checkWin(req);
@@ -68,7 +67,7 @@ class checkersController implements ICheckersController {
     }
 
 
-    moveCheckerOnBoard = (req: Request): checkerCoords[] => {
+    public moveCheckerOnBoard = (req: Request): checkerCoords[] => {
         const {fromI,fromJ,toI,toJ} = req.body;
         const fromObj: checkerCoords = {i: fromI, j: fromJ};
         const toObj: checkerCoords = {i: toI, j: toJ};
@@ -94,11 +93,11 @@ class checkersController implements ICheckersController {
         return nextBeatPositions;
     }
 
-    getBeatPos = (position: checkerCoords): Array<checkerCoords> => {
+    public getBeatPos = (position: checkerCoords): Array<checkerCoords> => {
         return getBeatPositions(this.boardService, position);
     }
 
-    getBoard = (): (checker | null)[][] => {
+    public getBoard = (): (checker | null)[][] => {
         return this.boardService.getBoard();
     }
 }
