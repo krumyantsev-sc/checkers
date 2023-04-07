@@ -13,7 +13,7 @@ app.use("/auth", authRouter);
 app.use("/room", roomRouter);
 app.use("/checkers", checkersRouter);
 app.use(cors({
-    origin: ['http://localhost:63342']
+    origin: '*'
 }));
 
 app.set("socketService", new SocketService(server));

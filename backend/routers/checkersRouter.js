@@ -15,20 +15,17 @@ const cors = require("cors");
 const checkersController_1 = require("../controllers/checkersController");
 const _ = require("lodash");
 router.use(cors({
-    origin: ['http://localhost:63342']
+    origin: '*'
 }));
 let activeGames = [];
-function findControllerByRoomId(activeGames, roomId) {
+const findControllerByRoomId = (activeGames, roomId) => {
     return activeGames[_.findIndex(activeGames, function (o) { return o.roomId === roomId; })];
-}
+};
 router.post("/:roomId/getPossiblePositions", function (request, response) {
-    // отправляем ответ
     response.send(findControllerByRoomId(activeGames, request.params.roomId).getPositionsForHighlighting(request));
 });
 router.post("/:roomId/updateBoard", function (req, res) {
     let beatPositions = findControllerByRoomId(activeGames, req.params.roomId).moveCheckerOnBoard(req);
-    console.log(beatPositions);
-    // io.to(secondPlayer).emit('checkerMoved', req.body);
     res.send(beatPositions);
 });
 router.get("/:roomId/getBoard", function (req, res) {
@@ -47,7 +44,6 @@ router.get("/:roomId/initialize", function (req, res) {
 });
 router.get("/:roomId/getMoveStatusInfo", function (req, res) {
     let status = findControllerByRoomId(activeGames, req.params.roomId).getMoveStatusInfo(req);
-    console.log(status);
     res.json(status);
 });
 exports.default = router;

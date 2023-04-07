@@ -12,20 +12,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const app = express();
 const server = require('http').Server(app);
-const io_1 = require("./io");
+const io_1 = require("./util/io");
 const mongoose = require('mongoose');
 const cors = require('cors');
-const authRouter_1 = require("./authRouter");
-const checkersRouter_1 = require("./checkersRouter");
-const roomRouter_js_1 = require("./roomRouter.js");
+const authRouter_1 = require("./routers/authRouter");
+const checkersRouter_1 = require("./routers/checkersRouter");
+const roomRouter_1 = require("./routers/roomRouter");
 app.use(express.json());
-app.set("socketService", new io_1.default(server));
 app.use("/auth", authRouter_1.default);
-app.use("/room", roomRouter_js_1.default);
+app.use("/room", roomRouter_1.default);
 app.use("/checkers", checkersRouter_1.default);
 app.use(cors({
-    origin: ['http://localhost:63342']
+    origin: '*'
 }));
+app.set("socketService", new io_1.default(server));
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose.connect(`mongodb+srv://rumik:13372281@cluster0.orq3t9o.mongodb.net/?retryWrites=true&w=majority`);

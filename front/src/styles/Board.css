@@ -18,3 +18,19 @@
 .light-cell {
     background-color: lightgray;
 }
+
+.white-checker {
+    border-radius: 50%;
+    width: 95%;
+    height: 95%;
+    background-color: whitesmoke;
+    border: 2px solid black;
+}
+
+.black-checker {
+    border-radius: 50%;
+    width: 95%;
+    height: 95%;
+    background-color: grey;
+    border: 2px solid black;
+}
