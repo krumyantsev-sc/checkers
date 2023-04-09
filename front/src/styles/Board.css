@@ -1,7 +1,10 @@
 .board-container {
+    padding-top: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #FEF1D0;
+    background-size: cover;
 }
 
 .board-row {
@@ -10,27 +13,42 @@
 
 .dark-cell, .light-cell{
     width: 75px;
-    height:75px;
-    border: 1px solid black;
-    background-color: darkgoldenrod;
+    height: 75px;
+    border: .1px solid black;
+    /*animation-name: border-color;*/
+    /*animation-duration: 2s;*/
+    /*animation-timing-function: linear;*/
+    /*animation-iteration-count: infinite;*/
+
+
+    background-color: #3C352F;
 }
+
+@keyframes border-color {
+    0% {
+        border-color: black;
+    }
+    50% {
+        border-color: white;
+    }
+    100% {
+        border-color: black;
+    }
+}
+
 
 .light-cell {
-    background-color: lightgray;
+    background-color: #DFD8D0;
 }
 
-.white-checker {
-    border-radius: 50%;
-    width: 95%;
-    height: 95%;
-    background-color: whitesmoke;
-    border: 2px solid black;
-}
-
+.white-checker,
 .black-checker {
-    border-radius: 50%;
-    width: 95%;
-    height: 95%;
-    background-color: grey;
-    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+img {
+    width: 74px;
+    height: 74px;
 }
