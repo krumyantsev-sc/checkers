@@ -2,6 +2,7 @@ import React, {ReactNode, useEffect, useState} from 'react';
 import "../styles/Board.css"
 import Cell from "./Cell";
 import CheckerService from "../API/CheckerService";
+import Checker from "./Checker";
 
 
 
@@ -15,11 +16,30 @@ const Board = () => {
     }
 
     const moveChecker = (to: any) => {
-        let from: any = initPos;
-        const newBoardArr = [...boardArr]; // создаем копию массива
-        newBoardArr[to.i][to.j] = newBoardArr[from.i][from.j];
-        newBoardArr[from.i][from.j] = <Cell color="dark-cell" />;
-        setBoardArr(newBoardArr);
+        console.log("moveChecker")
+        const from: any = initPos;
+        const fromCell = boardArr[from.i][from.j];
+        console.log(fromCell)
+        const toCell = boardArr[to.i][to.j];
+        const fromChecker = fromCell.props.children && fromCell.props.children.type === Checker ? fromCell.props.children : null;
+        //const newChecker = React.cloneElement(fromChecker, {coords: {i: to.i, j: to.j}});
+        console.log(fromCell.props.children)
+        //console.log(newChecker)
+        // Создаем новую ячейку с новым элементом checker
+        //const newToCell = React.cloneElement(toCell, {checker: newChecker});
+
+        // Создаем новую ячейку на исходной позиции без элемента checker
+        const newFromCell = React.cloneElement(fromCell, {checker: null});
+
+        // Создаем новый массив, заменяя старые ячейки на новые
+        // const newBoardArr = boardArr.map((boardRow, i) =>
+        //     boardRow.map((cell, j) =>
+        //         (i === to.i && j === to.j) ? newToCell :
+        //             (i === from.i && j === from.j) ? newFromCell : cell
+        //     )
+        // );
+
+        //setBoardArr(newBoardArr);
     }
 
     useEffect(() => {

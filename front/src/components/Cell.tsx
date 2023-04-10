@@ -2,23 +2,18 @@ import React from 'react';
 import "../styles/Board.css"
 import Checker from "./Checker";
 const Cell = ({ color, checker, coords, moveChecker, setInitPos }: any) => {
-    const onDragStart = (event: any) => {
-        setInitPos(coords);
-        event.dataTransfer.setData("text/plain", "");
-    }
-
-    const onDragOver = (event: any) => {
-        event.preventDefault();
-    }
 
     const onDrop = (event: any) => {
+        console.log('drop')
         event.preventDefault();
         moveChecker(coords);
     }
-
+    const onDragOver = (event: any) => {
+        event.preventDefault();
+    }
     return (
-        <div className={`cell ${color}`} onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop}>
-            {checker && <Checker checkerColor={checker.color} />}
+        <div className={color} onDrop={onDrop} onDragOver={onDragOver}>
+            {checker && <Checker checkerColor={checker.color} coords={coords} moveChecker={moveChecker} setInitPos={setInitPos} />}
         </div>
     );
 };
