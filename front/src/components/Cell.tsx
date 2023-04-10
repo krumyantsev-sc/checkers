@@ -1,7 +1,7 @@
 import React from 'react';
 import "../styles/Board.css"
 import Checker from "./Checker";
-const Cell = ({ color, checker, coords, moveChecker, setInitPos }: any) => {
+const Cell = ({ color, checker, coords, moveChecker, setInitPos, setHighlightedPos }: any) => {
 
     const onDrop = (event: any) => {
         console.log('drop')
@@ -13,7 +13,7 @@ const Cell = ({ color, checker, coords, moveChecker, setInitPos }: any) => {
     }
     return (
         <div className={color} onDrop={onDrop} onDragOver={onDragOver}>
-            {checker && <Checker checkerColor={checker.color} coords={coords} moveChecker={moveChecker} setInitPos={setInitPos} />}
+            {checker && <Checker checkerColor={checker.color} coords={coords} moveChecker={moveChecker} setInitPos={setInitPos} setHighlightedPos={setHighlightedPos} />}
         </div>
     );
 };

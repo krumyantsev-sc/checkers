@@ -2,14 +2,22 @@ import React from 'react';
 import "../styles/Board.css"
 import whiteCheckerImg from "../assets/img/Pawn.png"
 import blackCheckerImg from "../assets/img/PawnBlack.png"
-import {Simulate} from "react-dom/test-utils";
-import dragOver = Simulate.dragOver;
+import CheckerService from "../API/CheckerService";
 
 
 const Checker = (props: any) => {
     const onDragStart = (event: any) => {
         console.log("dragstart")
-        props.setInitPos(props.coords);
+        console.log(props.coords)
+        props.setInitPos(props.coords)
+        console.log(props.coords)
+        const setHighLightedPositions = async () => {
+            CheckerService.getPositionsForHighlighting(props.coords).then((res) => {
+                props.setHighlightedPos(res.data);
+            });
+        }
+        setHighLightedPositions().then()
+
         event.dataTransfer.setData("text/plain", "");
     }
 
