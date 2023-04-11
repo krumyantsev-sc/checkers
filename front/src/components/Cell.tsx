@@ -7,6 +7,7 @@ const Cell = ({ color, checker, coords, moveChecker, setInitPos, setHighlightedP
         console.log('drop')
         event.preventDefault();
         moveChecker(coords);
+        setHighlightedPos([]);
     }
     const onDragOver = (event: any) => {
         event.preventDefault();

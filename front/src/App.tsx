@@ -1,15 +1,18 @@
 import React from 'react';
-import Board from "./components/Board";
 import "./styles/App.css"
-import SideMenu from "./components/SideMenu";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Login from "./components/Login";
+import Game from "./components/Game";
 
 
 function App() {
   return (
-    <div className="App">
-        <SideMenu/>
-        <Board/>
-    </div>
+      <BrowserRouter>
+          <Routes>
+                  <Route path="/login" element={<Login/>} />
+                  <Route path="/game" element={<Game/>} />
+          </Routes>
+      </BrowserRouter>
   );
 }
 
