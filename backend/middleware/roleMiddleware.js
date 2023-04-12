@@ -4,12 +4,11 @@ const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
 const checkRole = (roles) => {
     return (req, res, next) => {
-        var _a;
         if (req.method === "OPTIONS") {
             next();
         }
         try {
-            const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+            const token = req.cookies.jwt;
             if (!token) {
                 return res.status(403).json({ message: "Пользователь не авторизован" });
             }

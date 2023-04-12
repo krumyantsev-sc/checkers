@@ -3,12 +3,14 @@ const app = express();
 const server = require('http').Server(app);
 import SocketService from "./util/io";
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 import authRouter from './routers/authRouter'
 import checkersRouter from "./routers/checkersRouter";
 import roomRouter from './routers/roomRouter';
 
 app.use(express.json());
+app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use("/room", roomRouter);
 app.use("/checkers", checkersRouter);

@@ -1,16 +1,41 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import "./styles/App.css"
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from "./components/Login";
 import Game from "./components/Game";
+import Main from "./components/Main";
 
 
 function App() {
-  return (
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    // Функция для проверки статуса авторизации при загрузке приложения
+    useEffect(() => {
+        async function checkAuthentication() {
+            try {
+                const response = await fetch('/auth/check', { credentials: 'include' });
+                const data = await response.json();
+
+                if (data.isAuthenticated) {
+                    setIsLoggedIn(true);
+                }
+            } catch (error) {
+                console.error('Ошибка при проверке статуса авторизации:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        checkAuthentication();
+    }, []);
+
+    return (
       <BrowserRouter>
           <Routes>
-                  <Route path="/login" element={<Login/>} />
-                  <Route path="/game" element={<Game/>} />
+              <Route path="/" element={<Main/>}/>
+              <Route path="/login" element={<Login/>} />
+              <Route path="/game" element={<Game/>} />
           </Routes>
       </BrowserRouter>
   );

@@ -11,7 +11,7 @@ import {HydratedDocument} from "mongoose";
 class roomController{
     public connect = async (req: Request, res: Response): Promise<any> => {
         try {
-            const token: string = req.headers.authorization.split(' ')[1];
+            const token: string = req.cookies.jwt;
             const {id: userId} = jwt.verify(token, secret);
             const candidate: IUser = await User.findById(userId);
             const roomId: string = req.body.roomId;
@@ -54,7 +54,7 @@ class roomController{
 
     public getRoomId = async (req: Request, res: Response): Promise<any> => {
         try {
-            const token: string = req.headers.authorization.split(' ')[1];
+            const token: string = req.cookies.jwt;
             const {id: userId} = jwt.verify(token, secret);
             let currentRoom: IRoom = await Room.findOne({$or:[{'firstPlayerId': userId}, {'secondPlayerId': userId}]});
             res.send({roomId:currentRoom._id});
@@ -66,7 +66,7 @@ class roomController{
 
     public getLobbyInfo = async (req: Request, res: Response): Promise<any> => {
         try {
-            const token: string = req.headers.authorization.split(' ')[1];
+            const token: string = req.cookies.jwt;
             const {id: userId} = jwt.verify(token, secret);
             let currentRoom: IRoom = await Room.findOne({$or:[{'firstPlayerId': userId}, {'secondPlayerId': userId}]});
             let firstPlayer: string = "no player";

@@ -15,6 +15,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const secret = require("../config/config");
+const cookieParser = require('cookie-parser');
 const generateAccessToken = (id, roles) => {
     const payload = {
         id,
@@ -30,14 +31,14 @@ class authController {
                 if (!errors.isEmpty()) {
                     return res.status(400).json({ message: "Ошибка при регистрации", errors });
                 }
-                const { username, password } = req.body;
+                const { firstName, lastName, email, username, password } = req.body;
                 const candidate = yield User_1.default.findOne({ username });
                 if (candidate) {
                     return res.status(400).json({ message: "Пользователь с таким именем уже существует" });
                 }
                 const hashPassword = bcrypt.hashSync(password, 7);
                 const userRole = yield Role_1.default.findOne({ value: "USER" });
-                const user = new User_1.default({ username, password: hashPassword, role: [userRole.value] });
+                const user = new User_1.default({ firstName: firstName, lastName: lastName, email: email, username: username, password: hashPassword, role: [userRole.value] });
                 yield user.save();
                 return res.json({ message: "Пользователь успешно зарегистрирован" });
             }
@@ -58,7 +59,12 @@ class authController {
                     return res.status(400).json({ message: "Неверный пароль" });
                 }
                 const token = generateAccessToken(user._id, user.role);
-                return res.json({ token });
+                res.cookie('jwt', token, {
+                    httpOnly: true,
+                    secure: false,
+                    maxAge: 1000 * 60 * 60 * 24 // 24h
+                });
+                res.status(200).json({ message: 'Успешная авторизация' });
             }
             catch (e) {
                 console.log(e);
@@ -75,9 +81,8 @@ class authController {
             }
         });
         this.getUserName = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             try {
-                const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+                const token = req.cookies.jwt;
                 const { id: userId } = jwt.verify(token, secret);
                 const candidate = yield User_1.default.findById(userId);
                 res.json({ username: candidate === null || candidate === void 0 ? void 0 : candidate.username });

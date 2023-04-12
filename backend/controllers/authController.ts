@@ -8,8 +8,9 @@ import { Request, Response } from 'express';
 import {IUser} from "../models/User"
 import {IRole} from "../models/Role"
 import {HydratedDocument} from "mongoose";
+const cookieParser = require('cookie-parser');
 
-const generateAccessToken = (id: string, roles: string[]): string => {
+const generateAccessToken = (id: string, roles: IRole[]): string => {
     const payload = {
         id,
         roles,
@@ -24,14 +25,15 @@ class authController{
             if (!errors.isEmpty()) {
                 return res.status(400).json({message: "Ошибка при регистрации", errors});
             }
-            const {username, password} = req.body;
+            const {firstName, lastName, email, username, password} = req.body;
             const candidate: IUser = await User.findOne({username});
             if (candidate) {
                 return res.status(400).json({message: "Пользователь с таким именем уже существует"});
             }
             const hashPassword: string = bcrypt.hashSync(password, 7);
             const userRole: IRole = await Role.findOne({value: "USER"});
-            const user: HydratedDocument<IUser> = new User({username, password: hashPassword, role: [userRole.value]});
+            const user: HydratedDocument<IUser> = new User(
+                {firstName: firstName, lastName: lastName, email: email, username: username, password: hashPassword, role: [userRole.value]});
             await user.save();
             return res.json({message: "Пользователь успешно зарегистрирован"});
         } catch (e) {
@@ -52,7 +54,12 @@ class authController{
                 return res.status(400).json({message: "Неверный пароль"});
             }
             const token: string = generateAccessToken(user._id, user.role);
-            return res.json({token});
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                secure: false,
+                maxAge: 1000 * 60 * 60 * 24 // 24h
+            });
+            res.status(200).json({ message: 'Успешная авторизация' });
         } catch (e) {
             console.log(e);
             return res.status(400).json({message: "Login error"});
@@ -70,7 +77,7 @@ class authController{
 
     public getUserName = async (req: Request, res: Response): Promise<any> => {
         try {
-            const token: string = req.headers.authorization?.split(' ')[1];
+            const token: string = req.cookies.jwt;
             const { id: userId }: {id: string} = jwt.verify(token, secret) as { id: string };
             const candidate: IUser = await User.findById(userId);
             res.json({ username: candidate?.username });

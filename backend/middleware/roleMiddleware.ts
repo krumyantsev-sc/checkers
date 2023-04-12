@@ -8,7 +8,7 @@ const checkRole = (roles) => {
             next()
         }
         try {
-            const token: string = req.headers.authorization?.split(' ')[1];
+            const token: string = req.cookies.jwt;
             if (!token) {
                 return res.status(403).json({message: "Пользователь не авторизован"});
             }

@@ -1,23 +1,51 @@
 import React, { useState } from 'react';
 import '../../styles/Auth.css';
+import AuthService from "../../API/AuthService";
+import {useModal} from "../Modal/ModalContext";
+import { useNavigate } from 'react-router-dom';
 
 interface LoginFormProps {
     setLogin: (value: boolean) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
+    const { showModal, closeModal } = useModal();
     const [formData, setFormData] = useState({
         username: '',
         password: ''
     });
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleChange = (e: any) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const validatePassword = (password: string) => {
+        return password.length > 7;
     };
+
+    const login = async () => {
+        try {
+            const res = await AuthService.login(formData)
+            const data = await res.data;
+            showModal(data.message);
+        } catch (error){
+            showModal("Ошибка авторизации! Проверьте введенные данные.");
+        }
+    }
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        console.log(formData);
+        if (validatePassword(formData.password)) {
+            login();
+            setError('');
+            setTimeout(() => {
+                navigate('/'); // Перенаправление на главную страницу после закрытия модального окна
+            }, 3000);
+        } else {
+            setError('Пароль должен быть длиннее 7 символов');
+        }
+    };
+
+    const handleChange = (e: any) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     return (
@@ -44,6 +72,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
                     Войти
                 </button>
             </form>
+            {error && <div className="error-message">{error}</div>}
             <div className="backButton"
                 onClick={() => setLogin(false)}
             >

@@ -18,7 +18,7 @@ class roomController {
     constructor() {
         this.connect = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const token = req.headers.authorization.split(' ')[1];
+                const token = req.cookies.jwt;
                 const { id: userId } = jwt.verify(token, secret);
                 const candidate = yield User_1.default.findById(userId);
                 const roomId = req.body.roomId;
@@ -58,7 +58,7 @@ class roomController {
         });
         this.getRoomId = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const token = req.headers.authorization.split(' ')[1];
+                const token = req.cookies.jwt;
                 const { id: userId } = jwt.verify(token, secret);
                 let currentRoom = yield Room_1.default.findOne({ $or: [{ 'firstPlayerId': userId }, { 'secondPlayerId': userId }] });
                 res.send({ roomId: currentRoom._id });
@@ -69,7 +69,7 @@ class roomController {
         });
         this.getLobbyInfo = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const token = req.headers.authorization.split(' ')[1];
+                const token = req.cookies.jwt;
                 const { id: userId } = jwt.verify(token, secret);
                 let currentRoom = yield Room_1.default.findOne({ $or: [{ 'firstPlayerId': userId }, { 'secondPlayerId': userId }] });
                 let firstPlayer = "no player";

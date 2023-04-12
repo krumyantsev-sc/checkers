@@ -3,23 +3,30 @@
     padding: 0;
 }
 
+.page {
+    display: flex;
+    position: relative;
+}
+
 .login-container {
-    width: 750px;
-    height: 450px;
-    border: 1px solid black;
+    position: relative;
+    width: 100%;
+    height: 550px;
     background-color: #F4E7C6;
     display: flex;
+    backdrop-filter: blur(5px);
 }
 
 .auth-image {
-    width: 350px;
-    height: 450px;
+    width: 65%;
+    height: 100%;
 }
 
 body {
     background-color: #FEF1D0;
 }
 .form-container {
+    position: relative;
     padding-top: 30px;
     display: flex;
     flex-direction: column;
@@ -56,10 +63,12 @@ body {
 }
 
 .form-button-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 .authPartSpan {
@@ -67,8 +76,14 @@ body {
 }
 
 .auth-page--container {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 100px;
+    width: 100%;
+}
+
+.error-message {
+    background-color: lightcoral;
+    backdrop-filter: blur(5px);
 }
