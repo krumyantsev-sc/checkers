@@ -4,6 +4,12 @@ import {IRole} from "./Role";
 export interface IUser extends Document{
     username: string;
     password: string;
+    firstName: string;
+    lastName: string;
+    wins: number;
+    loses: number;
+    email: string;
+    avatar: string;
     role: Array<IRole>;
 }
 
