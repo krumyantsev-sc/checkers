@@ -1,0 +1,59 @@
+.list-container {
+    width: 45%;
+    height: 500px;
+    display: flex;
+}
+
+.list-container-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    width: 250px;
+    height: 355px;
+    border: 1px solid black;
+    background-color: #DFD8D0;
+}
+
+.game-image {
+    height: 250px;
+}
+
+.game-name {
+    font-size: 25px;
+    text-align: center;
+}
+
+.game-description {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.play-button {
+    background-color: #007bff;
+    color: white;
+    height: 30px;
+    width: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.play-button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+}
+
+.available-games {
+    font-size: 45px;
+}

@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import Game, {IGame} from "../models/Game"
 import User, {IUser} from "../models/User";
+import {HydratedDocument} from "mongoose";
 
 class gameController {
     createGame = async (req: Request, res: Response): Promise<any> => {
         try {
             const {name, description, logo} = req.body;
-            let game: IGame = new Game({name: name, description: description, logo: logo});
+            let game: HydratedDocument<IGame> = new Game({name: name, description: description, logo: logo});
             await game.save();
             return res.json({message: "Игра успешно создана"});
         } catch {

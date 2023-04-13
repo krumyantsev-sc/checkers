@@ -23,7 +23,7 @@ export const useModal = () => useContext(ModalContext);
 interface ModalProviderProps {
     children: React.ReactNode;
 }
-export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => { // Верните фигурные скобки здесь
+export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     const [modalState, setModalState] = useState<ModalState>({
         show: false,
         message: '',

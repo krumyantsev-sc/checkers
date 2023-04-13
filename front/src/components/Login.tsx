@@ -9,7 +9,13 @@ const Login = () => {
     return (
         <ModalProvider>
               <div className="page">
-                  <img src={checkersBoardImg} className="auth-image" alt=""/>
+                  <div
+                    className="auth-image"
+                    style={ {
+                        backgroundImage: `url(${checkersBoardImg})`
+                    } }
+                  />
+                  {/*<img src={checkersBoardImg} className="auth-image" alt=""/>*/}
                     <div className="auth-page--container">
                         <div className="login-container">
                             {login ? <LoginForm setLogin={setLogin}/> : <RegForm setLogin={setLogin}/>}
