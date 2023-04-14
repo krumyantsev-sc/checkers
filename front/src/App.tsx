@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from "./components/Login";
 import Main from "./components/Main";
 import GameList from "./components/GameList";
+import RoomList from "./components/RoomList";
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
               <Route path="/" element={<Main/>}/>
               <Route path="/login" element={<Login/>} />
               <Route path="/games" element={<GameList/>} />
+              <Route path="/games/:gameName" element={<RoomList/>} />
           </Routes>
       </BrowserRouter>
   );
