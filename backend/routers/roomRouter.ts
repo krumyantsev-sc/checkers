@@ -11,7 +11,7 @@ router.use(cors({
 router.post("/connect",roleMiddleware(["ADMIN", "USER"]), controller.connect);
 router.get("/createRoom", roleMiddleware(["ADMIN", "USER"]), controller.createRoom);
 router.get("/getRoomList", roleMiddleware(["ADMIN", "USER"]), controller.getRoomList);
-router.get("/getLobbyInfo",roleMiddleware(["ADMIN", "USER"]), controller.getLobbyInfo);
+router.post("/getLobbyInfo",roleMiddleware(["ADMIN", "USER"]), controller.getLobbyInfo);
 router.get("/getRoomId",roleMiddleware(["ADMIN", "USER"]), controller.getRoomId);
 
 

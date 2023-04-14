@@ -83,8 +83,13 @@ class roomController {
         this.getLobbyInfo = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.cookies.jwt;
+                console.log(req.body.id);
                 const { id: userId } = jwt.verify(token, secret);
                 let currentRoom = yield Room_1.default.findOne({ $or: [{ 'firstPlayerId': userId }, { 'secondPlayerId': userId }] });
+                console.log(currentRoom._id.toString());
+                if (currentRoom._id.toString() !== req.body.id) {
+                    res.sendStatus(403).json({ message: "Not allowed to join" });
+                }
                 let firstPlayer = "no player";
                 let secondPlayer = "no player";
                 if (currentRoom.firstPlayerId !== "no player") {

@@ -81,8 +81,12 @@ class roomController{
     public getLobbyInfo = async (req: Request, res: Response): Promise<any> => {
         try {
             const token: string = req.cookies.jwt;
+            console.log(req.body.id)
             const {id: userId} = jwt.verify(token, secret);
             let currentRoom: IRoom = await Room.findOne({$or:[{'firstPlayerId': userId}, {'secondPlayerId': userId}]});
+            if (currentRoom._id.toString() !== req.body.id) {
+                return res.sendStatus(403).json({message: "Not allowed to join"});
+            }
             let firstPlayer: string = "no player";
             let secondPlayer: string = "no player";
             if (currentRoom.firstPlayerId !== "no player") {

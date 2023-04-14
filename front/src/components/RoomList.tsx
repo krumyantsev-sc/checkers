@@ -27,7 +27,7 @@ const RoomList = () => {
                 setIsLoading(false);
             }
         } catch (error) {
-            console.error('Ошибка при получении игр:', error);
+            console.error('Ошибка при получении комнат:', error);
             navigate('/');
         } finally {
             setIsLoading(false);
