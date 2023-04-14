@@ -45,6 +45,20 @@ class roomController{
     public getRoomList = async (req: Request, res: Response): Promise<any> => {
         try {
             const rooms: IRoom[] = await Room.find();
+            for (let room of rooms) {
+                console.log(room);
+                if (room.firstPlayerId !== "no player") {
+                    console.log(room.firstPlayerId)
+                    let firstPlayer: IUser = await User.findById(room.firstPlayerId);
+                    console.log(firstPlayer);
+                    room.firstPlayerId = firstPlayer.username;
+                }
+                if (room.secondPlayerId !== "no player") {
+                    let secondPlayer: IUser = await User.findById(room.secondPlayerId);
+                    room.secondPlayerId = secondPlayer.username;
+                }
+            }
+
             res.json(rooms);
         }
         catch (error) {

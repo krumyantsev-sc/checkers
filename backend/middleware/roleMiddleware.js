@@ -9,6 +9,7 @@ const checkRole = (roles) => {
         }
         try {
             const token = req.cookies.jwt;
+            console.log(token);
             if (!token) {
                 return res.status(403).json({ message: "Пользователь не авторизован" });
             }

@@ -16,7 +16,7 @@ export default class AuthService {
         username: string;
         password: string;
     }) => {
-        const response = await axios.post('http://localhost:3001/auth/login', data);
+        const response = await axios.post('http://localhost:3001/auth/login', data, {withCredentials: true});
         return response;
     };
 }

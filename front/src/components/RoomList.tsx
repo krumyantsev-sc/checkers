@@ -1,12 +1,65 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import SideMenu from "./SideMenu";
 import Rooms from "./RoomList/Rooms";
+import {useNavigate, useParams} from "react-router-dom";
+import RoomService from "../API/RoomService";
+import "../styles/Rooms.css"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faArrowsRotate} from '@fortawesome/free-solid-svg-icons';
+import {match} from "assert";
 
+interface GameProps {
+    gameName: string;
+}
 const RoomList = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [rooms,setRooms] = useState([]);
+    const navigate = useNavigate();
+    let { gameName } : any = useParams<Record<keyof GameProps, string>>();
+    let gameHeader: string | undefined = gameName.toUpperCase();
+    async function getRoomsFromServer() {
+        try {
+            const response = await RoomService.getRooms();
+            const data = await response.data;
+            console.log(data);
+            if (data) {
+                setRooms(data);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            console.error('Ошибка при получении игр:', error);
+            navigate('/');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+    useEffect(() => {
+        getRoomsFromServer();
+    }, []);
+
     return (
-        <div>
+        <div className="room-page">
             <SideMenu/>
-            <Rooms/>
+            <div className="room-list-container-wrapper">
+                <span className="game-header">{gameHeader}</span>
+
+                <div className="room-list-container">
+                    <div className="room-controls">
+                        <div className="add-room-button"
+                        onClick={() => {RoomService.createRoom()}}
+                        >CREATE ROOM</div>
+                        <div
+                            className="refresh-icon-container"
+                            onClick={() => getRoomsFromServer()}
+                        >
+                        <FontAwesomeIcon className="refresh-icon" icon={faArrowsRotate} size="xl" style={{color: "#ffffff",}}/>
+                        </div>
+                    </div>
+                    {rooms.map((room:any) => (
+                        <Rooms key={room._id} firstPlayer={room.firstPlayerId} secondPlayer={room.secondPlayerId} id={room._id} />
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };

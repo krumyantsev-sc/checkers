@@ -50,6 +50,19 @@ class roomController {
         this.getRoomList = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const rooms = yield Room_1.default.find();
+                for (let room of rooms) {
+                    console.log(room);
+                    if (room.firstPlayerId !== "no player") {
+                        console.log(room.firstPlayerId);
+                        let firstPlayer = yield User_1.default.findById(room.firstPlayerId);
+                        console.log(firstPlayer);
+                        room.firstPlayerId = firstPlayer.username;
+                    }
+                    if (room.secondPlayerId !== "no player") {
+                        let secondPlayer = yield User_1.default.findById(room.secondPlayerId);
+                        room.secondPlayerId = secondPlayer.username;
+                    }
+                }
                 res.json(rooms);
             }
             catch (error) {

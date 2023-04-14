@@ -6,7 +6,8 @@ import roleMiddleware from "../middleware/roleMiddleware"
 const cors = require("cors");
 
 router.use(cors({
-    origin: '*'
+    origin: 'http://localhost:3000',
+    credentials: true
 }));
 
 router.post("/registration", [

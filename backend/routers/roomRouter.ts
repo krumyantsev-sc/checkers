@@ -4,7 +4,8 @@ import controller from "../controllers/roomController"
 const cors = require("cors");
 import roleMiddleware from "../middleware/roleMiddleware"
 router.use(cors({
-    origin: ['http://localhost:63342']
+    origin: ['http://localhost:3000'],
+    credentials: true
 }));
 
 router.post("/connect",roleMiddleware(["ADMIN", "USER"]), controller.connect);

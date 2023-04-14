@@ -6,7 +6,8 @@ const roomController_1 = require("../controllers/roomController");
 const cors = require("cors");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 router.use(cors({
-    origin: ['http://localhost:63342']
+    origin: ['http://localhost:3000'],
+    credentials: true
 }));
 router.post("/connect", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.connect);
 router.get("/createRoom", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.createRoom);
