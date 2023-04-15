@@ -17,7 +17,7 @@ const Board = () => {
     const [checkersBoard, setCheckersBoard] = useState<any[][]>([[],[],[],[],[],[],[],[]]);
     const [boardArr, setBoardArr] = useState<JSX.Element[][]>( [[],[],[],[],[],[],[],[]]);
     const [highlightPositions, setHighlightPositions] = useState<any[]>([]);
-    const [initPos,setInitPosition] = useState<any>();
+    let [initPos,setInitPosition] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
     let { gameId } : any = useParams<Record<keyof GameProps, string>>();
     const initRef = useRef(initPos);
@@ -30,11 +30,10 @@ const Board = () => {
         setHighlightPositions(positionArr);
     }
 
+
+
     const moveChecker = (to: any) => {
-        console.log(initRef.current)
-        if(initPos === undefined) {
-            setInitPosition(initRef.current);
-        }
+        console.log(initPos);
         console.log("toot",to)
         if(_.findIndex(highlightPositions,to) !== -1) {
             let newArr = [...checkersBoard];
@@ -94,7 +93,7 @@ const Board = () => {
 
         socket.connect();
         socket.on('checkerMoved', (data: any) => {
-            initRef.current = {i: data.fromI, j: data.fromJ};
+            initPos = {i: data.fromI, j: data.fromJ};
             console.log("moved")
             console.log(data);
             setInitPos({i: data.fromI, j: data.fromJ});
