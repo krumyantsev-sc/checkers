@@ -5,6 +5,7 @@ import RoomService from "../API/RoomService";
 import LobbyService from "../API/LobbyService";
 import LobbyInfo from "./Lobby/LobbyInfo";
 import "../styles/Lobby.css"
+import socket from "../API/socket"
 
 interface GameProps {
     gameName: string;
@@ -41,6 +42,17 @@ const Lobby = () => {
         getRoomInfoFromServer();
     }, []);
 
+
+    useEffect(() => {
+        socket.connect();
+        socket.on('updateLobbyData', (data) => {
+            setRoomInfo(data);
+        });
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
+
     return (
         <div>
             <SideMenu/>
@@ -53,7 +65,6 @@ const Lobby = () => {
                         firstPlayer={roomInfo.firstPlayer}
                         secondPlayer={roomInfo.secondPlayer}/>
                 </div>
-
             </div>
         </div>
     );

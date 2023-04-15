@@ -6,7 +6,8 @@ import CheckersController from "../controllers/checkersController"
 import roleMiddleware from "../middleware/roleMiddleware";
 const _ = require("lodash");
 router.use(cors({
-    origin: '*'
+    origin: 'http://localhost:3000',
+    credentials: true
 }));
 
 let activeGames: CheckersController[] = [];
@@ -24,6 +25,9 @@ router.post("/:roomId/updateBoard", function(req: Request, res: Response) {
     res.send(beatPositions);
 });
 
+router.get("/:roomId/getGameInfo", function(req: Request, res: Response) {
+    findControllerByRoomId(activeGames,req.params.roomId).getGameInfo(req,res);
+})
 router.get("/:roomId/getBoard", function(req: Request, res: Response) {
     res.send(findControllerByRoomId(activeGames,req.params.roomId).getBoard());
 });
@@ -34,9 +38,9 @@ router.post("/:roomId/getBeatPositions", function(req: Request, res: Response) {
 
 router.get("/:roomId/initialize", async function(req: Request, res: Response) {
     let checkersController = new CheckersController();
-    await checkersController.initializeGame(req.params.roomId);
+    await checkersController.initializeGame(req.params.roomId, req, res);
     activeGames.push(checkersController);
-    res.status(200).json({message:"Successfully"});
+    res.status(200).json({message:"Successfully initialized"});
 });
 
 router.get("/:roomId/getMoveStatusInfo", function (req: Request, res: Response) {

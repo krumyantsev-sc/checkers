@@ -60,3 +60,48 @@ img {
     width: 74px;
     height: 74px;
 }
+
+.scoreboard-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgba(245, 222, 179, 0.7);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+    padding: 20px;
+    width: 18vw;
+    height: 17vh;
+    margin-left: 5vw;
+}
+
+.game-page {
+    margin-left: 100px;
+    display: flex;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-player-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1vh;
+}
+
+.game-player-name {
+    font-size: 25px;
+    margin-left: 1vw;
+}
+
+.checker-name-container {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.first-player-score, .second-player-score {
+    padding-top: 3px;
+    font-size: 25px;
+    margin-left: 1vw;
+}

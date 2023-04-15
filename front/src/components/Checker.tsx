@@ -3,16 +3,21 @@ import "../styles/Board.css"
 import whiteCheckerImg from "../assets/img/Pawn.png"
 import blackCheckerImg from "../assets/img/PawnBlack.png"
 import CheckerService from "../API/CheckerService";
+import {useParams} from "react-router-dom";
 
+interface GameProps {
+    gameId: string;
+}
 
 const Checker = (props: any) => {
+    let { gameId } : any = useParams<Record<keyof GameProps, string>>();
     const onDragStart = (event: any) => {
         console.log("dragstart")
         console.log(props.coords)
         props.setInitPos(props.coords)
         console.log(props.coords)
         const setHighLightedPositions = async () => {
-            CheckerService.getPositionsForHighlighting(props.coords).then((res) => {
+            CheckerService.getPositionsForHighlighting(gameId, props.coords).then((res) => {
                 props.setHighlightedPos(res.data);
             });
         }

@@ -1,17 +1,26 @@
-import React, {ReactNode, useEffect, useState} from 'react';
+import React, {ReactNode, useEffect, useRef, useState} from 'react';
 import "../styles/Board.css"
 import Cell from "./Cell";
 import CheckerService from "../API/CheckerService";
 const _ = require("lodash")
 import Checker from "./Checker";
+import RoomService from "../API/RoomService";
+import {useParams} from "react-router-dom";
+import socket from "../API/socket";
+import {io} from "socket.io-client";
 
-
+interface GameProps {
+    gameId: string;
+}
 
 const Board = () => {
     const [checkersBoard, setCheckersBoard] = useState<any[][]>([[],[],[],[],[],[],[],[]]);
     const [boardArr, setBoardArr] = useState<JSX.Element[][]>( [[],[],[],[],[],[],[],[]]);
     const [highlightPositions, setHighlightPositions] = useState<any[]>([]);
     const [initPos,setInitPosition] = useState<any>();
+    const [isLoading, setIsLoading] = useState(true);
+    let { gameId } : any = useParams<Record<keyof GameProps, string>>();
+    const initRef = useRef(initPos);
 
     const setInitPos = (position: any) => {
         setInitPosition(position);
@@ -22,22 +31,39 @@ const Board = () => {
     }
 
     const moveChecker = (to: any) => {
-        console.log(checkersBoard);
-        let newArr = [...checkersBoard];
-        const from: any = initPos;
-        newArr[to.i][to.j] = newArr[from.i][from.j];
-        newArr[from.i][from.j] = null;
-        setCheckersBoard(newArr);
+        console.log(initRef.current)
+        if(initPos === undefined) {
+            setInitPosition(initRef.current);
+        }
+        console.log("toot",to)
+        if(_.findIndex(highlightPositions,to) !== -1) {
+            let newArr = [...checkersBoard];
+            const from: any = initPos;
+            newArr[to.i][to.j] = newArr[from.i][from.j];
+            newArr[from.i][from.j] = null;
+            setCheckersBoard(newArr);
+            CheckerService.moveChecker(gameId, {fromI: from.i, fromJ: from.j, toI: to.i, toJ: to.j}).then(r => console.log(r.data))
+        }
     }
 
-    useEffect(() => {
-        const fetchBoardFromServer = async () => {
-            const res = await CheckerService.getBoardFromServer();
+    async function fetchBoardFromServer() {
+        try {
+            const res = await CheckerService.getBoardFromServer(gameId);
             const serverBoard = await res.data;
-            setCheckersBoard(serverBoard);
-        };
-        fetchBoardFromServer();
-    },[]);
+            if (serverBoard) {
+                setCheckersBoard(serverBoard);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            console.error('Ошибка при получении поля:', error);
+           // navigate('/');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+    useEffect(() => {
+          fetchBoardFromServer();
+    }, []);
 
     const compare = (arr:any,obj: any) => {
         for (let i = 0; i < arr.length; i++) {
@@ -65,14 +91,27 @@ const Board = () => {
     }
 
     useEffect(() => {
+
+        socket.connect();
+        socket.on('checkerMoved', (data: any) => {
+            initRef.current = {i: data.fromI, j: data.fromJ};
+            console.log("moved")
+            console.log(data);
+            setInitPos({i: data.fromI, j: data.fromJ});
+            moveChecker({i: data.toI, j: data.toJ});
+        });
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
+
+    useEffect(() => {
         generateComponents();
     }, [checkersBoard]);
 
     useEffect(() => {
         generateComponents();
     },[highlightPositions]);
-
-
 
     return (
         <div className="board-container">

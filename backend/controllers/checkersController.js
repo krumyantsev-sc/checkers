@@ -15,17 +15,31 @@ const BeatService_1 = require("../services/BeatService");
 const Room_1 = require("../models/Room");
 const player_1 = require("../entity/player");
 const util_1 = require("../util/util");
+const User_1 = require("../models/User");
 class checkersController {
     constructor() {
         this.counter = 1;
         this.player1 = new player_1.default("White");
         this.player2 = new player_1.default("Black");
-        this.initializeGame = (roomId) => __awaiter(this, void 0, void 0, function* () {
+        this.initializeGame = (roomId, req, res) => __awaiter(this, void 0, void 0, function* () {
             this.roomId = roomId;
-            const room = yield Room_1.default.findById(this.roomId);
-            this.player1.id = room === null || room === void 0 ? void 0 : room.firstPlayerId;
-            this.player2.id = room === null || room === void 0 ? void 0 : room.secondPlayerId;
+            try {
+                const room = yield Room_1.default.findById(this.roomId);
+                this.player1.id = room === null || room === void 0 ? void 0 : room.firstPlayerId;
+                const firstPlayer = yield User_1.default.findById(room.firstPlayerId);
+                this.player1.name = firstPlayer.username;
+                this.player2.id = room === null || room === void 0 ? void 0 : room.secondPlayerId;
+                const secondPlayer = yield User_1.default.findById(room.secondPlayerId);
+                this.player2.name = secondPlayer.username;
+            }
+            catch (_a) {
+                return res.status(404).json({ message: "Game not found" });
+            }
         });
+        this.getGameInfo = (req, res) => {
+            res.status(201).json({ firstPlayer: { name: this.player1.name, score: this.player1.score },
+                secondPlayer: { name: this.player2.name, score: this.player2.score }, gameId: this.roomId });
+        };
         this.switchTeam = (req) => {
             let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
             (0, util_1.default)(req, [this.player1.id, this.player2.id], 'switchTeam', { color: currColor });

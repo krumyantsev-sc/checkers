@@ -37,9 +37,9 @@
     margin-top: 10vh;
 }
 
-.play-button {
+.play-button-lobby {
     text-align: center;
-    background-color: lightgray;
+    background-color: yellowgreen;
     width: 240px;
     border-radius: 5px;
     color: white;

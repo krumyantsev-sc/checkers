@@ -17,7 +17,7 @@ app.use("/auth", authRouter);
 app.use("/room", roomRouter);
 app.use("/checkers", checkersRouter);
 app.use(cors({
-    origin: 'localhost:3000',
+    origin: 'http://localhost:3000',
     credentials: true
 }));
 

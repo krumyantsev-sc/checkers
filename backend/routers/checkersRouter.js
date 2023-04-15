@@ -15,7 +15,8 @@ const cors = require("cors");
 const checkersController_1 = require("../controllers/checkersController");
 const _ = require("lodash");
 router.use(cors({
-    origin: '*'
+    origin: 'http://localhost:3000',
+    credentials: true
 }));
 let activeGames = [];
 const findControllerByRoomId = (activeGames, roomId) => {
@@ -28,6 +29,9 @@ router.post("/:roomId/updateBoard", function (req, res) {
     let beatPositions = findControllerByRoomId(activeGames, req.params.roomId).moveCheckerOnBoard(req);
     res.send(beatPositions);
 });
+router.get("/:roomId/getGameInfo", function (req, res) {
+    findControllerByRoomId(activeGames, req.params.roomId).getGameInfo(req, res);
+});
 router.get("/:roomId/getBoard", function (req, res) {
     res.send(findControllerByRoomId(activeGames, req.params.roomId).getBoard());
 });
@@ -37,9 +41,9 @@ router.post("/:roomId/getBeatPositions", function (req, res) {
 router.get("/:roomId/initialize", function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let checkersController = new checkersController_1.default();
-        yield checkersController.initializeGame(req.params.roomId);
+        yield checkersController.initializeGame(req.params.roomId, req, res);
         activeGames.push(checkersController);
-        res.status(200).json({ message: "Successfully" });
+        res.status(200).json({ message: "Successfully initialized" });
     });
 });
 router.get("/:roomId/getMoveStatusInfo", function (req, res) {

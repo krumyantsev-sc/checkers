@@ -86,9 +86,8 @@ class roomController {
                 console.log(req.body.id);
                 const { id: userId } = jwt.verify(token, secret);
                 let currentRoom = yield Room_1.default.findOne({ $or: [{ 'firstPlayerId': userId }, { 'secondPlayerId': userId }] });
-                console.log(currentRoom._id.toString());
                 if (currentRoom._id.toString() !== req.body.id) {
-                    res.sendStatus(403).json({ message: "Not allowed to join" });
+                    return res.sendStatus(403).json({ message: "Not allowed to join" });
                 }
                 let firstPlayer = "no player";
                 let secondPlayer = "no player";

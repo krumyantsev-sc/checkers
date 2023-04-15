@@ -1,12 +1,13 @@
 import boardService from "../services/BoardService"
 import {moveChecker,checkMoveVariants} from "../services/MoveService";
 import {beat, getBeatPositions} from "../services/BeatService";
-import Room from "../models/Room"
+import Room, {IRoom} from "../models/Room"
 import Player from "../entity/player"
 import emitToPlayers from "../util/util";
-import {Request} from 'express';
+import {Request, Response} from 'express';
 import {checkerCoords, checkerCoordsWithColor, score} from "../types/checkersTypes";
 import checker from "../entity/checker";
+import User from "../models/User";
 
 class checkersController {
     private counter: number = 1;
@@ -19,11 +20,24 @@ class checkersController {
         this.boardService = new boardService();
     }
 
-    public initializeGame = async (roomId: string): Promise<void> => {
+    public initializeGame = async (roomId: string, req: Request, res: Response,): Promise<any> => {
         this.roomId = roomId;
-        const room = await Room.findById(this.roomId);
-        this.player1.id = room?.firstPlayerId!;
-        this.player2.id = room?.secondPlayerId!;
+        try {
+            const room: IRoom = await Room.findById(this.roomId);
+            this.player1.id = room?.firstPlayerId!;
+            const firstPlayer = await User.findById(room.firstPlayerId);
+            this.player1.name = firstPlayer.username;
+            this.player2.id = room?.secondPlayerId!;
+            const secondPlayer = await User.findById(room.secondPlayerId);
+            this.player2.name = secondPlayer.username;
+        } catch {
+            return res.status(404).json({message: "Game not found"});
+        }
+    }
+
+    public getGameInfo = (req: Request, res: Response) => {
+        res.status(201).json({firstPlayer: {name: this.player1.name, score: this.player1.score},
+            secondPlayer: {name: this.player2.name, score: this.player2.score}, gameId: this.roomId});
     }
 
     private switchTeam = (req: Request): void => {
