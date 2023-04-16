@@ -20,7 +20,7 @@ const Board = () => {
     let [initPos,setInitPosition] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
     let { gameId } : any = useParams<Record<keyof GameProps, string>>();
-    const initRef = useRef(initPos);
+    const checkersRef = useRef(checkersBoard);
 
     const setInitPos = (position: any) => {
         setInitPosition(position);
@@ -30,17 +30,21 @@ const Board = () => {
         setHighlightPositions(positionArr);
     }
 
-
+    const updateBoard = (arr:any, to: any) => {
+        let newArr = [...arr];
+        const from: any = initPos;
+        newArr[to.i][to.j] = newArr[from.i][from.j];
+        newArr[from.i][from.j] = null;
+        return newArr;
+    }
 
     const moveChecker = (to: any) => {
         console.log(initPos);
         console.log("toot",to)
         if(_.findIndex(highlightPositions,to) !== -1) {
-            let newArr = [...checkersBoard];
+            console.log(checkersBoard)
             const from: any = initPos;
-            newArr[to.i][to.j] = newArr[from.i][from.j];
-            newArr[from.i][from.j] = null;
-            setCheckersBoard(newArr);
+            setCheckersBoard(updateBoard(checkersBoard,to));
             CheckerService.moveChecker(gameId, {fromI: from.i, fromJ: from.j, toI: to.i, toJ: to.j}).then(r => console.log(r.data))
         }
     }
@@ -96,8 +100,16 @@ const Board = () => {
             initPos = {i: data.fromI, j: data.fromJ};
             console.log("moved")
             console.log(data);
-            setInitPos({i: data.fromI, j: data.fromJ});
-            moveChecker({i: data.toI, j: data.toJ});
+            console.log("move", checkersRef.current)
+            setCheckersBoard((checkersBoard:any) => {
+                if (checkersBoard[data.fromI][data.fromJ] !== null) {
+                    return updateBoard(checkersBoard,{i: data.toI, j: data.toJ})
+                }
+                return checkersBoard;
+
+            })
+            //setInitPos({i: data.fromI, j: data.fromJ});
+            //moveChecker({i: data.toI, j: data.toJ});
         });
         return () => {
             socket.disconnect();
