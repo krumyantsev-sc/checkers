@@ -12,17 +12,15 @@ interface GameProps {
 const Checker = (props: any) => {
     let { gameId } : any = useParams<Record<keyof GameProps, string>>();
     const onDragStart = (event: any) => {
-        console.log("dragstart")
-        console.log(props.coords)
-        props.setInitPos(props.coords)
-        console.log(props.coords)
-        const setHighLightedPositions = async () => {
-            CheckerService.getPositionsForHighlighting(gameId, props.coords).then((res) => {
-                props.setHighlightedPos(res.data);
-            });
+        if (props.checkerColor === props.moveColor) {
+            props.setInitPos(props.coords)
+            const setHighLightedPositions = async () => {
+                CheckerService.getPositionsForHighlighting(gameId, props.coords).then((res) => {
+                    props.setHighlightedPos(res.data);
+                });
+            }
+            setHighLightedPositions().then()
         }
-        setHighLightedPositions().then()
-
         event.dataTransfer.setData("text/plain", "");
     }
 
@@ -37,7 +35,12 @@ const Checker = (props: any) => {
     }
 
     return (
-        <div className={props.checkerColor === "Black" ? "black-checker" : "white-checker"} onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop} draggable={true}>
+        <div
+            className={props.checkerColor === "Black" ? "black-checker" : "white-checker"}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            draggable={false}>
             <img src={props.checkerColor === "Black" ? blackCheckerImg : whiteCheckerImg} alt="checker"/>
         </div>
     );

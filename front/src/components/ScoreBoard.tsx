@@ -5,6 +5,7 @@ import CheckerService from "../API/CheckerService";
 import whiteCheckerImg from "../assets/img/Pawn.png"
 import blackCheckerImg from "../assets/img/PawnBlack.png"
 import "../styles/Board.css"
+import socket from "../API/socket";
 
 interface GameProps {
     gameName: string;
@@ -26,7 +27,6 @@ const ScoreBoard = () => {
         try {
             const response = await CheckerService.getGameInfo(gameId);
             const data = await response.data;
-            console.log(data);
             if (data) {
                 setGameInfo(data);
                 setFirstPlayerScore(data.firstPlayer.score);
@@ -39,6 +39,32 @@ const ScoreBoard = () => {
     }
     useEffect(() => {
         getGameInfoFromServer();
+    }, []);
+
+    const styles = {
+        backgroundColor: condition ? 'red' : 'blue',
+        // Другие свойства стилей...
+    };
+
+    useEffect(() => {
+        socket.connect();
+
+        const refreshScore = (data: any) => {
+            setFirstPlayerScore(data.firstPlayerScore);
+            setSecondPlayerScore(data.secondPlayerScore);
+        }
+
+        const changeMoveHighlight = (data: any) => {
+            if (data.color === "White") {
+
+            }
+        }
+
+        socket.on('refreshScore', refreshScore);
+        return () => {
+            socket.off('refreshScore', refreshScore);
+            socket.disconnect();
+        };
     }, []);
 
     return (

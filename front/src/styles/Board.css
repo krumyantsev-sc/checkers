@@ -14,14 +14,13 @@
 .dark-cell, .light-cell{
     width: 75px;
     height: 75px;
-    border: .1px solid black;
     /*animation-name: border-color;*/
     /*animation-duration: 2s;*/
     /*animation-timing-function: linear;*/
     /*animation-iteration-count: infinite;*/
 
 
-    background-color: #3C352F;
+    background-color: #b38436;
 }
 
 @keyframes border-color {
@@ -51,8 +50,6 @@
 .highlighted {
     width: 75px;
     height: 75px;
-    border: .1px solid black;
-
     background-color: darkcyan;
 }
 

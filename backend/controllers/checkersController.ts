@@ -45,12 +45,14 @@ class checkersController {
         emitToPlayers(req,[this.player1.id, this.player2.id],'switchTeam',{color: currColor});
     }
 
-    public getMoveStatusInfo = (req: Request): score => {
+    public getMoveStatusInfo = (req: Request) => {
         let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
         (this.counter % 2 !== 0) ?
             emitToPlayers(req,[this.player1.id],'giveListeners',{color: this.player1.color}) :
             emitToPlayers(req,[this.player2.id],'giveListeners',{color: this.player2.color});
-        return {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor};
+        emitToPlayers(req,[this.player1.id, this.player2.id],'switchTeam',{color: currColor});
+        //return {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor};
+        return {message: "successfully sent"};
     }
 
     public getPositionsForHighlighting = (req: Request): checkerCoords[] => {

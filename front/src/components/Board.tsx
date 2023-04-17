@@ -17,6 +17,7 @@ const Board = () => {
     const [checkersBoard, setCheckersBoard] = useState<any[][]>([[],[],[],[],[],[],[],[]]);
     const [boardArr, setBoardArr] = useState<JSX.Element[][]>( [[],[],[],[],[],[],[],[]]);
     const [highlightPositions, setHighlightPositions] = useState<any[]>([]);
+    const [draggableColor, setDraggableColor] = useState<string>("none");
     let [initPos,setInitPosition] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
     let { gameId } : any = useParams<Record<keyof GameProps, string>>();
@@ -30,22 +31,34 @@ const Board = () => {
         setHighlightPositions(positionArr);
     }
 
-    const updateBoard = (arr:any, to: any) => {
-        let newArr = [...arr];
+    const updateBoard = (currentBoard:any, to: any) => {
+        let newArr = [...currentBoard];
         const from: any = initPos;
         newArr[to.i][to.j] = newArr[from.i][from.j];
         newArr[from.i][from.j] = null;
         return newArr;
     }
 
+    const removeChecker = (currentBoard: any, checker: {i: number,j: number, color: string}) => {
+        let newArr = [...currentBoard];
+        newArr[checker.i][checker.j] = null;
+        return newArr;
+    }
+
     const moveChecker = (to: any) => {
-        console.log(initPos);
-        console.log("toot",to)
         if(_.findIndex(highlightPositions,to) !== -1) {
             console.log(checkersBoard)
             const from: any = initPos;
             setCheckersBoard(updateBoard(checkersBoard,to));
-            CheckerService.moveChecker(gameId, {fromI: from.i, fromJ: from.j, toI: to.i, toJ: to.j}).then(r => console.log(r.data))
+            CheckerService.moveChecker(gameId, {fromI: from.i, fromJ: from.j, toI: to.i, toJ: to.j}).then(r => {
+                if (r.data.length > 0) {
+                    CheckerService.getPositionsForHighlighting(gameId, to).then((res) => {
+                        setHighlightPos(res.data);
+                    });
+                } else {
+                    setDraggableColor("none");
+                }
+            });
         }
     }
 
@@ -55,6 +68,10 @@ const Board = () => {
             const serverBoard = await res.data;
             if (serverBoard) {
                 setCheckersBoard(serverBoard);
+            }
+            const colorPromise = await CheckerService.getMoveStatus(gameId);
+            const currentColor = await colorPromise.data;
+            if (currentColor) {
                 setIsLoading(false);
             }
         } catch (error) {
@@ -93,25 +110,42 @@ const Board = () => {
         setBoardArr(boardRows);
     }
 
-    useEffect(() => {
 
+
+    useEffect(() => {
         socket.connect();
-        socket.on('checkerMoved', (data: any) => {
+
+        const updateBoardFromServer = (data: any) => {
             initPos = {i: data.fromI, j: data.fromJ};
-            console.log("moved")
-            console.log(data);
-            console.log("move", checkersRef.current)
             setCheckersBoard((checkersBoard:any) => {
                 if (checkersBoard[data.fromI][data.fromJ] !== null) {
                     return updateBoard(checkersBoard,{i: data.toI, j: data.toJ})
                 }
                 return checkersBoard;
-
             })
-            //setInitPos({i: data.fromI, j: data.fromJ});
-            //moveChecker({i: data.toI, j: data.toJ});
-        });
+        }
+
+        const removeCheckerByEvent = (data: any) => {
+            setCheckersBoard((checkersBoard:any) => {
+                if (checkersBoard[data.i][data.j] !== null) {
+                    return removeChecker(checkersBoard, data);
+                }
+                return checkersBoard;
+            })
+        }
+
+        const changeDragColor = (data: {color: string}) => {
+            setDraggableColor(data.color);
+            console.log(data.color);
+        }
+
+        socket.on('giveListeners', changeDragColor);
+        socket.on('checkerMoved', updateBoardFromServer);
+        socket.on('removeChecker', removeCheckerByEvent);
         return () => {
+            socket.off('giveListeners', changeDragColor);
+            socket.off('checkerMoved', updateBoardFromServer);
+            socket.off('removeChecker', removeCheckerByEvent);
             socket.disconnect();
         };
     }, []);
@@ -130,7 +164,15 @@ const Board = () => {
                 {boardArr.map((boardRow, i) =>
                     <div className="board-row" key={i}>
                         {boardRow.map((cell, j) =>
-                            <Cell key={`${i}-${j}`} color={cell.props.color} checker={cell.props.checker} coords={{i, j}} moveChecker={moveChecker} setInitPos={setInitPos} setHighlightedPos={setHighlightPos} />
+                            <Cell key={`${i}-${j}`}
+                                  color={cell.props.color}
+                                  checker={cell.props.checker}
+                                  coords={{i, j}}
+                                  moveChecker={moveChecker}
+                                  setInitPos={setInitPos}
+                                  setHighlightedPos={setHighlightPos}
+                                  moveColor={draggableColor}
+                            />
                         )}
                     </div>
                 )}

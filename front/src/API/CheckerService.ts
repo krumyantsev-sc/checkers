@@ -26,4 +26,9 @@ export default class CheckerService {
         const res = await axios.post(`http://localhost:3001/checkers/${gameId}/updateBoard`, data,{withCredentials: true});
         return res;
     }
+
+    static async getMoveStatus(gameId: string) {
+        const res = await axios.get(`http://localhost:3001/checkers/${gameId}/getMoveStatusInfo`, {withCredentials: true});
+        return res;
+    }
 }
