@@ -22,6 +22,7 @@ const ScoreBoard = () => {
     const [gameInfo, setGameInfo] = useState<any>(null);
     const [firstPlayerScore, setFirstPlayerScore] = useState(0);
     const [secondPlayerScore, setSecondPlayerScore] = useState(0);
+    const [currentMoveColor, setCurrentMoveColor] = useState("none");
 
     async function getGameInfoFromServer() {
         try {
@@ -32,6 +33,11 @@ const ScoreBoard = () => {
                 setFirstPlayerScore(data.firstPlayer.score);
                 setSecondPlayerScore(data.secondPlayer.score);
             }
+            const colorPromise = await CheckerService.getMoveStatus(gameId);
+            const currentColor = await colorPromise.data;
+            if (currentColor) {
+                setCurrentMoveColor(currentColor.color);
+            }
         } catch (error) {
             console.error('Ошибка при получении комнат:', error);
            // navigate('/');
@@ -41,27 +47,20 @@ const ScoreBoard = () => {
         getGameInfoFromServer();
     }, []);
 
-    const styles = {
-        backgroundColor: condition ? 'red' : 'blue',
-        // Другие свойства стилей...
-    };
-
     useEffect(() => {
         socket.connect();
-
         const refreshScore = (data: any) => {
             setFirstPlayerScore(data.firstPlayerScore);
             setSecondPlayerScore(data.secondPlayerScore);
         }
 
-        const changeMoveHighlight = (data: any) => {
-            if (data.color === "White") {
-
-            }
+        const changeColor = (data: {color: string}) => {
+            setCurrentMoveColor(data.color);
         }
-
+        socket.on('switchTeam', changeColor);
         socket.on('refreshScore', refreshScore);
         return () => {
+            socket.off('giveListeners', changeColor);
             socket.off('refreshScore', refreshScore);
             socket.disconnect();
         };
@@ -73,14 +72,22 @@ const ScoreBoard = () => {
                 <>
                     <div className="game-player-container">
                         <div className="checker-name-container">
-                            <img src={whiteCheckerImg} alt="whiteChecker"/>
+                            <img
+                                src={whiteCheckerImg}
+                                alt="whiteChecker"
+                                style={currentMoveColor === "White" ? {border: "1px solid white"} : {border: "none"}}
+                            />
                             <span className="game-player-name">{gameInfo.firstPlayer.name}</span>
                         </div>
                         <span className="first-player-score">{firstPlayerScore}</span>
                     </div>
                     <div className="game-player-container">
                         <div className="checker-name-container">
-                            <img src={blackCheckerImg} alt="blackChecker"/>
+                            <img
+                                src={blackCheckerImg}
+                                alt="blackChecker"
+                                style={currentMoveColor === "Black" ? {border: "1px solid white"} : {border: "none"}}
+                            />
                             <span className="game-player-name">{gameInfo.secondPlayer.name}</span>
                         </div>
                         <span className="second-player-score">{secondPlayerScore}</span>
