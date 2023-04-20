@@ -11,9 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = require("../models/User");
 const Room_1 = require("../models/Room");
+const util_1 = require("../util/util");
 const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
-const util_1 = require("../util/util");
 class roomController {
     constructor() {
         this.connect = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -23,12 +23,12 @@ class roomController {
                 const candidate = yield User_1.default.findById(userId);
                 const roomId = req.body.roomId;
                 const room = yield Room_1.default.findById(roomId);
-                if (room.firstPlayerId === "no player") {
-                    room.firstPlayerId = candidate._id;
+                if (!room.firstPlayer && room.secondPlayer !== candidate) {
+                    room.firstPlayer = candidate;
                     yield room.save();
                 }
-                else if (room.secondPlayerId === "no player") {
-                    room.secondPlayerId = candidate._id;
+                else if (!room.secondPlayer && room.firstPlayer !== candidate) {
+                    room.secondPlayer = candidate;
                     yield room.save();
                 }
                 res.sendStatus(200).json({ status: "connected" });
@@ -49,60 +49,62 @@ class roomController {
         });
         this.getRoomList = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const rooms = yield Room_1.default.find();
-                for (let room of rooms) {
-                    console.log(room);
-                    if (room.firstPlayerId !== "no player") {
-                        console.log(room.firstPlayerId);
-                        let firstPlayer = yield User_1.default.findById(room.firstPlayerId);
-                        console.log(firstPlayer);
-                        room.firstPlayerId = firstPlayer.username;
-                    }
-                    if (room.secondPlayerId !== "no player") {
-                        let secondPlayer = yield User_1.default.findById(room.secondPlayerId);
-                        room.secondPlayerId = secondPlayer.username;
-                    }
-                }
-                res.json(rooms);
+                const rooms = yield Room_1.default.find()
+                    .populate('firstPlayer')
+                    .populate('secondPlayer')
+                    .exec();
+                const transformedRooms = rooms.map(room => {
+                    return {
+                        _id: room._id,
+                        firstPlayer: room.firstPlayer ? room.firstPlayer.username : "no player",
+                        secondPlayer: room.secondPlayer ? room.secondPlayer.username : "no player"
+                    };
+                });
+                res.json(transformedRooms);
             }
             catch (error) {
                 console.log(error);
             }
         });
-        this.getRoomId = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const token = req.cookies.jwt;
-                const { id: userId } = jwt.verify(token, secret);
-                let currentRoom = yield Room_1.default.findOne({ $or: [{ 'firstPlayerId': userId }, { 'secondPlayerId': userId }] });
-                res.send({ roomId: currentRoom._id });
-            }
-            catch (error) {
-                console.log(error);
-            }
-        });
+        // public getRoomId = async (req: Request, res: Response): Promise<any> => {
+        //     try {
+        //         const token: string = req.cookies.jwt;
+        //         const {id: userId} = jwt.verify(token, secret);
+        //         let currentRoom: IRoom = await Room.findOne({$or:[{'firstPlayerId': userId}, {'secondPlayerId': userId}]});
+        //         res.send({roomId:currentRoom._id});
+        //     }
+        //     catch (error) {
+        //         console.log(error);
+        //     }
+        // }
         this.getLobbyInfo = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
+                let firstPlayerId;
+                let secondPlayerId;
                 const token = req.cookies.jwt;
                 console.log(req.body.id);
                 const { id: userId } = jwt.verify(token, secret);
-                let currentRoom = yield Room_1.default.findOne({ $or: [{ 'firstPlayerId': userId }, { 'secondPlayerId': userId }] });
-                if (currentRoom._id.toString() !== req.body.id) {
-                    return res.sendStatus(403).json({ message: "Not allowed to join" });
+                console.log(req.body);
+                let currentRoom = yield Room_1.default.findOne({ _id: req.body.id })
+                    .populate('firstPlayer')
+                    .populate('secondPlayer')
+                    .exec();
+                if (currentRoom.firstPlayer) {
+                    firstPlayerId = currentRoom.firstPlayer._id.toString();
                 }
-                let firstPlayer = "no player";
-                let secondPlayer = "no player";
-                if (currentRoom.firstPlayerId !== "no player") {
-                    let firstPlayerDoc = yield User_1.default.findById(currentRoom.firstPlayerId);
-                    firstPlayer = firstPlayerDoc.username;
+                if (currentRoom.secondPlayer) {
+                    secondPlayerId = currentRoom.secondPlayer._id.toString();
                 }
-                if (currentRoom.secondPlayerId !== "no player") {
-                    let secondPlayerDoc = yield User_1.default.findById(currentRoom.secondPlayerId);
-                    secondPlayer = secondPlayerDoc.username;
-                }
-                res.send({ roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer });
-                if (currentRoom.firstPlayerId !== "no player" && currentRoom.secondPlayerId !== "no player") {
-                    (0, util_1.default)(req, [currentRoom.firstPlayerId], 'updateLobbyData', { roomId: currentRoom._id, firstPlayer: firstPlayer, secondPlayer: secondPlayer });
-                    (0, util_1.default)(req, [currentRoom.firstPlayerId, currentRoom.secondPlayerId], 'makeBtnActive', {});
+                //{$or:[{'firstPlayer._id': new mongoose.Types.ObjectId(userId)}, {'secondPlayer._id':  new mongoose.Types.ObjectId(userId)}]});
+                const transformedRoom = {
+                    roomId: currentRoom._id,
+                    firstPlayer: currentRoom.firstPlayer ? currentRoom.firstPlayer.username : "no player",
+                    secondPlayer: currentRoom.secondPlayer ? currentRoom.secondPlayer.username : "no player"
+                };
+                res.send(transformedRoom);
+                if (currentRoom.firstPlayer && currentRoom.secondPlayer) {
+                    (0, util_1.default)(req, [firstPlayerId], 'updateLobbyData', transformedRoom);
+                    (0, util_1.default)(req, [firstPlayerId, secondPlayerId], 'makeBtnActive', {});
                 }
             }
             catch (error) {

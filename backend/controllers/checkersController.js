@@ -15,7 +15,6 @@ const BeatService_1 = require("../services/BeatService");
 const Room_1 = require("../models/Room");
 const player_1 = require("../entity/player");
 const util_1 = require("../util/util");
-const User_1 = require("../models/User");
 class checkersController {
     constructor() {
         this.counter = 1;
@@ -23,20 +22,24 @@ class checkersController {
         this.player2 = new player_1.default("Black");
         this.initializeGame = (roomId, req, res) => __awaiter(this, void 0, void 0, function* () {
             this.roomId = roomId;
+            console.log(this.roomId);
             try {
-                const room = yield Room_1.default.findById(this.roomId);
-                this.player1.id = room === null || room === void 0 ? void 0 : room.firstPlayerId;
-                const firstPlayer = yield User_1.default.findById(room.firstPlayerId);
-                this.player1.name = firstPlayer.username;
-                this.player2.id = room === null || room === void 0 ? void 0 : room.secondPlayerId;
-                const secondPlayer = yield User_1.default.findById(room.secondPlayerId);
-                this.player2.name = secondPlayer.username;
+                const room = yield Room_1.default.findById(this.roomId)
+                    .populate('firstPlayer')
+                    .populate('secondPlayer')
+                    .exec();
+                console.log(room.firstPlayer);
+                this.player1.id = room === null || room === void 0 ? void 0 : room.firstPlayer._id.toString();
+                this.player1.name = room.firstPlayer.username;
+                this.player2.id = room === null || room === void 0 ? void 0 : room.secondPlayer._id.toString();
+                this.player2.name = room.secondPlayer.username;
             }
             catch (_a) {
                 return res.status(404).json({ message: "Game not found" });
             }
         });
         this.getGameInfo = (req, res) => {
+            console.log(this.player1.name);
             res.status(201).json({ firstPlayer: { name: this.player1.name, score: this.player1.score },
                 secondPlayer: { name: this.player2.name, score: this.player2.score }, gameId: this.roomId });
         };
@@ -49,7 +52,9 @@ class checkersController {
             (this.counter % 2 !== 0) ?
                 (0, util_1.default)(req, [this.player1.id], 'giveListeners', { color: this.player1.color }) :
                 (0, util_1.default)(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
-            return { firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor };
+            (0, util_1.default)(req, [this.player1.id, this.player2.id], 'switchTeam', { color: currColor });
+            //return {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score, color: currColor};
+            return { message: "successfully sent" };
         };
         this.getPositionsForHighlighting = (req) => {
             return (0, MoveService_1.checkMoveVariants)(this.boardService, req.body);

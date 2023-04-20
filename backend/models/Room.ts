@@ -1,21 +1,25 @@
 import {Schema, model, Document} from 'mongoose';
+import {IUser} from "./User";
+import {IGame} from "./Game";
 
 export interface IRoom extends Document{
-    firstPlayerId: string;
-    secondPlayerId: string;
-    winner: string;
+    firstPlayer: IUser['_id'];
+    secondPlayer: IUser['_id'];
+    winner: IUser['_id'];
+    status: string;
+    game: IGame['_id'];
 }
 
 const statusEnum: string[] = ['active', 'finished'];
 
 const RoomSchema = new Schema({
-    firstPlayerId: {type: String, default: "no player"},
-    secondPlayerId: {type: String, default: "no player"},
-    winner: {type: String, default: "no winner"},
+    firstPlayer: {type: Schema.Types.ObjectId, ref: 'User'},
+    secondPlayer: {type: Schema.Types.ObjectId, ref: 'User'},
+    winner: {type: Schema.Types.ObjectId, ref: 'User'},
     status: {
         type: String,
         enum: statusEnum,
-        default: 'viewer',
+        default: 'active',
     },
     game: {
         type: Schema.Types.ObjectId,

@@ -22,20 +22,24 @@ class checkersController {
 
     public initializeGame = async (roomId: string, req: Request, res: Response,): Promise<any> => {
         this.roomId = roomId;
+        console.log(this.roomId)
         try {
-            const room: IRoom = await Room.findById(this.roomId);
-            this.player1.id = room?.firstPlayerId!;
-            const firstPlayer = await User.findById(room.firstPlayerId);
-            this.player1.name = firstPlayer.username;
-            this.player2.id = room?.secondPlayerId!;
-            const secondPlayer = await User.findById(room.secondPlayerId);
-            this.player2.name = secondPlayer.username;
+            const room: IRoom = await Room.findById(this.roomId)
+                .populate('firstPlayer' )
+                .populate('secondPlayer')
+                .exec();
+            console.log(room.firstPlayer);
+            this.player1.id = room?.firstPlayer!._id.toString();
+            this.player1.name = room.firstPlayer.username;
+            this.player2.id = room?.secondPlayer._id.toString();
+            this.player2.name = room.secondPlayer.username;
         } catch {
             return res.status(404).json({message: "Game not found"});
         }
     }
 
     public getGameInfo = (req: Request, res: Response) => {
+        console.log(this.player1.name)
         res.status(201).json({firstPlayer: {name: this.player1.name, score: this.player1.score},
             secondPlayer: {name: this.player2.name, score: this.player2.score}, gameId: this.roomId});
     }

@@ -29,6 +29,7 @@ const ScoreBoard = () => {
             const response = await CheckerService.getGameInfo(gameId);
             const data = await response.data;
             if (data) {
+                console.log(data)
                 setGameInfo(data);
                 setFirstPlayerScore(data.firstPlayer.score);
                 setSecondPlayerScore(data.secondPlayer.score);

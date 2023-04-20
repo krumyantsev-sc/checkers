@@ -56,7 +56,11 @@ const RoomList = () => {
                         </div>
                     </div>
                     {rooms.map((room:any) => (
-                        <Rooms key={room._id} firstPlayer={room.firstPlayerId} secondPlayer={room.secondPlayerId} id={room._id} />
+                        <Rooms
+                            key={room._id}
+                            firstPlayer={room.firstPlayer ? room.firstPlayer : "no player"}
+                            secondPlayer={room.secondPlayer ? room.secondPlayer : "no player"}
+                            id={room._id} />
                     ))}
                 </div>
             </div>
