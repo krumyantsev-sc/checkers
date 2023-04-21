@@ -8,6 +8,7 @@ import RoomService from "../API/RoomService";
 import {useParams} from "react-router-dom";
 import socket from "../API/socket";
 import {io} from "socket.io-client";
+import {useModal} from "./Modal/ModalContext";
 
 interface GameProps {
     gameId: string;
@@ -21,7 +22,7 @@ const Board = () => {
     let [initPos,setInitPosition] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
     let { gameId } : any = useParams<Record<keyof GameProps, string>>();
-    const checkersRef = useRef(checkersBoard);
+    const { showModal, closeModal } = useModal();
 
     const setInitPos = (position: any) => {
         setInitPosition(position);
@@ -138,10 +139,16 @@ const Board = () => {
             console.log(data.color);
         }
 
+        const finishGame = (data: {message: string}) => {
+            showModal(data.message);
+        }
+
+        socket.on('gameFinished', finishGame);
         socket.on('giveListeners', changeDragColor);
         socket.on('checkerMoved', updateBoardFromServer);
         socket.on('removeChecker', removeCheckerByEvent);
         return () => {
+            socket.off('gameFinished', finishGame);
             socket.off('giveListeners', changeDragColor);
             socket.off('checkerMoved', updateBoardFromServer);
             socket.off('removeChecker', removeCheckerByEvent);

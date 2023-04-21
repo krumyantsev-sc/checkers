@@ -7,6 +7,7 @@ import emitToPlayers from "../util/util";
 import {Request, Response} from 'express';
 import {checkerCoords, checkerCoordsWithColor, score} from "../types/checkersTypes";
 import checker from "../entity/checker";
+import {FinishMessage} from "../enums/finishMessage";
 import User from "../models/User";
 
 class checkersController {
@@ -27,7 +28,7 @@ class checkersController {
             const room: IRoom = await Room.findById(this.roomId)
                 .populate('firstPlayer' )
                 .populate('secondPlayer')
-                .exec();
+                .exec()
             console.log(room.firstPlayer);
             this.player1.id = room?.firstPlayer!._id.toString();
             this.player1.name = room.firstPlayer.username;
@@ -65,12 +66,16 @@ class checkersController {
 
     private checkWin = (req: Request): void => {
         if (this.player1.score === 12) {
-            emitToPlayers(req,[this.player1.id,this.player2.id],'gameFinished',
-                {message: "Победа белых"});
+            emitToPlayers(req,[this.player1.id],'gameFinished',
+                {message: FinishMessage.Win});
+            emitToPlayers(req,[this.player2.id],'gameFinished',
+                {message: FinishMessage.Lose});
         }
         if (this.player2.score === 12) {
-            emitToPlayers(req,[this.player1.id,this.player2.id],'gameFinished',
-                {message: "Победа черных"});
+            emitToPlayers(req,[this.player1.id],'gameFinished',
+                {message: FinishMessage.Lose});
+            emitToPlayers(req,[this.player2.id],'gameFinished',
+                {message: FinishMessage.Win});
         }
     }
 

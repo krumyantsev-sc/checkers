@@ -85,7 +85,7 @@ class roomController{
             let currentRoom: IRoom = await Room.findOne({_id: req.body.id})
                 .populate('firstPlayer' )
                 .populate('secondPlayer')
-                .exec();
+                .exec()
             if (currentRoom.firstPlayer) {
                 firstPlayerId = currentRoom.firstPlayer._id.toString();
             }

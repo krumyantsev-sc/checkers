@@ -15,6 +15,7 @@ const BeatService_1 = require("../services/BeatService");
 const Room_1 = require("../models/Room");
 const player_1 = require("../entity/player");
 const util_1 = require("../util/util");
+const finishMessage_1 = require("../enums/finishMessage");
 class checkersController {
     constructor() {
         this.counter = 1;
@@ -61,10 +62,12 @@ class checkersController {
         };
         this.checkWin = (req) => {
             if (this.player1.score === 12) {
-                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'gameFinished', { message: "Победа белых" });
+                (0, util_1.default)(req, [this.player1.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Win });
+                (0, util_1.default)(req, [this.player2.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Lose });
             }
             if (this.player2.score === 12) {
-                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'gameFinished', { message: "Победа черных" });
+                (0, util_1.default)(req, [this.player1.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Lose });
+                (0, util_1.default)(req, [this.player2.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Win });
             }
         };
         this.updateScore = (removedChecker, req) => {
