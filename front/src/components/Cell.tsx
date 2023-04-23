@@ -16,6 +16,7 @@ const Cell = ({ color, checker, coords, moveChecker, setInitPos, setHighlightedP
         <div className={color} onDrop={onDrop} onDragOver={onDragOver}>
             {checker && <Checker
                 checkerColor={checker.color}
+                isLady = {checker.isLady}
                 coords={coords}
                 moveChecker={moveChecker}
                 setInitPos={setInitPos}

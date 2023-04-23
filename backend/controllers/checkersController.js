@@ -16,8 +16,12 @@ const Room_1 = require("../models/Room");
 const player_1 = require("../entity/player");
 const util_1 = require("../util/util");
 const finishMessage_1 = require("../enums/finishMessage");
+const User_1 = require("../models/User");
+const EventEmitter = require("events");
+const checkersRouter_1 = require("../routers/checkersRouter");
 class checkersController {
     constructor() {
+        this.emitter = new EventEmitter();
         this.counter = 1;
         this.player1 = new player_1.default("White");
         this.player2 = new player_1.default("Black");
@@ -38,6 +42,14 @@ class checkersController {
             catch (_a) {
                 return res.status(404).json({ message: "Game not found" });
             }
+        });
+        this.updateStats = (winnerId, loserId) => __awaiter(this, void 0, void 0, function* () {
+            const winner = yield User_1.default.findById(winnerId);
+            const loser = yield User_1.default.findById(loserId);
+            winner.statistics.wins++;
+            loser.statistics.loses++;
+            yield winner.save();
+            yield loser.save();
         });
         this.getGameInfo = (req, res) => {
             console.log(this.player1.name);
@@ -62,12 +74,18 @@ class checkersController {
         };
         this.checkWin = (req) => {
             if (this.player1.score === 12) {
-                (0, util_1.default)(req, [this.player1.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Win });
-                (0, util_1.default)(req, [this.player2.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Lose });
+                this.updateStats(this.player1.id, this.player2.id).then(() => {
+                    (0, util_1.default)(req, [this.player1.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Win });
+                    (0, util_1.default)(req, [this.player2.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Lose });
+                    (0, checkersRouter_1.removeController)(this.roomId);
+                });
             }
             if (this.player2.score === 12) {
-                (0, util_1.default)(req, [this.player1.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Lose });
-                (0, util_1.default)(req, [this.player2.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Win });
+                this.updateStats(this.player2.id, this.player1.id).then(() => {
+                    (0, util_1.default)(req, [this.player1.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Lose });
+                    (0, util_1.default)(req, [this.player2.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Win });
+                    (0, checkersRouter_1.removeController)(this.roomId);
+                });
             }
         };
         this.updateScore = (removedChecker, req) => {

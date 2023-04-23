@@ -2,6 +2,8 @@ import React from 'react';
 import "../styles/Board.css"
 import whiteCheckerImg from "../assets/img/Pawn.png"
 import blackCheckerImg from "../assets/img/PawnBlack.png"
+import whiteQueenImg from "../assets/img/WhiteQueen.png"
+import blackQueenImg from "../assets/img/BlackQueen.png"
 import CheckerService from "../API/CheckerService";
 import {useParams} from "react-router-dom";
 
@@ -41,7 +43,8 @@ const Checker = (props: any) => {
             onDragOver={onDragOver}
             onDrop={onDrop}
             draggable={false}>
-            <img src={props.checkerColor === "Black" ? blackCheckerImg : whiteCheckerImg} alt="checker"/>
+            <img src={props.checkerColor === "Black" ? (props.isLady ? blackQueenImg : blackCheckerImg) :
+                (props.isLady ? whiteQueenImg : whiteCheckerImg)} alt="checker"/>
         </div>
     );
 };

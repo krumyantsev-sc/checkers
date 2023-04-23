@@ -9,8 +9,11 @@ import {checkerCoords, checkerCoordsWithColor, score} from "../types/checkersTyp
 import checker from "../entity/checker";
 import {FinishMessage} from "../enums/finishMessage";
 import User from "../models/User";
+import EventEmitter = require("events");
+import {removeController} from "../routers/checkersRouter";
 
 class checkersController {
+    emitter = new EventEmitter();
     private counter: number = 1;
     private roomId!: string;
     private readonly boardService: boardService;
@@ -39,6 +42,15 @@ class checkersController {
         }
     }
 
+    private updateStats = async (winnerId: string, loserId: string): Promise<void> => {
+        const winner = await User.findById(winnerId);
+        const loser = await User.findById(loserId);
+        winner.statistics.wins++;
+        loser.statistics.loses++;
+        await winner.save();
+        await loser.save();
+}
+
     public getGameInfo = (req: Request, res: Response) => {
         console.log(this.player1.name)
         res.status(201).json({firstPlayer: {name: this.player1.name, score: this.player1.score},
@@ -66,16 +78,22 @@ class checkersController {
 
     private checkWin = (req: Request): void => {
         if (this.player1.score === 12) {
-            emitToPlayers(req,[this.player1.id],'gameFinished',
-                {message: FinishMessage.Win});
-            emitToPlayers(req,[this.player2.id],'gameFinished',
-                {message: FinishMessage.Lose});
+            this.updateStats(this.player1.id, this.player2.id).then(() => {
+                emitToPlayers(req,[this.player1.id],'gameFinished',
+                    {message: FinishMessage.Win});
+                emitToPlayers(req,[this.player2.id],'gameFinished',
+                    {message: FinishMessage.Lose});
+                removeController(this.roomId);
+            })
         }
         if (this.player2.score === 12) {
-            emitToPlayers(req,[this.player1.id],'gameFinished',
-                {message: FinishMessage.Lose});
-            emitToPlayers(req,[this.player2.id],'gameFinished',
-                {message: FinishMessage.Win});
+            this.updateStats(this.player2.id, this.player1.id).then(() => {
+                emitToPlayers(req,[this.player1.id],'gameFinished',
+                    {message: FinishMessage.Lose});
+                emitToPlayers(req,[this.player2.id],'gameFinished',
+                    {message: FinishMessage.Win});
+                removeController(this.roomId);
+            })
         }
     }
 

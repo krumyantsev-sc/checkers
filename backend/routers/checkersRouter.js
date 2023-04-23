@@ -9,9 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.removeController = void 0;
 const Router = require("express");
 const router = new Router();
 const cors = require("cors");
+const EventEmitter = require('events');
+const checkersEmitter = new EventEmitter();
 const checkersController_1 = require("../controllers/checkersController");
 const _ = require("lodash");
 router.use(cors({
@@ -19,6 +22,16 @@ router.use(cors({
     credentials: true
 }));
 let activeGames = [];
+const removeController = (controllerId) => {
+    console.log("do", activeGames);
+    const index = _.findIndex(activeGames, function (o) { return o.roomId === controllerId; });
+    if (index !== -1) {
+        activeGames.splice(index, 1);
+    }
+    console.log("posle", activeGames);
+};
+exports.removeController = removeController;
+checkersEmitter.on('gameEnded', exports.removeController);
 const findControllerByRoomId = (activeGames, roomId) => {
     return activeGames[_.findIndex(activeGames, function (o) { return o.roomId === roomId; })];
 };

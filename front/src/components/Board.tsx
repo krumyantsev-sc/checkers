@@ -10,6 +10,7 @@ import socket from "../API/socket";
 import {io} from "socket.io-client";
 import {useModal} from "./Modal/ModalContext";
 
+
 interface GameProps {
     gameId: string;
 }
@@ -43,6 +44,12 @@ const Board = () => {
     const removeChecker = (currentBoard: any, checker: {i: number,j: number, color: string}) => {
         let newArr = [...currentBoard];
         newArr[checker.i][checker.j] = null;
+        return newArr;
+    }
+
+    const makeCheckerLady = (currentBoard: any, checker: {i: number,j: number}) => {
+        let newArr = [...currentBoard];
+        newArr[checker.i][checker.j].isLady = true;
         return newArr;
     }
 
@@ -143,11 +150,21 @@ const Board = () => {
             showModal(data.message);
         }
 
+        const makeLady = (coords: {i: number, j: number}) => {
+            setCheckersBoard((checkersBoard:any) => {
+                if (!checkersBoard[coords.i][coords.j].isLady) {
+                    return makeCheckerLady(checkersBoard, coords);
+                }
+                return checkersBoard;
+            })
+        }
+        socket.on('makeLady', makeLady);
         socket.on('gameFinished', finishGame);
         socket.on('giveListeners', changeDragColor);
         socket.on('checkerMoved', updateBoardFromServer);
         socket.on('removeChecker', removeCheckerByEvent);
         return () => {
+            socket.off('makeLady', makeLady);
             socket.off('gameFinished', finishGame);
             socket.off('giveListeners', changeDragColor);
             socket.off('checkerMoved', updateBoardFromServer);

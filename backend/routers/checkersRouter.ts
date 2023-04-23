@@ -2,6 +2,9 @@ import {Request, Response} from "express";
 const Router = require("express");
 const router = new Router();
 const cors = require("cors");
+const EventEmitter = require('events');
+const checkersEmitter = new EventEmitter();
+
 import CheckersController from "../controllers/checkersController"
 import roleMiddleware from "../middleware/roleMiddleware";
 const _ = require("lodash");
@@ -12,6 +15,16 @@ router.use(cors({
 
 let activeGames: CheckersController[] = [];
 
+export const removeController = (controllerId: string) => {
+    console.log("do",activeGames)
+    const index = _.findIndex(activeGames, function(o) { return o.roomId === controllerId; });
+    if (index !== -1) {
+        activeGames.splice(index, 1);
+    }
+    console.log("posle", activeGames)
+}
+
+checkersEmitter.on('gameEnded', removeController);
 const findControllerByRoomId = (activeGames: CheckersController[], roomId: string): CheckersController => {
     return activeGames[_.findIndex(activeGames, function(o) { return o.roomId === roomId; })];
 }
