@@ -12,7 +12,7 @@ const UserSchema = new mongoose_1.Schema({
     lastName: { type: String, required: true },
     statistics: { type: StatisticsSchema, default: { wins: 0, loses: 0 } },
     email: { type: String, required: true },
-    avatar: { type: String },
+    avatar: { type: String, default: "profile-avatar-default.png" },
     role: [{ type: String, ref: 'Role' }]
 });
 const UserModel = (0, mongoose_1.model)("User", UserSchema);

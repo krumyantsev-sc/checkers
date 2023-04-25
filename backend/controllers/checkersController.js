@@ -22,7 +22,7 @@ const checkersRouter_1 = require("../routers/checkersRouter");
 class checkersController {
     constructor() {
         this.emitter = new EventEmitter();
-        this.counter = 1;
+        this.counter = 2;
         this.player1 = new player_1.default("White");
         this.player2 = new player_1.default("Black");
         this.initializeGame = (roomId, req, res) => __awaiter(this, void 0, void 0, function* () {

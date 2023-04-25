@@ -1,3 +1,5 @@
+import * as path from "path";
+
 const express = require("express");
 const app = express();
 const server = require('http').Server(app);
@@ -9,6 +11,7 @@ import authRouter from './routers/authRouter'
 import checkersRouter from "./routers/checkersRouter";
 import roomRouter from './routers/roomRouter';
 import gamesRouter from "./routers/gamesRouter";
+import profileRouter from "./routers/profileRouter";
 
 app.use(express.json());
 app.use(cookieParser());
@@ -16,6 +19,8 @@ app.use("/games", gamesRouter);
 app.use("/auth", authRouter);
 app.use("/room", roomRouter);
 app.use("/checkers", checkersRouter);
+app.use("/profile", profileRouter)
+app.use('/static', express.static(path.join(__dirname, 'static')));
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true

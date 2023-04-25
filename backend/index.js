@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const path = require("path");
 const express = require("express");
 const app = express();
 const server = require('http').Server(app);
@@ -20,12 +21,15 @@ const authRouter_1 = require("./routers/authRouter");
 const checkersRouter_1 = require("./routers/checkersRouter");
 const roomRouter_1 = require("./routers/roomRouter");
 const gamesRouter_1 = require("./routers/gamesRouter");
+const profileRouter_1 = require("./routers/profileRouter");
 app.use(express.json());
 app.use(cookieParser());
 app.use("/games", gamesRouter_1.default);
 app.use("/auth", authRouter_1.default);
 app.use("/room", roomRouter_1.default);
 app.use("/checkers", checkersRouter_1.default);
+app.use("/profile", profileRouter_1.default);
+app.use('/static', express.static(path.join(__dirname, 'static')));
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true

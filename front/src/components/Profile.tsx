@@ -1,0 +1,65 @@
+import React, {useEffect, useState} from 'react';
+import SideMenu from "./SideMenu";
+import "../styles/Profile.css"
+import ProfileInfo from "./Profile/ProfileInfo";
+import ProfileService from "../API/ProfileService";
+import Loading from "./Loading";
+import EditProfile from "./Profile/EditProfile";
+import History from "./Profile/History";
+
+const Profile = () => {
+    const [info, setInfo] = useState(true);
+    const [edit, setEdit] = useState(false);
+    const [history, setHistory] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [userInfo,setUserInfo] = useState<any>();
+    const [userAvatar,setUserAvatar] = useState('');
+    async function getUserInfoFromServer() {
+        try {
+            const avatarResponse = await ProfileService.getUserAvatar();
+            const avatarData = await avatarResponse.data;
+            const userInfoResponse = await ProfileService.getUserInfo();
+            const infoData = await userInfoResponse.data;
+            if (avatarData && infoData) {
+                setUserAvatar(`http://localhost:3001/static/avatar/${avatarData.avatar}`);
+                setUserInfo(infoData);
+                console.log(infoData)
+                setIsLoading(false);
+            }
+        } catch (error) {
+            console.error('Ошибка при получении данных с сервера:', error);
+            //navigate('/');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+    useEffect(() => {
+        getUserInfoFromServer();
+    }, []);
+    if (isLoading) {
+        return <Loading/>;
+    }
+    return (
+        <div className="profile-page">
+            <SideMenu/>
+            <div className="information-container">
+                {info && <ProfileInfo userInfo={userInfo} userAvatar={userAvatar}/>}
+                {edit && <EditProfile/>}
+                {history && <History/>}
+                <div className="buttons-container">
+                    <div className="profile-info-button"
+                    onClick={()=>{setEdit(false); setHistory(false); setInfo(true)}}
+                    >Profile</div>
+                    <div className="edit-profile-button"
+                    onClick={()=>{setEdit(true); setHistory(false); setInfo(false)}}
+                    >Edit</div>
+                    <div className="history-button"
+                    onClick={()=>{setEdit(false); setHistory(true); setInfo(false)}}
+                    >History</div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Profile;

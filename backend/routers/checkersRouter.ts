@@ -50,9 +50,11 @@ router.post("/:roomId/getBeatPositions", function(req: Request, res: Response) {
 });
 
 router.get("/:roomId/initialize", async function(req: Request, res: Response) {
-    let checkersController = new CheckersController();
-    await checkersController.initializeGame(req.params.roomId, req, res);
-    activeGames.push(checkersController);
+    if (!findControllerByRoomId(activeGames,req.params.roomId)) {
+        let checkersController = new CheckersController();
+        await checkersController.initializeGame(req.params.roomId, req, res);
+        activeGames.push(checkersController);
+    }
     res.status(200).json({message:"Successfully initialized"});
 });
 

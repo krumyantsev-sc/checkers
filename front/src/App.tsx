@@ -7,6 +7,7 @@ import GameList from "./components/GameList";
 import RoomList from "./components/RoomList";
 import Lobby from "./components/Lobby";
 import Game from "./components/Game";
+import Profile from "./components/Profile";
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
               <Route path="/games/:gameName" element={<RoomList/>} />
               <Route path="/games/:gameName/:gameId" element={<Lobby/>} />
               <Route path="/games/:gameName/:gameId/game" element={<Game/>} />
+              <Route path="/profile" element={<Profile/>} />
           </Routes>
       </BrowserRouter>
   );

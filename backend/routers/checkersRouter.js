@@ -53,9 +53,11 @@ router.post("/:roomId/getBeatPositions", function (req, res) {
 });
 router.get("/:roomId/initialize", function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        let checkersController = new checkersController_1.default();
-        yield checkersController.initializeGame(req.params.roomId, req, res);
-        activeGames.push(checkersController);
+        if (!findControllerByRoomId(activeGames, req.params.roomId)) {
+            let checkersController = new checkersController_1.default();
+            yield checkersController.initializeGame(req.params.roomId, req, res);
+            activeGames.push(checkersController);
+        }
         res.status(200).json({ message: "Successfully initialized" });
     });
 });

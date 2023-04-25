@@ -14,7 +14,7 @@ import {removeController} from "../routers/checkersRouter";
 
 class checkersController {
     emitter = new EventEmitter();
-    private counter: number = 1;
+    private counter: number = 2;
     private roomId!: string;
     private readonly boardService: boardService;
     private player1: Player = new Player("White");
