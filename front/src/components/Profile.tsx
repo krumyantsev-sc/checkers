@@ -39,12 +39,16 @@ const Profile = () => {
     if (isLoading) {
         return <Loading/>;
     }
+    const infoContainerSize = {
+        height: edit ? '80vh' : '55vh',
+        marginLeft: edit ? '25vw' : '35vw'
+    };
     return (
         <div className="profile-page">
             <SideMenu/>
-            <div className="information-container">
+            <div className="information-container" style={infoContainerSize}>
                 {info && <ProfileInfo userInfo={userInfo} userAvatar={userAvatar}/>}
-                {edit && <EditProfile/>}
+                {edit && <EditProfile userInfo={userInfo} userAvatarLink={userAvatar}/>}
                 {history && <History/>}
                 <div className="buttons-container">
                     <div className="profile-info-button"
