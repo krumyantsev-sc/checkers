@@ -9,7 +9,7 @@ router.use(cors({
     credentials: true
 }));
 
-router.get("/getAvatar", controller.getProfileAvatar);
+router.get("/getAvatar",roleMiddleware(["USER", "ADMIN"]), controller.getProfileAvatar);
 router.get("/getProfileInfo", roleMiddleware(["ADMIN", "USER"]), controller.getProfileInfo);
-
+router.post('/update-profile', controller.upload.single('avatar'), controller.updateProfile);
 export default router;

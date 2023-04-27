@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import "../../styles/Profile.css"
+import {useModal} from "../Modal/ModalContext";
+import ProfileService from "../../API/ProfileService";
 
 interface Props {
     userInfo: {
@@ -14,6 +16,7 @@ interface Props {
 }
 
 const EditProfile: React.FC<Props> = ({userInfo, userAvatarLink}) => {
+    const {showModal, closeModal} = useModal();
     const [username, setUsername] = useState(userInfo.username);
     const [email, setEmail] = useState(userInfo.email);
     const [password, setPassword] = useState("");
@@ -25,28 +28,30 @@ const EditProfile: React.FC<Props> = ({userInfo, userAvatarLink}) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            alert('Passwords do not match');
+            showModal('Пароль не совпадает!');
             return;
         }
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('firstName', firstName);
+        formData.append('lastName', lastName);
+        if (avatar) {
+            formData.append('avatar', avatar);
+        }
 
-        // Handle form submission logic
+        ProfileService.updateProfile(formData)
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     return (
         <div className="profile-edit-form">
             <form onSubmit={handleSubmit}>
-                <div className="label-input-container">
-                    <label>
-                        Username:
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            pattern="^[a-zA-Z0-9]+$"
-                            required
-                        />
-                    </label>
-                </div>
                 <label>
                     E-mail:
                     <input
@@ -101,6 +106,7 @@ const EditProfile: React.FC<Props> = ({userInfo, userAvatarLink}) => {
                     <input
                         type="file"
                         accept="image/*"
+                        name="avatar"
                         onChange={(e) => setAvatar(e.target.files ? e.target.files[0] : null)}
                     />
                 </label>

@@ -15,10 +15,23 @@ const generateAccessToken = (id: string, roles: IRole[]): string => {
         id,
         roles,
     };
-    return jwt.sign(payload, secret, { expiresIn: "24h" });
+    return jwt.sign(payload, secret, { expiresIn: "1m" });
 };
 
 class authController{
+    public check = async (req: Request, res: Response) => {
+        try {
+            const token: string = req.cookies.jwt;
+            if (!token) {
+                return res.status(200).json({isAuthenticated: false});
+            }
+            const payload = jwt.verify(token,secret);
+            return res.status(200).json({isAuthenticated: true});
+        } catch (e) {
+            return res.status(403).json({isAuthenticated: false});
+        }
+    }
+
     public registration = async (req: Request, res: Response): Promise<any> => {
         try {
             const errors = validationResult(req);
@@ -57,7 +70,6 @@ class authController{
             res.cookie('jwt', token, {
                 httpOnly: true,
                 secure: false,
-                maxAge: 1000 * 60 * 60 * 24 // 24h
             });
             res.status(200).json({ message: 'Успешная авторизация' });
         } catch (e) {

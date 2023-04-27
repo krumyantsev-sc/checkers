@@ -6,6 +6,7 @@ import ProfileService from "../API/ProfileService";
 import Loading from "./Loading";
 import EditProfile from "./Profile/EditProfile";
 import History from "./Profile/History";
+import {ModalProvider} from "./Modal/ModalContext";
 
 const Profile = () => {
     const [info, setInfo] = useState(true);
@@ -27,7 +28,8 @@ const Profile = () => {
                 setIsLoading(false);
             }
         } catch (error) {
-            console.error('Ошибка при получении данных с сервера:', error);
+            console.log('Ошибка при получении данных с сервера:', error);
+            //window.location.reload();
             //navigate('/');
         } finally {
             setIsLoading(false);
@@ -48,7 +50,7 @@ const Profile = () => {
             <SideMenu/>
             <div className="information-container" style={infoContainerSize}>
                 {info && <ProfileInfo userInfo={userInfo} userAvatar={userAvatar}/>}
-                {edit && <EditProfile userInfo={userInfo} userAvatarLink={userAvatar}/>}
+                {edit && <ModalProvider> <EditProfile userInfo={userInfo} userAvatarLink={userAvatar}/></ModalProvider>}
                 {history && <History/>}
                 <div className="buttons-container">
                     <div className="profile-info-button"

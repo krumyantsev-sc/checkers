@@ -16,6 +16,7 @@ router.post("/registration", [
 ],controller.registration);
 router.post("/login",controller.login);
 router.get("/users", roleMiddleware(["ADMIN"]),controller.getUsers);
+router.get("/check", roleMiddleware(["ADMIN", "USER"]),controller.check);
 router.get("/getUserName", roleMiddleware(["ADMIN", "USER"]),controller.getUserName);
 
 export default router;

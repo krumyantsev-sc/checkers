@@ -19,4 +19,8 @@ export default class AuthService {
         const response = await axios.post('http://localhost:3001/auth/login', data, {withCredentials: true});
         return response;
     };
+    static check = async () => {
+        const response = await axios.get('http://localhost:3001/auth/check', {withCredentials: true});
+        return response;
+    };
 }
