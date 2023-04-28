@@ -16,7 +16,7 @@ const RoomList = () => {
     const [rooms,setRooms] = useState([]);
     const navigate = useNavigate();
     let { gameName } : any = useParams<Record<keyof GameProps, string>>();
-    let gameHeader: string | undefined = gameName.toUpperCase();
+    let gameHeader: string = gameName.toUpperCase();
     async function getRoomsFromServer() {
         try {
             const response = await RoomService.getRooms();
@@ -46,7 +46,7 @@ const RoomList = () => {
                 <div className="room-list-container">
                     <div className="room-controls">
                         <div className="add-room-button"
-                        onClick={() => {RoomService.createRoom()}}
+                        onClick={() => {RoomService.createRoom(gameHeader)}}
                         >CREATE ROOM</div>
                         <div
                             className="refresh-icon-container"

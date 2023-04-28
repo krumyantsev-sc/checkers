@@ -5,8 +5,8 @@ export default class RoomService {
         const response = await axios.get('http://localhost:3001/room/getRoomList', {withCredentials: true});
         return response;
     };
-    static createRoom = async () => {
-        const response = await axios.get('http://localhost:3001/room/createRoom', {withCredentials: true});
+    static createRoom = async (gameName: string) => {
+        const response = await axios.get(`http://localhost:3001/room/createRoom/${gameName.toLowerCase()}`, {withCredentials: true});
         return response;
     };
     static connectToRoom = async (roomId: number) => {

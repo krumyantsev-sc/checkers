@@ -10,7 +10,7 @@ router.use(cors({
     credentials: true
 }));
 router.post("/connect", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.connect);
-router.get("/createRoom", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.createRoom);
+router.get("/createRoom/:gameName", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.createRoom);
 router.get("/getRoomList", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.getRoomList);
 router.post("/getLobbyInfo", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), roomController_1.default.getLobbyInfo);
 // router.get("/getRoomId",roleMiddleware(["ADMIN", "USER"]), controller.getRoomId);

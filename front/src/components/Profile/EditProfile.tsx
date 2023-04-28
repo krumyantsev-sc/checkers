@@ -13,9 +13,10 @@ interface Props {
         loses: number
     }
     userAvatarLink: string;
+    updateInfo(): Promise<void>;
 }
 
-const EditProfile: React.FC<Props> = ({userInfo, userAvatarLink}) => {
+const EditProfile: React.FC<Props> = ({userInfo, userAvatarLink, updateInfo}) => {
     const {showModal, closeModal} = useModal();
     const [username, setUsername] = useState(userInfo.username);
     const [email, setEmail] = useState(userInfo.email);
@@ -39,10 +40,12 @@ const EditProfile: React.FC<Props> = ({userInfo, userAvatarLink}) => {
         if (avatar) {
             formData.append('avatar', avatar);
         }
-
         ProfileService.updateProfile(formData)
             .then((response) => {
-                console.log(response.data);
+                if (response.data.status === "success") {
+                    showModal(response.data.message);
+                    updateInfo();
+                }
             })
             .catch((error) => {
                 console.error(error);

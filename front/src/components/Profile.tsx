@@ -43,14 +43,15 @@ const Profile = () => {
     }
     const infoContainerSize = {
         height: edit ? '80vh' : '55vh',
-        marginLeft: edit ? '25vw' : '35vw'
+        width: history ? "55vw" : "30vw",
+        marginLeft: history ? "25vw" : "35vw"
     };
     return (
         <div className="profile-page">
             <SideMenu/>
             <div className="information-container" style={infoContainerSize}>
                 {info && <ProfileInfo userInfo={userInfo} userAvatar={userAvatar}/>}
-                {edit && <ModalProvider> <EditProfile userInfo={userInfo} userAvatarLink={userAvatar}/></ModalProvider>}
+                {edit && <ModalProvider> <EditProfile userInfo={userInfo} userAvatarLink={userAvatar} updateInfo={getUserInfoFromServer}/></ModalProvider>}
                 {history && <History/>}
                 <div className="buttons-container">
                     <div className="profile-info-button"

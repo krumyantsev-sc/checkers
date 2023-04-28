@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = require("../models/User");
 const Room_1 = require("../models/Room");
 const util_1 = require("../util/util");
+const Game_1 = require("../models/Game");
 const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
 class roomController {
@@ -39,7 +40,10 @@ class roomController {
         });
         this.createRoom = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const room = new Room_1.default();
+                const gameName = req.params.gameName;
+                console.log(gameName);
+                const game = yield Game_1.default.findOne({ name: gameName });
+                const room = new Room_1.default({ game: game });
                 yield room.save();
                 res.sendStatus(200).json({ status: "room created" });
             }

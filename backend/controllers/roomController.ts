@@ -3,6 +3,7 @@ import Room, {IRoom} from "../models/Room"
 import emitToPlayers from "../util/util";
 import {Request, Response} from 'express';
 import {HydratedDocument} from "mongoose";
+import Game, {IGame} from "../models/Game";
 
 const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
@@ -33,7 +34,10 @@ class roomController{
 
     public createRoom = async (req: Request, res: Response): Promise<any> => {
         try {
-            const room: HydratedDocument<IRoom> = new Room();
+            const gameName: string = req.params.gameName;
+            console.log(gameName);
+            const game: IGame = await Game.findOne({name: gameName});
+            const room: HydratedDocument<IRoom> = new Room({game: game});
             await room.save();
             res.sendStatus(200).json({status: "room created"});
         }

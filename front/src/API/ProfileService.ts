@@ -15,4 +15,8 @@ export default class ProfileService {
         }});
         return response;
     };
+    static getHistory = async (page: number) => {
+        const response = await axios.get(`http://localhost:3001/profile/getHistory?page=${page}`, {withCredentials: true});
+        return response;
+    }
 }
