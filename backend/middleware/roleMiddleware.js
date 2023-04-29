@@ -28,6 +28,7 @@ const checkRole = (roles) => {
                 return res.status(200).json({ message: "Пользователь не авторизован" });
             }
             const { roles: userRole } = jwt.verify(token, secret);
+            checkRoleInJWT(userRole, roles, res);
             console.log(userRole);
             next();
         }

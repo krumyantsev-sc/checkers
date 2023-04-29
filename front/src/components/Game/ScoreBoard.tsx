@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import RoomService from "../API/RoomService";
-import CheckerService from "../API/CheckerService";
-import whiteCheckerImg from "../assets/img/Pawn.png"
-import blackCheckerImg from "../assets/img/PawnBlack.png"
-import "../styles/Board.css"
-import socket from "../API/socket";
+import RoomService from "../../API/RoomService";
+import CheckerService from "../../API/CheckerService";
+import whiteCheckerImg from "../../assets/img/Pawn.png"
+import blackCheckerImg from "../../assets/img/PawnBlack.png"
+import "../../styles/Board.css"
+import socket from "../../API/socket";
 
 interface GameProps {
     gameName: string;

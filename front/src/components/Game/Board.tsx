@@ -1,14 +1,14 @@
 import React, {ReactNode, useEffect, useRef, useState} from 'react';
-import "../styles/Board.css"
+import "../../styles/Board.css"
 import Cell from "./Cell";
-import CheckerService from "../API/CheckerService";
+import CheckerService from "../../API/CheckerService";
 const _ = require("lodash")
 import Checker from "./Checker";
-import RoomService from "../API/RoomService";
+import RoomService from "../../API/RoomService";
 import {useParams} from "react-router-dom";
-import socket from "../API/socket";
+import socket from "../../API/socket";
 import {io} from "socket.io-client";
-import {useModal} from "./Modal/ModalContext";
+import {useModal} from "../Modal/ModalContext";
 
 
 interface GameProps {

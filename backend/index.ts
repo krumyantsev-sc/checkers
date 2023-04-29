@@ -12,10 +12,12 @@ import checkersRouter from "./routers/checkersRouter";
 import roomRouter from './routers/roomRouter';
 import gamesRouter from "./routers/gamesRouter";
 import profileRouter from "./routers/profileRouter";
+import chatRouter from "./routers/chatRouter";
 
 app.use(express.json());
 app.use(cookieParser());
 app.use("/games", gamesRouter);
+app.use("/chat", chatRouter);
 app.use("/auth", authRouter);
 app.use("/room", roomRouter);
 app.use("/checkers", checkersRouter);

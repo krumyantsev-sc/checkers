@@ -1,5 +1,5 @@
 import React from 'react';
-import "../styles/Board.css"
+import "../../styles/Board.css"
 import Checker from "./Checker";
 const Cell = ({ color, checker, coords, moveChecker, setInitPos, setHighlightedPos, moveColor }: any) => {
 

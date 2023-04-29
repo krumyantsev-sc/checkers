@@ -1,10 +1,10 @@
 import React from 'react';
-import "../styles/Board.css"
-import whiteCheckerImg from "../assets/img/Pawn.png"
-import blackCheckerImg from "../assets/img/PawnBlack.png"
-import whiteQueenImg from "../assets/img/WhiteQueen.png"
-import blackQueenImg from "../assets/img/BlackQueen.png"
-import CheckerService from "../API/CheckerService";
+import "../../styles/Board.css"
+import whiteCheckerImg from "../../assets/img/Pawn.png"
+import blackCheckerImg from "../../assets/img/PawnBlack.png"
+import whiteQueenImg from "../../assets/img/WhiteQueen.png"
+import blackQueenImg from "../../assets/img/BlackQueen.png"
+import CheckerService from "../../API/CheckerService";
 import {useParams} from "react-router-dom";
 
 interface GameProps {

@@ -6,7 +6,7 @@ import Main from "./components/Main";
 import GameList from "./components/GameList";
 import RoomList from "./components/RoomList";
 import Lobby from "./components/Lobby";
-import Game from "./components/Game";
+import Game from "./components/Game/Game";
 import Profile from "./components/Profile";
 import AuthService from "./API/AuthService";
 import Loading from "./components/Loading";
