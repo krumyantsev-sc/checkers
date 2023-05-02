@@ -25,14 +25,22 @@ const generateAccessToken = (id, roles) => {
 };
 class authController {
     constructor() {
+        this.logout = (req, res) => {
+            res.clearCookie('jwt');
+            return res.status(200).json({ message: "Successful logout" });
+        };
         this.check = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.cookies.jwt;
                 if (!token) {
-                    return res.status(200).json({ isAuthenticated: false });
+                    return res.status(200).json({ isAuthenticated: false, isAdmin: false });
                 }
                 const payload = jwt.verify(token, secret);
-                return res.status(200).json({ isAuthenticated: true });
+                let isAdmin = false;
+                if (payload.roles.includes("ADMIN")) {
+                    isAdmin = true;
+                }
+                return res.status(200).json({ isAuthenticated: true, isAdmin: isAdmin });
             }
             catch (e) {
                 return res.status(403).json({ isAuthenticated: false });
@@ -85,11 +93,22 @@ class authController {
         });
         this.getUsers = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const users = yield User_1.default.find();
-                res.json(users);
+                const page = parseInt(req.query.page) || 1;
+                const limit = 15;
+                const skip = (page - 1) * limit;
+                const users = yield User_1.default.find()
+                    .skip(skip)
+                    .limit(limit)
+                    .sort({ _id: -1 })
+                    .select('username email role');
+                //.populate('role', 'name');
+                const totalUsers = yield User_1.default.countDocuments();
+                const totalPages = Math.ceil(totalUsers / limit);
+                res.json({ users, totalPages });
             }
-            catch (e) {
-                console.log(e);
+            catch (error) {
+                console.error('Ошибка при получении пользователей с пагинацией:', error);
+                res.status(500).json({ error: 'Произошла ошибка сервера' });
             }
         });
         this.getUserName = (req, res) => __awaiter(this, void 0, void 0, function* () {

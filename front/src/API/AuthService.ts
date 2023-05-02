@@ -19,8 +19,19 @@ export default class AuthService {
         const response = await axios.post('http://localhost:3001/auth/login', data, {withCredentials: true});
         return response;
     };
+
     static check = async () => {
         const response = await axios.get('http://localhost:3001/auth/check', {withCredentials: true});
         return response;
     };
+
+    static logout = async () => {
+        const response = await axios.get('http://localhost:3001/auth/logout', {withCredentials: true});
+        return response;
+    }
+
+    static getUsers = async (currentPage: number) => {
+        const response = await axios.get(`http://localhost:3001/auth/users?page=${currentPage}`, {withCredentials: true});
+        return response;
+    }
 }

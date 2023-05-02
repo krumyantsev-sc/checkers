@@ -8,6 +8,8 @@
     background-color: #111;
     overflow-x: hidden;
     padding-top: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidenav a {
@@ -31,17 +33,21 @@
 }
 
 .logout {
+    margin-top: 20px;
     font-size: 25px;
     width: 40px;
     display: flex;
     justify-content: center;
+    cursor: pointer;
 }
 
 .logout-container {
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    margin-bottom: 50px;
 }
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}

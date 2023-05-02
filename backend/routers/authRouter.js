@@ -18,5 +18,6 @@ router.post("/login", authController_1.default.login);
 router.get("/users", (0, roleMiddleware_1.default)(["ADMIN"]), authController_1.default.getUsers);
 router.get("/check", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), authController_1.default.check);
 router.get("/getUserName", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), authController_1.default.getUserName);
+router.get("/logout", (0, roleMiddleware_1.default)(["ADMIN", "USER"]), authController_1.default.logout);
 exports.default = router;
 //# sourceMappingURL=authRouter.js.map

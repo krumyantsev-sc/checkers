@@ -19,14 +19,23 @@ const generateAccessToken = (id: string, roles: IRole[]): string => {
 };
 
 class authController{
+    public logout = (req: Request, res: Response) => {
+        res.clearCookie('jwt');
+        return res.status(200).json({message: "Successful logout"});
+    }
+
     public check = async (req: Request, res: Response) => {
         try {
             const token: string = req.cookies.jwt;
             if (!token) {
-                return res.status(200).json({isAuthenticated: false});
+                return res.status(200).json({isAuthenticated: false, isAdmin: false});
             }
             const payload = jwt.verify(token,secret);
-            return res.status(200).json({isAuthenticated: true});
+            let isAdmin = false;
+            if (payload.roles.includes("ADMIN")) {
+                isAdmin = true;
+            }
+            return res.status(200).json({isAuthenticated: true, isAdmin: isAdmin});
         } catch (e) {
             return res.status(403).json({isAuthenticated: false});
         }
@@ -80,10 +89,21 @@ class authController{
 
     public getUsers = async (req: Request, res: Response): Promise<any> => {
         try {
-            const users: IUser[] = await User.find();
-            res.json(users);
-        } catch (e) {
-            console.log(e);
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = 15;
+            const skip = (page - 1) * limit;
+            const users = await User.find()
+                .skip(skip)
+                .limit(limit)
+                .sort({ _id: -1 })
+                .select('username email role')
+                //.populate('role', 'name');
+            const totalUsers = await User.countDocuments();
+            const totalPages = Math.ceil(totalUsers / limit);
+            res.json({ users, totalPages });
+        } catch (error) {
+            console.error('Ошибка при получении пользователей с пагинацией:', error);
+            res.status(500).json({ error: 'Произошла ошибка сервера' });
         }
     }
 

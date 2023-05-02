@@ -12,20 +12,29 @@ import AuthService from "./API/AuthService";
 import Loading from "./components/Loading";
 import ProtectedRoute from "./components/util/ProtectedRoute";
 import SideMenu from "./components/SideMenu";
+import {AuthProvider, useAuth} from "./components/auth/AuthContext";
+import UserList from "./components/admin/UserList";
 
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { isAuthenticated, login, logout, giveAdminAccess } = useAuth();
 
-    // Функция для проверки статуса авторизации при загрузке приложения
-    useEffect(() => {
+
         async function checkAuthentication() {
             try {
                 const response = await AuthService.check();
                 const data = await response.data;
                 if (data.isAuthenticated) {
+                    console.log("authenticated")
                     setIsLoggedIn(true);
+                    login();
+                } else {
+                    setIsLoggedIn(false);
+                }
+                if (data.isAdmin) {
+                    giveAdminAccess();
                 }
             } catch (error) {
                 console.log('Ошибка при проверке статуса авторизации:', error);
@@ -36,33 +45,36 @@ function App() {
         }
 
         checkAuthentication();
-    }, []);
+
 
     if (isLoading) {
         return <Loading/>;
     }
     return (
-      <BrowserRouter>
-          <Routes>
-              <Route path="/" element={<Main/>}/>
-              <Route path="/login" element={<Login/>} />
-              <Route path="/games" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
-                  <GameList/>
-              </ProtectedRoute> } />
-              <Route path="/games/:gameName" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
-                  <RoomList/>
-              </ProtectedRoute> } />
-              <Route path="/games/:gameName/:gameId" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
-                  <Lobby/>
-              </ProtectedRoute> } />
-              <Route path="/games/:gameName/:gameId/game" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
-                  <Game/>
-              </ProtectedRoute> } />
-              <Route path="/profile" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
-                  <Profile/>
-              </ProtectedRoute> } />
-          </Routes>
-      </BrowserRouter>
+          <BrowserRouter>
+              <Routes>
+                  <Route path="/" element={<Main/>}/>
+                  <Route path="/login" element={<Login/>} />
+                  <Route path="/games" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
+                      <GameList/>
+                  </ProtectedRoute> } />
+                  <Route path="/games/:gameName" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
+                      <RoomList/>
+                  </ProtectedRoute> } />
+                  <Route path="/games/:gameName/:gameId" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
+                      <Lobby/>
+                  </ProtectedRoute> } />
+                  <Route path="/games/:gameName/:gameId/game" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
+                      <Game/>
+                  </ProtectedRoute> } />
+                  <Route path="/profile" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
+                      <Profile/>
+                  </ProtectedRoute> } />
+                  <Route path="/admin" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
+                      <UserList/>
+                  </ProtectedRoute> } />
+              </Routes>
+          </BrowserRouter>
   );
 }
 

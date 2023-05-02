@@ -18,5 +18,6 @@ router.post("/login",controller.login);
 router.get("/users", roleMiddleware(["ADMIN"]),controller.getUsers);
 router.get("/check", roleMiddleware(["ADMIN", "USER"]),controller.check);
 router.get("/getUserName", roleMiddleware(["ADMIN", "USER"]),controller.getUserName);
+router.get("/logout", roleMiddleware(["ADMIN", "USER"]), controller.logout);
 
 export default router;

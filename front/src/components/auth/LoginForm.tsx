@@ -3,12 +3,14 @@ import '../../styles/Auth.css';
 import AuthService from "../../API/AuthService";
 import {useModal} from "../Modal/ModalContext";
 import { useNavigate } from 'react-router-dom';
+import {useAuth} from "./AuthContext";
 
 interface LoginFormProps {
     setLogin: (value: boolean) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
+    const { login } = useAuth();
     const { showModal, closeModal } = useModal();
     const [formData, setFormData] = useState({
         username: '',
@@ -21,11 +23,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
         return password.length > 7;
     };
 
-    const login = async () => {
+    const logIn = async () => {
         try {
             const res = await AuthService.login(formData)
             const data = await res.data;
             showModal(data.message);
+            login();
+            setTimeout(() => {
+                navigate('/');
+            }, 3000);
         } catch (error){
             showModal("Ошибка авторизации! Проверьте введенные данные.");
         }
@@ -34,11 +40,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
     const handleSubmit = (e: any) => {
         e.preventDefault();
         if (validatePassword(formData.password)) {
-            login();
+            logIn();
             setError('');
-            setTimeout(() => {
-                navigate('/'); // Перенаправление на главную страницу после закрытия модального окна
-            }, 3000);
         } else {
             setError('Пароль должен быть длиннее 7 символов');
         }
