@@ -34,4 +34,19 @@ export default class AuthService {
         const response = await axios.get(`http://localhost:3001/auth/users?page=${currentPage}`, {withCredentials: true});
         return response;
     }
+
+    static searchUsers = async (searchTerm: string) => {
+        const response = await axios.get(`http://localhost:3001/auth/users/search`, {withCredentials: true, params: { searchTerm }});
+        return response;
+    }
+
+    static makeAdmin = async (userId: number) => {
+        const response = await axios.get(`http://localhost:3001/auth/users/${userId}/makeAdmin`, {withCredentials: true});
+        return response;
+    }
+
+    static ban = async (userId: number) => {
+        const response = await axios.get(`http://localhost:3001/auth/users/${userId}/ban`, {withCredentials: true});
+        return response;
+    }
 }

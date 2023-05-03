@@ -19,4 +19,8 @@ export default class ProfileService {
         const response = await axios.get(`http://localhost:3001/profile/getHistory?page=${page}`, {withCredentials: true});
         return response;
     }
+    static getProfileById = async (id: number) => {
+        const response = await axios.get(`http://localhost:3001/profile/${id}`, {withCredentials: true});
+        return response;
+    }
 }

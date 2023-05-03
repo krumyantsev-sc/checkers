@@ -14,6 +14,7 @@ import ProtectedRoute from "./components/util/ProtectedRoute";
 import SideMenu from "./components/SideMenu";
 import {AuthProvider, useAuth} from "./components/auth/AuthContext";
 import UserList from "./components/admin/UserList";
+import {ModalProvider} from "./components/Modal/ModalContext";
 
 
 function App() {
@@ -71,7 +72,9 @@ function App() {
                       <Profile/>
                   </ProtectedRoute> } />
                   <Route path="/admin" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
+                      <ModalProvider>
                       <UserList/>
+                      </ModalProvider>
                   </ProtectedRoute> } />
               </Routes>
           </BrowserRouter>

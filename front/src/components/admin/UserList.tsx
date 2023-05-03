@@ -5,21 +5,24 @@ import AuthService from "../../API/AuthService";
 import Loading from "../Loading";
 import SideMenu from "../SideMenu";
 import SearchBar from "./SearchBar";
+import {useModal} from "../Modal/ModalContext";
 
 const UserList = () => {
     const [users, setUsers] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
+    const { showModal, closeModal } = useModal();
 
+    async function fetchUsers() {
+        const response = await AuthService.getUsers(currentPage);
+        console.log(response.data)
+        setUsers(response.data.users);
+        setTotalPages(response.data.totalPages);
+        setIsLoading(false);
+    }
     useEffect(() => {
-        async function fetchUsers() {
-            const response = await AuthService.getUsers(currentPage);
-            console.log(response.data)
-            setUsers(response.data.users);
-            setTotalPages(response.data.totalPages);
-            setIsLoading(false);
-        }
+
 
         fetchUsers();
     }, [currentPage]);
@@ -29,14 +32,33 @@ const UserList = () => {
     };
 
     const handleBlockUser = (userId: number) => {
-
+        AuthService.ban(userId).then((res) => {
+            showModal(res.data.message);
+            fetchUsers();
+        })
+            .catch((err) => {
+                if (err.response && err.response.status === 409) {
+                    showModal(err.response.data.message);
+                } else {
+                    showModal('Error occurred while blocking user');
+            }});
     };
     const handleMakeAdmin = (userId: number) => {
-
+        AuthService.makeAdmin(userId).then((res) => {
+            showModal(res.data.message);
+            fetchUsers();
+        })
+            .catch((err) => {
+                if (err.response && err.response.status === 409) {
+                    showModal(err.response.data.message);
+                } else {
+                    showModal('Error occurred while making user an admin');
+            }});
     };
 
     const handleSearch = (query: string) => {
         console.log('Поисковый запрос:', query);
+        AuthService.searchUsers(query).then((res) => {setUsers(res.data)})
     };
 
     if (isLoading) {
@@ -47,7 +69,7 @@ const UserList = () => {
         <div>
             <SideMenu/>
             <div className="users-page">
-                <h1>Список пользователей</h1>
+                <h1>User List</h1>
                 <div className="search-bar-container"><SearchBar onSearch={handleSearch}/></div>
                 <UsersTable
                     users={users}

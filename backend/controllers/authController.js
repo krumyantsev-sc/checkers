@@ -111,6 +111,40 @@ class authController {
                 res.status(500).json({ error: 'Произошла ошибка сервера' });
             }
         });
+        this.getUserSearch = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const searchTerm = req.query.searchTerm;
+            const regex = new RegExp(`^${searchTerm}`, 'i');
+            const users = yield User_1.default.find({
+                $or: [
+                    { username: regex },
+                    { email: regex },
+                ],
+            })
+                .select('username email role');
+            res.send(users);
+        });
+        this.makeAdmin = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const userId = req.params.id;
+            const user = yield User_1.default.findById(userId);
+            const adminRole = yield Role_1.default.findOne({ value: "ADMIN" });
+            if (user.role.includes(adminRole.value)) {
+                return res.status(409).json({ message: "Пользователь уже обладает правами администратора" });
+            }
+            user.role.push(adminRole.value);
+            user.save();
+            return res.status(200).json({ message: "Права успешно изменены" });
+        });
+        this.ban = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const userId = req.params.id;
+            const user = yield User_1.default.findById(userId);
+            const bannedRole = yield Role_1.default.findOne({ value: "BANNED" });
+            if (user.role.includes(bannedRole.value)) {
+                return res.status(409).json({ message: "Пользователь уже забанен" });
+            }
+            user.role.push(bannedRole.value);
+            user.save();
+            return res.status(200).json({ message: "Права успешно изменены" });
+        });
         this.getUserName = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.cookies.jwt;

@@ -149,6 +149,27 @@ class UserProfileController {
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+
+    getInfoById = async (req: Request, res: Response) => {
+        try {
+            const userId = req.params.id;
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            return res.json({
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                wins: user.statistics.wins,
+                loses: user.statistics.loses,
+                avatar: user.avatar
+            });
+        } catch (e) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
 }
 
 export default new UserProfileController();

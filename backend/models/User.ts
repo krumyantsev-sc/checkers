@@ -19,7 +19,7 @@ export interface IUser extends Document{
     statistics: IStatistics;
     email: string;
     avatar: string;
-    role: Array<IRole>;
+    role: Array<IRole|string>;
 }
 
 const UserSchema = new Schema({

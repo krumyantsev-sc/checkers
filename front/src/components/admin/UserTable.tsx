@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../../styles/UserList.css';
+import UserModal from "./UserModal";
 
 interface User {
     _id: number;
@@ -17,6 +18,18 @@ interface UsersTableProps {
 }
 
 const UserTable: React.FC<UsersTableProps> = ({ users, totalPages, onPageChange, onBlockUser, onMakeAdmin }) => {
+    const [userId, setUserId] = useState<number | null>(null);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+    const handleClickOpen = (id: number) => {
+        setUserId(id);
+        setModalOpen(true);
+    };
+
+    const handleClose = () => {
+        setModalOpen(false);
+    };
+
     const renderPagination = () => {
         const pageNumbers = [];
         for (let i = 1; i <= totalPages; i++) {
@@ -44,7 +57,12 @@ const UserTable: React.FC<UsersTableProps> = ({ users, totalPages, onPageChange,
                 <tbody>
                 {users.map((user) => (
                     <tr key={user._id}>
-                        <td>{user._id}</td>
+                        <td><div
+                            className="user-info-admin-button"
+                            onClick={() => handleClickOpen(user._id)}
+                            style={{color: "#3ed2f0"}}
+                        >{user._id}</div></td>
+                        <UserModal userId={userId} isOpen={modalOpen} onClose={handleClose} />
                         <td>{user.username}</td>
                         <td className="role-td">{user.role.map((role) => {return role + " "})}</td>
                         <td>{user.email}</td>
@@ -52,11 +70,11 @@ const UserTable: React.FC<UsersTableProps> = ({ users, totalPages, onPageChange,
                             <button
                                 onClick={() => onBlockUser(user._id)}
                                 className="ban-button"
-                            >Заблокировать</button>
+                            >Ban</button>
                             <button
                                 onClick={() => onMakeAdmin(user._id)}
                                 className="make-admin-button"
-                            >Сделать администратором</button>
+                            >Make admin</button>
                         </td>
                     </tr>
                 ))}

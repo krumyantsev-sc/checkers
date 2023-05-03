@@ -10,7 +10,7 @@ import {IRole} from "../models/Role"
 import {HydratedDocument} from "mongoose";
 const cookieParser = require('cookie-parser');
 
-const generateAccessToken = (id: string, roles: IRole[]): string => {
+const generateAccessToken = (id: string, roles: Array<IRole | string>): string => {
     const payload = {
         id,
         roles,
@@ -105,6 +105,43 @@ class authController{
             console.error('Ошибка при получении пользователей с пагинацией:', error);
             res.status(500).json({ error: 'Произошла ошибка сервера' });
         }
+    }
+
+    public getUserSearch = async (req: Request, res: Response) => {
+        const searchTerm = req.query.searchTerm as string;
+        const regex = new RegExp(`^${searchTerm}`, 'i');
+        const users: IUser[] = await User.find({
+            $or: [
+                { username: regex },
+                { email: regex },
+            ],
+        })
+            .select('username email role')
+        res.send(users);
+    }
+
+    public makeAdmin = async (req: Request, res: Response) => {
+        const userId: string = req.params.id;
+        const user: HydratedDocument<IUser> = await User.findById(userId);
+        const adminRole = await Role.findOne({value: "ADMIN"});
+        if (user.role.includes(adminRole.value)) {
+            return res.status(409).json({message: "Пользователь уже обладает правами администратора"})
+        }
+        user.role.push(adminRole.value);
+        user.save();
+        return res.status(200).json({message: "Права успешно изменены"});
+    }
+
+    public ban = async (req: Request, res: Response) => {
+        const userId: string = req.params.id;
+        const user: HydratedDocument<IUser> = await User.findById(userId);
+        const bannedRole = await Role.findOne({value: "BANNED"});
+        if (user.role.includes(bannedRole.value)) {
+           return res.status(409).json({message: "Пользователь уже забанен"})
+        }
+        user.role.push(bannedRole.value);
+        user.save();
+        return res.status(200).json({message: "Права успешно изменены"});
     }
 
     public getUserName = async (req: Request, res: Response): Promise<any> => {
