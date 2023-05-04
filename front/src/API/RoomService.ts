@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export default class RoomService {
-    static getRooms = async () => {
-        const response = await axios.get('http://localhost:3001/room/getRoomList', {withCredentials: true});
+    static getRooms = async (gameName: string, currentPage: number) => {
+        const response = await axios.get(`http://localhost:3001/room/getRoomList/${gameName}?page=${currentPage}`, {withCredentials: true});
         return response;
     };
     static createRoom = async (gameName: string) => {

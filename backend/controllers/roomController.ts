@@ -48,10 +48,24 @@ class roomController{
 
     public getRoomList = async (req: Request, res: Response): Promise<any> => {
         try {
-            const rooms: IRoom[] = await Room.find()
+            const gameName = req.params.gameName;
+            const game = await Game.findOne({name: gameName});
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = 10;
+            const skip = (page - 1) * limit;
+            if (!game) {
+                return res.status(404).json({message: "Game not found!"})
+            }
+            const allRooms = await Room.find({game: game._id});
+            const rooms: IRoom[] = await Room.find({game: game._id})
+                .skip(skip)
+                .limit(limit)
+                .sort({ _id: -1 })
                 .populate('firstPlayer' )
                 .populate('secondPlayer')
                 .exec();
+            const totalRooms = allRooms.length;
+            const totalPages = Math.ceil(totalRooms / limit);
             const transformedRooms = rooms.map(room => {
                 return {
                     _id: room._id,
@@ -59,7 +73,7 @@ class roomController{
                     secondPlayer: room.secondPlayer ? room.secondPlayer.username : "no player"
                 };
             });
-            res.json(transformedRooms);
+            res.json({transformedRooms, totalPages});
         }
         catch (error) {
             console.log(error);

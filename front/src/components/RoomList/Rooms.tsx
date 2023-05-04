@@ -8,6 +8,16 @@ interface RoomsProps {
 }
 
 const Rooms: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, id }) => {
+    const getNumberOfPlayers = () => {
+        let counter = 0;
+        if (firstPlayer !== "no player") {
+            counter++;
+        }
+        if (secondPlayer !== "no player") {
+            counter++;
+        }
+        return counter + "/2";
+    }
     const navigate = useNavigate();
     const location = useLocation();
     return (
@@ -15,10 +25,13 @@ const Rooms: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, id }) => {
             <div className="roomId">{id}</div>
             <div className="firstPlayer">{firstPlayer}</div>
             <div className="secondPlayer">{secondPlayer}</div>
+            <div className="total">{getNumberOfPlayers()}</div>
+            <div className="connect-button-wrapper">
             <div
-                className="connect-button"
+                className="play-button"
                 onClick={() => {RoomService.connectToRoom(id).then(() => navigate(`${location.pathname}/${id}`))}}
             >CONNECT</div>
+            </div>
         </div>
     );
 };

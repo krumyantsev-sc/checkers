@@ -9,7 +9,7 @@ export interface IGame extends Document{
 const GameSchema = new Schema({
     name: {type: String, unique: true, required: true},
     description: {type: String, required: true},
-    logo: {type: String},
+    logo: {type: String, default: "question.jpg"},
 });
 
 const GameModel = model<IGame>("Game", GameSchema);

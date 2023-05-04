@@ -1,7 +1,9 @@
 .list-container {
-    width: 45%;
-    height: 500px;
+    width: 60%;
+    border-radius: 10px;
     display: flex;
+    align-items: center;
+    justify-content: space-evenly;
 }
 
 .list-container-wrapper {
@@ -13,11 +15,12 @@
 }
 
 .card {
+    margin: 10px;
     width: 250px;
     height: 355px;
     border: 1px solid #a6660c;
     border-radius: 10px;
-    background-color: #fdf5e6;
+    background-color: #ffffff;
     font-family: 'Quicksand', sans-serif;
 }
 
@@ -42,19 +45,9 @@
     font-size: 15px;
 }
 
-.play-button {
-    background-color: #007bff;
-    color: white;
-    height: 30px;
-    width: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 5px;
-    cursor: pointer;
-}
 
-.play-button {
+
+.play-button, .game-edit-button, .add-game-button {
     appearance: none;
     backface-visibility: hidden;
     background-color: #3ed2f0;
@@ -87,8 +80,17 @@
     justify-content: center;
     align-items: center;
 }
+.game-edit-button,.add-game-button {
+    width: 20px;
+    margin-left: 2px;
+}
 
-.play-button:hover {
+.add-game-button {
+    height: 50px;
+    margin-left: 1vw;
+}
+
+.play-button:hover, .game-edit-button:hover, .add-game-button:hover {
     background-color: #1366d6;
     box-shadow: rgba(0, 0, 0, .05) 0 5px 30px, rgba(0, 0, 0, .05) 0 1px 4px;
     opacity: 1;
@@ -96,17 +98,17 @@
     transition-duration: .35s;
 }
 
-.play-button:hover:after {
+.play-button:hover:after, .game-edit-button:hover:after, .add-game-button:hover:after {
     opacity: .5;
 }
 
-.play-button:active {
+.play-button:active, .game-edit-button:active, .add-game-button:active {
     box-shadow: rgba(0, 0, 0, .1) 0 3px 6px 0, rgba(0, 0, 0, .1) 0 0 10px 0, rgba(0, 0, 0, .1) 0 1px 4px -1px;
     transform: translateY(2px);
     transition-duration: .35s;
 }
 
-.play-button:active:after {
+.play-button:active:after, .game-edit-button:active:after, .add-game-button:active:after {
     opacity: 1;
 }
 
@@ -125,8 +127,13 @@
 }
 
 .available-games {
-    margin-top: 10vh;
-    margin-bottom: 4vh;
     font-size: 55px;
     font-family: 'Lato', sans-serif;
+}
+
+.games-header-wrapper {
+    display: flex;
+    margin-top: 10vh;
+    margin-bottom: 4vh;
+    align-items: center;
 }

@@ -22,8 +22,6 @@ const UserList = () => {
         setIsLoading(false);
     }
     useEffect(() => {
-
-
         fetchUsers();
     }, [currentPage]);
 

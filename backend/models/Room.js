@@ -30,6 +30,18 @@ const RoomSchema = new mongoose_1.Schema({
         type: [Message_1.MessageModel.schema],
         default: [],
     },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    startedAt: {
+        type: Date,
+        default: Date.now,
+    },
+    finishedAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 exports.RoomModel = (0, mongoose_1.model)('Room', RoomSchema);
 exports.default = exports.RoomModel;

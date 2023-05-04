@@ -10,6 +10,9 @@ export interface IRoom extends Document {
     status: string;
     game: IGame['_id'];
     chat: IMessage[];
+    createdAt: Date;
+    startedAt: Date;
+    finishedAt: Date;
 }
 
 const statusEnum: string[] = ['active', 'finished'];
@@ -39,6 +42,18 @@ const RoomSchema = new Schema({
     chat: {
         type: [MessageModel.schema],
         default: [],
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    startedAt: {
+        type: Date,
+        default: Date.now,
+    },
+    finishedAt: {
+        type: Date,
+        default: Date.now,
     },
 });
 

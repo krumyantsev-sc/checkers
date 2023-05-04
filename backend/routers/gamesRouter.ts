@@ -10,6 +10,7 @@ router.use(cors({
 }));
 
 router.get("/getGames",controller.getGames);
-router.post("/createGame", controller.createGame);
-
+router.post("/create-game", controller.upload.single('logo'), controller.createGame);
+router.post('/update-game', controller.upload.single('logo'), controller.editGame);
+router.get('/:id/delete', controller.deleteGame);
 export default router;

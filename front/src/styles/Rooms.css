@@ -1,4 +1,5 @@
 .room-list-container-wrapper {
+    font-family: 'Lato', sans-serif;
     margin-top: 3vh;
     margin-left: 100px;
     width: 100vw;
@@ -15,14 +16,15 @@
 }
 
 .room-container {
-    background-color: lightyellow;
+    background-color: white;
     display: flex;
     flex-flow: row;
     width: 100%;
-    height: 30px;
+    height: 45px;
+    padding: 5px;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid white;
+    border: 1px solid whitesmoke;
     border-radius: 5px;
     margin-bottom: 5px;
 }
@@ -30,6 +32,11 @@
 .room-controls {
     display: flex;
     justify-content: space-between;
+}
+
+.room-controls .play-button {
+    margin-bottom: 5px;
+    background-color: lightsalmon;
 }
 
 .refresh-icon :hover {
@@ -57,6 +64,7 @@
 }
 
 .game-header {
+    font-family: 'Quicksand', sans-serif;
     color: sandybrown;
     font-size: 50px;
 }
@@ -64,4 +72,19 @@
 .add-room-button {
     margin-bottom: 10px;
     background-color: yellowgreen;
+}
+
+.roomId, .firstPlayer, .secondPlayer, .total, .connect-button-wrapper {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.room-list-section {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
 }
