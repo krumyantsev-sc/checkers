@@ -1,21 +1,15 @@
 .player-card {
-    width: 300px;
+    width: 260px;
     height: 360px;
-    border: 1px solid white;
+    border: 1px solid lightsalmon;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    background-color: lightyellow;;
+    background-color: white;
     box-shadow: #dfd8d0;
 }
 
-.player-card img {
-    width: 300px;
-    height: 300px;
-    margin-top: 10px;
-}
 
 .room-info {
     display: flex;
@@ -24,13 +18,13 @@
 
 .lobby-page {
     margin-left: 40px;
-    width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .game-room-info-container {
+    font-family: 'Lato', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -39,7 +33,7 @@
 
 .play-button-lobby {
     text-align: center;
-    background-color: yellowgreen;
+    background-color: #3ed2f0;
     width: 240px;
     border-radius: 5px;
     color: white;
@@ -54,7 +48,7 @@
 .name-span {
     font-size: 30px;
     font-weight: bold;
-    color: yellowgreen;
+    color: #3ed2f0;
 }
 
 .game-info {
@@ -77,4 +71,14 @@
 
 .game-header {
     font-size: 90px;
+}
+
+.credentials-span {
+    margin-bottom: 5px;
+}
+
+.lobby-stats {
+    font-weight: bold;
+    margin-top: 7px;
+    font-size: 18px;
 }

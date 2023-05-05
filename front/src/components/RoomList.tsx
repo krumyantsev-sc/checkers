@@ -7,6 +7,7 @@ import "../styles/Rooms.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faArrowsRotate} from '@fortawesome/free-solid-svg-icons';
 import {match} from "assert";
+import {ModalProvider} from "./Modal/ModalContext";
 
 interface GameProps {
     gameName: string;
@@ -61,6 +62,7 @@ const RoomList = () => {
     }, []);
 
     return (
+        <ModalProvider>
         <div className="room-page">
             <SideMenu/>
             <div className="room-list-container-wrapper">
@@ -99,6 +101,7 @@ const RoomList = () => {
                 {renderPagination()}
             </div>
         </div>
+        </ModalProvider>
     );
 };
 

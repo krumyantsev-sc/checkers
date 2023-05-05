@@ -1,6 +1,9 @@
 import React from 'react';
 import RoomService from "../../API/RoomService";
 import {useLocation, useNavigate} from "react-router-dom";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
+import {useModal} from "../Modal/ModalContext";
 interface RoomsProps {
     firstPlayer: string;
     secondPlayer: string;
@@ -8,6 +11,7 @@ interface RoomsProps {
 }
 
 const Rooms: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, id }) => {
+    const { showModal, closeModal } = useModal();
     const getNumberOfPlayers = () => {
         let counter = 0;
         if (firstPlayer !== "no player") {
@@ -29,7 +33,17 @@ const Rooms: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, id }) => {
             <div className="connect-button-wrapper">
             <div
                 className="play-button"
-                onClick={() => {RoomService.connectToRoom(id).then(() => navigate(`${location.pathname}/${id}`))}}
+                onClick={() => {
+                    RoomService.connectToRoom(id).then(() => navigate(`${location.pathname}/${id}`))
+                        .catch((error) => {
+                            showModal(error.response.data.message);
+                            if (error.response.data.roomId) {
+                                setTimeout(() => {
+                                    navigate(`${location.pathname}/${error.response.data.roomId}`)
+                                }, 1000);
+                            }
+                        })
+                }}
             >CONNECT</div>
             </div>
         </div>

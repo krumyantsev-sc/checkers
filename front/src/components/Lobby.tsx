@@ -15,9 +15,23 @@ interface RoomProps {
     lobbyId: string;
 }
 
+interface IPlayer {
+    username: string,
+    firstName: string,
+    lastName: string,
+    statistics: {wins: number, loses: number},
+    avatar: string
+}
+
+interface IRoomInfo {
+    roomId: number,
+    firstPlayer: IPlayer,
+    secondPlayer: IPlayer
+}
+
 const Lobby = () => {
     const [isLoading, setIsLoading] = useState(true);
-    const [roomInfo,setRoomInfo] = useState<any>([]);
+    const [roomInfo,setRoomInfo] = useState<IRoomInfo>();
     const navigate = useNavigate();
     let { gameName } : any = useParams<Record<keyof GameProps, string>>();
     let { gameId } : any = useParams<Record<keyof RoomProps, string>>();
@@ -38,6 +52,7 @@ const Lobby = () => {
             setIsLoading(false);
         }
     }
+
     useEffect(() => {
         getRoomInfoFromServer();
     }, []);
@@ -46,7 +61,7 @@ const Lobby = () => {
     useEffect(() => {
         socket.connect();
         socket.on('updateLobbyData', (data) => {
-            setRoomInfo(data);
+            getRoomInfoFromServer();
         });
         return () => {
             socket.disconnect();
@@ -59,11 +74,11 @@ const Lobby = () => {
             <div className="lobby-page">
                 <div className="game-room-info-container">
                     <span className="game-header">{gameHeader}</span>
-                    <LobbyInfo
+                    {roomInfo && <LobbyInfo
                         key={roomInfo.roomId}
                         lobbyId={roomInfo.roomId}
                         firstPlayer={roomInfo.firstPlayer}
-                        secondPlayer={roomInfo.secondPlayer}/>
+                        secondPlayer={roomInfo.secondPlayer}/>}
                 </div>
             </div>
         </div>

@@ -45,10 +45,14 @@ class checkersController {
     private updateStats = async (winnerId: string, loserId: string): Promise<void> => {
         const winner = await User.findById(winnerId);
         const loser = await User.findById(loserId);
+        const room = await Room.findById(this.roomId);
         winner.statistics.wins++;
         loser.statistics.loses++;
+        room.status = "finished";
+        room.winner = winner;
         await winner.save();
         await loser.save();
+        await room.save();
 }
 
     public getGameInfo = (req: Request, res: Response) => {

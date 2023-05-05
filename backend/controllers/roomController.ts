@@ -15,17 +15,33 @@ class roomController{
             const token: string = req.cookies.jwt;
             const {id: userId} = jwt.verify(token, secret);
             const candidate: IUser = await User.findById(userId);
+            const activeRoom: IRoom[] = await Room.find({$and: [{$or:[{firstPlayer: candidate._id}, {secondPlayer: candidate._id}]}, {status: "active"}]});
+            if (activeRoom.length !== 0) {
+                if (activeRoom[0]._id.toString() !== req.body.roomId) {
+                    return res.status(403).json({
+                        message: "Вы уже являетесь участником активной комнаты.",
+                        roomId: activeRoom[0]._id.toString()
+                    });
+                }
+            }
             const roomId: string = req.body.roomId;
             const room: IRoom = await Room.findById(roomId);
-            if (!room.firstPlayer && room.secondPlayer !== candidate) {
+            if (room.firstPlayer && room.secondPlayer && (room.firstPlayer.toString() !== candidate._id.toString()) && (room.secondPlayer.toString() !== candidate._id.toString())) {
+                return res.status(403).json({
+                    message: "Комната переполнена.",
+                });
+            }
+            if (!room.firstPlayer) {
                 room.firstPlayer = candidate;
                 await room.save();
             }
-            else if (!room.secondPlayer && room.firstPlayer !== candidate) {
+            else if (!room.secondPlayer && room.firstPlayer.toString() !== candidate._id.toString()) {
+                console.log("!!!",room.firstPlayer, candidate._id)
                 room.secondPlayer = candidate;
                 await room.save();
+                emitToPlayers(req,[room.firstPlayer.toString()],'updateLobbyData', {});
             }
-            res.sendStatus(200).json({status: "connected"});
+            return res.status(200).json({status: "connected"});
         }
         catch (error) {
             console.log(error);
@@ -39,7 +55,7 @@ class roomController{
             const game: IGame = await Game.findOne({name: gameName});
             const room: HydratedDocument<IRoom> = new Room({game: game});
             await room.save();
-            res.sendStatus(200).json({status: "room created"});
+            return res.status(200).json({status: "room created"});
         }
         catch (error) {
             console.log(error);
@@ -113,14 +129,20 @@ class roomController{
             //{$or:[{'firstPlayer._id': new mongoose.Types.ObjectId(userId)}, {'secondPlayer._id':  new mongoose.Types.ObjectId(userId)}]});
             const transformedRoom = {
                     roomId: currentRoom._id,
-                    firstPlayer: currentRoom.firstPlayer ? currentRoom.firstPlayer.username : "no player",
-                    secondPlayer: currentRoom.secondPlayer ? currentRoom.secondPlayer.username : "no player"
+                    firstPlayer: currentRoom.firstPlayer ?
+                        {username: currentRoom.firstPlayer.username,
+                        firstName: currentRoom.firstPlayer.firstName,
+                        lastName: currentRoom.firstPlayer.lastName,
+                        statistics: currentRoom.firstPlayer.statistics,
+                        avatar: currentRoom.firstPlayer.avatar} : {},
+                    secondPlayer: currentRoom.secondPlayer ?
+                        {username: currentRoom.secondPlayer.username,
+                        firstName: currentRoom.secondPlayer.firstName,
+                        lastName: currentRoom.secondPlayer.lastName,
+                        statistics: currentRoom.secondPlayer.statistics,
+                        avatar: currentRoom.secondPlayer.avatar} : {}
             };
             res.send(transformedRoom);
-            if (currentRoom.firstPlayer && currentRoom.secondPlayer) {
-                emitToPlayers(req,[firstPlayerId],'updateLobbyData', transformedRoom);
-                emitToPlayers(req,[firstPlayerId, secondPlayerId],'makeBtnActive',{});
-            }
         }
         catch (error) {
             console.log(error);

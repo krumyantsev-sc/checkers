@@ -4,9 +4,16 @@ import "../../styles/Lobby.css"
 import socket from "../../API/socket";
 import {useLocation, useNavigate} from "react-router-dom";
 import CheckerService from "../../API/CheckerService";
+interface IPlayer {
+    username: string,
+    firstName: string,
+    lastName: string,
+    statistics: {wins: number, loses: number},
+    avatar: string
+}
 interface RoomsProps {
-    firstPlayer: string;
-    secondPlayer: string;
+    firstPlayer: IPlayer;
+    secondPlayer: IPlayer;
     lobbyId: number;
 }
 
@@ -15,11 +22,13 @@ const LobbyInfo: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, lobbyId })
     const navigate = useNavigate();
     const location = useLocation();
     useEffect(() => {
-        if ((firstPlayer !== "no player") && (secondPlayer !== "no player")) {
+        if (firstPlayer.username && secondPlayer.username) {
             setIsReady(true);
         }
         socket.connect();
-
+        socket.on('updateLobbyData', (data) => {
+            setIsReady(true);
+        });
         socket.on('makeBtnActive', () => {
             console.log('Active');
             console.log(isReady);
@@ -33,7 +42,13 @@ const LobbyInfo: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, lobbyId })
     }, []);
     return (
         <div className="room-info">
-            <PlayerInfo name={firstPlayer}/>
+            <PlayerInfo
+                username={firstPlayer.username || "no player"}
+                firstName={firstPlayer.firstName || " "}
+                lastName={firstPlayer.lastName || " "}
+                statistics={firstPlayer.statistics || {}}
+                avatar={firstPlayer.avatar || ""}
+            />
             <div className="game-info">
                 <span>GAME ID</span>
                 <span className="gameId">{lobbyId}</span>
@@ -47,7 +62,13 @@ const LobbyInfo: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, lobbyId })
                     }
                 >PLAY</div>}
             </div>
-            <PlayerInfo name={secondPlayer}/>
+            <PlayerInfo
+                username={secondPlayer.username || "no player"}
+                firstName={secondPlayer.firstName || "Waiting"}
+                lastName={secondPlayer.lastName || "for opponent"}
+                statistics={secondPlayer.statistics}
+                avatar={secondPlayer.avatar || ""}
+            />
         </div>
     );
 };

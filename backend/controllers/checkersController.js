@@ -46,10 +46,14 @@ class checkersController {
         this.updateStats = (winnerId, loserId) => __awaiter(this, void 0, void 0, function* () {
             const winner = yield User_1.default.findById(winnerId);
             const loser = yield User_1.default.findById(loserId);
+            const room = yield Room_1.default.findById(this.roomId);
             winner.statistics.wins++;
             loser.statistics.loses++;
+            room.status = "finished";
+            room.winner = winner;
             yield winner.save();
             yield loser.save();
+            yield room.save();
         });
         this.getGameInfo = (req, res) => {
             console.log(this.player1.name);
