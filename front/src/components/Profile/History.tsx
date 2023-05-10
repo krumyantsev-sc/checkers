@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ProfileService from "../../API/ProfileService";
 import ProfileGame from "./ProfileGame";
+import "../../styles/Profile.css"
 
 interface Game {
     games: object[];
@@ -24,9 +25,17 @@ const History: React.FC = () => {
 
     return (
         <div className="profile-room-list-container">
-            <h1>Игры пользователя</h1>
+            <h1>Game History</h1>
+            <div className="profile-room-container" style={{border: "none"}}>
+                <div className="profile-roomId">ID</div>
+                <div className="profile-gameName">Game</div>
+                <div className="profile-firstPlayer">First Player</div>
+                <div className="profile-secondPlayer">Second Player</div>
+                <div className="profile-startedAt">Created at</div>
+                <div className="profile-duration">Duration</div>
+            </div>
             {games.map((game) => (
-                <ProfileGame key={game._id} firstPlayer={game.firstPlayer} secondPlayer={game.secondPlayer} id={game._id} winner={game.winner} gameName={game.game}/>
+                <ProfileGame key={game._id} firstPlayer={game.firstPlayer} secondPlayer={game.secondPlayer} id={game._id} winner={game.winner} gameName={game.game} duration={game.duration} createdAt={game.createdAt}/>
             ))}
             <div>
                 {Array.from({ length: totalPages }, (_, index) => (

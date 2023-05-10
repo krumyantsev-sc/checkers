@@ -3,7 +3,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #FEF1D0;
     background-size: cover;
 }
 
@@ -62,20 +61,18 @@ img {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: rgba(245, 222, 179, 0.7);
+    background-color: floralwhite;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
     backdrop-filter: blur(4px);
     border-radius: 4px;
     padding: 20px;
-    width: 18vw;
-    height: 17vh;
+    font-family: 'Lato', sans-serif;
     margin-left: 5vw;
 }
 
 .game-page {
     margin-left: 100px;
     display: flex;
-    width: 100vw;
     justify-content: center;
     align-items: center;
 }

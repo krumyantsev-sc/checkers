@@ -42,13 +42,12 @@ const Profile = () => {
         return <Loading/>;
     }
     const infoContainerSize = {
-        height: edit ? '80vh' : '55vh',
-        width: history ? "55vw" : "30vw",
-        marginLeft: history ? "25vw" : "35vw"
+        marginTop: edit ? "2vh" : "10vh"
     };
     return (
         <div className="profile-page">
             <SideMenu/>
+            <div className="profile-container">
             <div className="information-container" style={infoContainerSize}>
                 {info && <ProfileInfo userInfo={userInfo} userAvatar={userAvatar}/>}
                 {edit && <ModalProvider> <EditProfile userInfo={userInfo} userAvatarLink={userAvatar} updateInfo={getUserInfoFromServer}/></ModalProvider>}
@@ -64,6 +63,7 @@ const Profile = () => {
                     onClick={()=>{setEdit(false); setHistory(true); setInfo(false)}}
                     >History</div>
                 </div>
+            </div>
             </div>
         </div>
     );

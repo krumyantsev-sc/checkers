@@ -72,7 +72,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
                     onChange={handleChange}
                 />
                 <button className="submit-button" type="submit">
-                    Войти
+                    Log in
                 </button>
             </form>
             {error && <div className="error-message">{error}</div>}

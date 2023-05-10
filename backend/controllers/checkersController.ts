@@ -32,11 +32,13 @@ class checkersController {
                 .populate('firstPlayer' )
                 .populate('secondPlayer')
                 .exec()
+            room.startedAt = new Date();
             console.log(room.firstPlayer);
             this.player1.id = room?.firstPlayer!._id.toString();
             this.player1.name = room.firstPlayer.username;
             this.player2.id = room?.secondPlayer._id.toString();
             this.player2.name = room.secondPlayer.username;
+            await room.save();
         } catch {
             return res.status(404).json({message: "Game not found"});
         }
@@ -50,6 +52,7 @@ class checkersController {
         loser.statistics.loses++;
         room.status = "finished";
         room.winner = winner;
+        room.finishedAt = new Date();
         await winner.save();
         await loser.save();
         await room.save();

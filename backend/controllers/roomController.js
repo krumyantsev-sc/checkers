@@ -77,8 +77,8 @@ class roomController {
                 if (!game) {
                     return res.status(404).json({ message: "Game not found!" });
                 }
-                const allRooms = yield Room_1.default.find({ game: game._id });
-                const rooms = yield Room_1.default.find({ game: game._id })
+                const allRooms = yield Room_1.default.find({ game: game._id, status: "active" });
+                const rooms = yield Room_1.default.find({ game: game._id, status: "active" })
                     .skip(skip)
                     .limit(limit)
                     .sort({ _id: -1 })

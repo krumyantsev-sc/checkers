@@ -72,8 +72,8 @@ class roomController{
             if (!game) {
                 return res.status(404).json({message: "Game not found!"})
             }
-            const allRooms = await Room.find({game: game._id});
-            const rooms: IRoom[] = await Room.find({game: game._id})
+            const allRooms = await Room.find({game: game._id,status: "active"});
+            const rooms: IRoom[] = await Room.find({game: game._id,status: "active"})
                 .skip(skip)
                 .limit(limit)
                 .sort({ _id: -1 })

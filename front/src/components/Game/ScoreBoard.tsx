@@ -76,7 +76,7 @@ const ScoreBoard = () => {
                             <img
                                 src={whiteCheckerImg}
                                 alt="whiteChecker"
-                                style={currentMoveColor === "White" ? {border: "1px solid white"} : {border: "none"}}
+                                style={currentMoveColor === "White" ? {border: "1px solid #2196f3", borderRadius: "10px"} : {border: "none"}}
                             />
                             <span className="game-player-name">{gameInfo.firstPlayer.name}</span>
                         </div>
@@ -87,7 +87,7 @@ const ScoreBoard = () => {
                             <img
                                 src={blackCheckerImg}
                                 alt="blackChecker"
-                                style={currentMoveColor === "Black" ? {border: "1px solid white"} : {border: "none"}}
+                                style={currentMoveColor === "Black" ? {border: "1px solid #2196f3", borderRadius: "10px"} : {border: "none"}}
                             />
                             <span className="game-player-name">{gameInfo.secondPlayer.name}</span>
                         </div>

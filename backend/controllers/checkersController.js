@@ -33,11 +33,13 @@ class checkersController {
                     .populate('firstPlayer')
                     .populate('secondPlayer')
                     .exec();
+                room.startedAt = new Date();
                 console.log(room.firstPlayer);
                 this.player1.id = room === null || room === void 0 ? void 0 : room.firstPlayer._id.toString();
                 this.player1.name = room.firstPlayer.username;
                 this.player2.id = room === null || room === void 0 ? void 0 : room.secondPlayer._id.toString();
                 this.player2.name = room.secondPlayer.username;
+                yield room.save();
             }
             catch (_a) {
                 return res.status(404).json({ message: "Game not found" });
@@ -51,6 +53,7 @@ class checkersController {
             loser.statistics.loses++;
             room.status = "finished";
             room.winner = winner;
+            room.finishedAt = new Date();
             yield winner.save();
             yield loser.save();
             yield room.save();

@@ -153,7 +153,7 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
                     <div className="error-message">{errors.password}</div>
                 )}
                 <button className="submit-button" type="submit">
-                    Зарегистрироваться
+                    Register
                 </button>
             </form>
             <div className="backButton"

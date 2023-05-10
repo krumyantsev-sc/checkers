@@ -122,10 +122,13 @@ class UserProfileController {
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-            const rooms = await Room.find({$or:[{'firstPlayer': user}, {'secondPlayer': user}]})
+            const rooms = await Room.find({$or:[{'firstPlayer': user}, {'secondPlayer': user}],$and: [
+                { 'status': 'finished' }
+            ]})
                 .populate('firstPlayer' )
                 .populate('secondPlayer')
                 .populate('game')
+                .populate('winner')
                 .exec();
             const transformedRooms = rooms.map(room => {
                 return {
@@ -133,7 +136,9 @@ class UserProfileController {
                     firstPlayer: room.firstPlayer ? room.firstPlayer.username : "no player",
                     secondPlayer: room.secondPlayer ? room.secondPlayer.username : "no player",
                     game: room.game.name,
-                    winner: room.winner ? room.winner.username : "no winner"
+                    winner: room.winner ? room.winner.username : "no winner",
+                    createdAt: room.createdAt,
+                    duration: Math.floor(Math.abs(room.finishedAt.getTime() - room.startedAt.getTime())/ (1000 * 60))
                 };
             });
             const page: number = Number(req.query.page) || 1;
@@ -154,6 +159,7 @@ class UserProfileController {
         try {
             const userId = req.params.id;
             const user = await User.findById(userId);
+            console.log(user);
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }

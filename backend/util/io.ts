@@ -21,13 +21,10 @@ export default class SocketService {
             const token = parsedCookies.jwt;
             const playerId = authenticateToken(token);
             socket.join(playerId);
-
             if (playerId === null) {
                 socket.disconnect();
             }
-
             socket.join(playerId);
-
             socket.on('disconnect', () => {
                 console.log('user disconnected');
                 socket.leave(playerId);

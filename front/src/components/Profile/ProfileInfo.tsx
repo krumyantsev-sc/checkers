@@ -4,6 +4,8 @@ import ProfileService from "../../API/ProfileService";
 import Loading from "../Loading";
 import {eventWrapper} from "@testing-library/user-event/dist/utils";
 import Diagram from "./Diagram";
+import {Avatar} from "@mui/material";
+import avatarImg from "../../assets/img/profile-avatar.svg";
 interface Props {
     userAvatar: string;
     userInfo: {
@@ -19,7 +21,7 @@ const ProfileInfo: React.FC<Props> = ({userAvatar,userInfo}) => {
     return (
         <div className="profile-wrapper">
             <div className="avatar-info-container">
-                <img className="profile-user-avatar" src={userAvatar} alt="avatar"/>
+                <Avatar  sx={{ width: 200, height: 200,  objectFit: 'cover', borderRadius: '50%', border: "1px solid lightsalmon"}} alt="Avatar" src={userAvatar}/>
                 <div className="info-container">
                     <div className="profile-username">{userInfo.username}</div>
                     <div className="profile-name">{userInfo.firstName} {userInfo.lastName}</div>
