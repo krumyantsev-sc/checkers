@@ -13,6 +13,7 @@ import roomRouter from './routers/roomRouter';
 import gamesRouter from "./routers/gamesRouter";
 import profileRouter from "./routers/profileRouter";
 import chatRouter from "./routers/chatRouter";
+import tttRouter from "./routers/tttRouter";
 
 app.use(express.json());
 app.use(cookieParser());
@@ -21,6 +22,7 @@ app.use("/chat", chatRouter);
 app.use("/auth", authRouter);
 app.use("/room", roomRouter);
 app.use("/checkers", checkersRouter);
+app.use("/tic-tac-toe", tttRouter);
 app.use("/profile", profileRouter)
 app.use('/static', express.static(path.join(__dirname, 'static')));
 app.use(cors({

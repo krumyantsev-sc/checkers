@@ -15,6 +15,7 @@ import SideMenu from "./components/SideMenu";
 import {AuthProvider, useAuth} from "./components/auth/AuthContext";
 import UserList from "./components/admin/UserList";
 import {ModalProvider} from "./components/Modal/ModalContext";
+import GameWrapper from "./components/GameWrapper";
 
 
 function App() {
@@ -66,7 +67,7 @@ function App() {
                       <Lobby/>
                   </ProtectedRoute> } />
                   <Route path="/games/:gameName/:gameId/game" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
-                      <Game/>
+                      <GameWrapper/>
                   </ProtectedRoute> } />
                   <Route path="/profile" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
                       <Profile/>

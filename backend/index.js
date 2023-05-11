@@ -23,6 +23,7 @@ const roomRouter_1 = require("./routers/roomRouter");
 const gamesRouter_1 = require("./routers/gamesRouter");
 const profileRouter_1 = require("./routers/profileRouter");
 const chatRouter_1 = require("./routers/chatRouter");
+const tttRouter_1 = require("./routers/tttRouter");
 app.use(express.json());
 app.use(cookieParser());
 app.use("/games", gamesRouter_1.default);
@@ -30,6 +31,7 @@ app.use("/chat", chatRouter_1.default);
 app.use("/auth", authRouter_1.default);
 app.use("/room", roomRouter_1.default);
 app.use("/checkers", checkersRouter_1.default);
+app.use("/tic-tac-toe", tttRouter_1.default);
 app.use("/profile", profileRouter_1.default);
 app.use('/static', express.static(path.join(__dirname, 'static')));
 app.use(cors({
