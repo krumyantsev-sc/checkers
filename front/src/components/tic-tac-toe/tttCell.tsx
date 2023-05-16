@@ -18,7 +18,7 @@ const TttCell: React.FC<TicTacToeCellProps> = ({symbol,coords}) => {
     let { gameId } : any = useParams<Record<keyof GameProps, string>>();
     return (
         <div className="ttt-board-cell"
-        onClick={() => {TicTacToeService.makeMove(gameId.toString(), coords)}}>
+        onClick={symbol === "" ? () => {TicTacToeService.makeMove(gameId.toString(), coords)} : () => {}}>
             {symbol !== "" && (symbol === "0" ? <FontAwesomeIcon icon={faO} size="xl" style={{color: "#3ed2f0",}}/> :<FontAwesomeIcon icon={faX} size="xl" style={{color: "lightsalmon",}}/>)}
         </div>
     );
