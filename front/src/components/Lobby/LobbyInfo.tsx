@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react';
 import PlayerInfo from "./PlayerInfo";
 import "../../styles/Lobby.css"
 import socket from "../../API/socket";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import CheckerService from "../../API/CheckerService";
+import TicTacToeService from "../../API/Tic-Tac-ToeService";
 interface IPlayer {
     username: string,
     firstName: string,
@@ -17,9 +18,15 @@ interface RoomsProps {
     lobbyId: number;
 }
 
+interface GameProps {
+    gameName: string;
+}
+
 const LobbyInfo: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, lobbyId }) => {
     const [isReady,setIsReady] = useState<boolean>(false);
     const navigate = useNavigate();
+    let { gameName } : any = useParams<Record<keyof GameProps, string>>();
+    let gameHeader: string = gameName.toLowerCase();
     const location = useLocation();
     useEffect(() => {
         if (firstPlayer.username && secondPlayer.username) {
@@ -55,10 +62,17 @@ const LobbyInfo: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, lobbyId })
                 {isReady && <div
                     className="play-button-lobby"
                     onClick={() => {
-                        CheckerService.initializeGame(lobbyId.toString())
-                            .then(() => {
-                                navigate(`${location.pathname}/game`)})
-                            }
+                        gameName === "checkers" ?
+                            CheckerService.initializeGame(lobbyId.toString())
+                                .then(() => {
+                                    navigate(`${location.pathname}/game`);
+                                })
+                            :
+                            TicTacToeService.initializeGame(lobbyId.toString())
+                                .then(() => {
+                                    navigate(`${location.pathname}/game`);
+                                });
+                        }
                     }
                 >PLAY</div>}
             </div>

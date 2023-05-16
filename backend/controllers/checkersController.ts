@@ -56,7 +56,7 @@ class checkersController {
         await winner.save();
         await loser.save();
         await room.save();
-}
+    }
 
     public getGameInfo = (req: Request, res: Response) => {
         console.log(this.player1.name)

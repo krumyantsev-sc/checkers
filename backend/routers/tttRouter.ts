@@ -28,6 +28,7 @@ const findControllerByRoomId = (activeGames: tttController[], roomId: string): t
 }
 
 router.get("/:roomId/getBoard", function(req: Request, res: Response) {
+    console.log(findControllerByRoomId(activeGames,req.params.roomId).getBoard())
     res.send(findControllerByRoomId(activeGames,req.params.roomId).getBoard());
 });
 
@@ -38,6 +39,11 @@ router.get("/:roomId/initialize", async function(req: Request, res: Response) {
         activeGames.push(controller);
     }
     res.status(200).json({message:"Successfully initialized"});
+});
+
+router.post("/:roomId/makeMove", async function(req: Request, res: Response) {
+    findControllerByRoomId(activeGames,req.params.roomId).makeMove(req,res);
+    res.status(200).json({message:"Successfully moved"});
 });
 
 export default router;
