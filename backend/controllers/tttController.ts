@@ -15,6 +15,7 @@ class tttController {
     private roomId!: string;
     private currentPlayer: Player;
     private board: string[][];
+    private counter: number = 1;
 
     checkWinner(): string {
         const winningCombinations = [
@@ -41,7 +42,9 @@ class tttController {
 
         return '';
     }
-
+    checkDraw(): boolean {
+        return this.board.every((row) => row.every((cell) => cell !== '')) && !this.checkWinner();
+    }
 
     constructor() {
         this.board = [
@@ -52,7 +55,17 @@ class tttController {
         this.currentPlayer = this.player1;
     }
 
-    public getBoard = () => {
+    public getBoard = (req: Request) => {
+        setTimeout(() => {
+            if (this.counter % 2 !== 0) {
+                console.log("emitted to", this.player1.id);
+                emitToPlayers(req,[this.player1.id],'tttGiveListeners',{message: "hod"});
+            } else {
+                emitToPlayers(req,[this.player2.id],'tttGiveListeners',{message: "hod"});
+                console.log("emitted to", this.player2.id);
+            }
+        }, 1000)
+
         return this.board;
     }
 
@@ -80,7 +93,8 @@ class tttController {
             this.board[req.body.i][req.body.j] = this.player2.color;
         }
         emitToPlayers(req,[this.player1.id, this.player2.id],'tttBoardUpdated',{board: this.board});
-        let winner = this.checkWinner()
+        let winner = this.checkWinner();
+        let isDraw = this.checkDraw();
         if (winner !== "") {
             if (winner === this.player1.color) {
                 emitToPlayers(req,[this.player1.id],'tttGameFinished',
@@ -94,6 +108,16 @@ class tttController {
                     {message: FinishMessage.Lose});
             }
             removeController(this.roomId);
+        } else if (isDraw) {
+            emitToPlayers(req,[this.player1.id, this.player2.id],'tttGameFinished',
+                {message: FinishMessage.Draw});
+        } else {
+            this.counter++;
+            if (this.counter % 2 !== 0) {
+                emitToPlayers(req,[this.player1.id],'tttGiveListeners',{});
+            } else {
+                emitToPlayers(req,[this.player2.id],'tttGiveListeners',{});
+            }
         }
     }
 

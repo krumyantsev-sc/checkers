@@ -28,8 +28,7 @@ const findControllerByRoomId = (activeGames: tttController[], roomId: string): t
 }
 
 router.get("/:roomId/getBoard", function(req: Request, res: Response) {
-    console.log(findControllerByRoomId(activeGames,req.params.roomId).getBoard())
-    res.send(findControllerByRoomId(activeGames,req.params.roomId).getBoard());
+    res.send(findControllerByRoomId(activeGames,req.params.roomId).getBoard(req));
 });
 
 router.get("/:roomId/initialize", async function(req: Request, res: Response) {

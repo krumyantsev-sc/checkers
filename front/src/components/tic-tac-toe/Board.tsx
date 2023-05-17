@@ -15,6 +15,7 @@ const Board = () => {
     const [gameBoard, setGameBoard] = useState<any[][]>([[],[],[]]);
     const [boardArr, setBoardArr] = useState<JSX.Element[][]>( [[],[],[]]);
     let { gameId } : any = useParams<Record<keyof GameProps, string>>();
+    const [canMove, setCanMove] = useState(false);
     const { showModal, closeModal } = useModal();
 
     async function fetchBoardFromServer() {
@@ -45,7 +46,7 @@ const Board = () => {
             const boardRow: JSX.Element[] = [];
             for (let j = 0; j < 3; j++) {
                 console.log(gameBoard[i][j])
-                boardRow.push(<TttCell coords={{i: i, j: j}} symbol={gameBoard[i][j] || ""}/>);
+                boardRow.push(<TttCell coords={{i: i, j: j}} symbol={gameBoard[i][j] || ""} canMove={canMove} setCanMove={setCanMove}/>);
             }
             boardRows.push(boardRow);
         }
@@ -64,12 +65,19 @@ const Board = () => {
             showModal(data.message);
         }
 
+        const giveListeners = (data:any) => {
+            console.log(data)
+            setCanMove(true);
+        }
+
+        socket.on('tttGiveListeners', giveListeners);
         socket.on('tttBoardUpdated', updateBoard);
         socket.on('tttGameFinished', finishGame);
 
         return () => {
             socket.off('tttBoardUpdated', updateBoard);
             socket.off('tttGameFinished', finishGame);
+            socket.off('tttGiveListeners', giveListeners);
             socket.disconnect();
         };
     }, []);
@@ -83,6 +91,8 @@ const Board = () => {
                             <TttCell key={`${i}-${j}`}
                                   symbol={cell.props.symbol}
                                   coords={{i, j}}
+                                  canMove={canMove}
+                                  setCanMove={setCanMove}
                             />
                         )}
                     </div>
