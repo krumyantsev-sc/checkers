@@ -31,6 +31,10 @@ router.get("/:roomId/getBoard", function(req: Request, res: Response) {
     res.send(findControllerByRoomId(activeGames,req.params.roomId).getBoard(req));
 });
 
+router.get("/:roomId/getGameInfo", async function(req: Request, res: Response) {
+    await findControllerByRoomId(activeGames,req.params.roomId).getGameInfo(req,res);
+})
+
 router.get("/:roomId/initialize", async function(req: Request, res: Response) {
     if (!findControllerByRoomId(activeGames,req.params.roomId)) {
         let controller = new tttController();
@@ -41,7 +45,7 @@ router.get("/:roomId/initialize", async function(req: Request, res: Response) {
 });
 
 router.post("/:roomId/makeMove", async function(req: Request, res: Response) {
-    findControllerByRoomId(activeGames,req.params.roomId).makeMove(req,res);
+    await findControllerByRoomId(activeGames,req.params.roomId).makeMove(req,res);
     res.status(200).json({message:"Successfully moved"});
 });
 

@@ -26,6 +26,7 @@ const TttCell: React.FC<TicTacToeCellProps> = ({symbol,coords, canMove, setCanMo
 
     return (
         <div className="ttt-board-cell"
+             style={canMove ? {cursor: "pointer"} : {}}
         onClick={(symbol === "" && canMove) ? () => {makeMove()} : () => {}}>
             {symbol !== "" && (symbol === "0" ? <FontAwesomeIcon icon={faO} size="xl" style={{color: "#3ed2f0",}}/> :<FontAwesomeIcon icon={faX} size="xl" style={{color: "lightsalmon",}}/>)}
         </div>

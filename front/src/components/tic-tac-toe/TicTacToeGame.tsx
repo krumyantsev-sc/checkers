@@ -6,6 +6,8 @@ import socket from "../../API/socket";
 import Cell from "../Game/Cell";
 import Board from "./Board";
 import "../../styles/Tic-Tac-Toe.css"
+import TicTacToeScoreBoard from "./TicTacToeScoreBoard";
+import Chat from "../Game/Chat";
 
 interface GameProps {
     gameId: string;
@@ -18,7 +20,9 @@ const TicTacToeGame = () => {
             <div>
                 <SideMenu/>
                 <div className="tic-tac-toe-page">
+                    <Chat/>
                     <Board/>
+                    <TicTacToeScoreBoard/>
                 </div>
             </div>
         </ModalProvider>

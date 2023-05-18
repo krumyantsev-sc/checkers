@@ -48,7 +48,7 @@ class tttController {
 
     constructor() {
         this.board = [
-            ['', 'X', '0'],
+            ['', '', ''],
             ['', '', ''],
             ['', '', '']
         ];
@@ -60,13 +60,30 @@ class tttController {
             if (this.counter % 2 !== 0) {
                 console.log("emitted to", this.player1.id);
                 emitToPlayers(req,[this.player1.id],'tttGiveListeners',{message: "hod"});
+                emitToPlayers(req,[this.player1.id, this.player2.id],'changeSymbol',{symbol: "X"});
             } else {
                 emitToPlayers(req,[this.player2.id],'tttGiveListeners',{message: "hod"});
-                console.log("emitted to", this.player2.id);
+                emitToPlayers(req,[this.player1.id, this.player2.id],'changeSymbol',{symbol: "0"});
             }
         }, 1000)
 
         return this.board;
+    }
+
+    public getGameInfo = async (req: Request, res: Response) => {
+        const room: IRoom = await Room.findById(this.roomId)
+            .populate('firstPlayer')
+            .populate('secondPlayer')
+            .exec();
+        res.status(201).json({firstPlayer: {name: this.player1.name, avatar: room.firstPlayer.avatar},
+            secondPlayer: {name: this.player2.name, avatar: room.secondPlayer.avatar}, gameId: this.roomId});
+    }
+
+    private finishGame = async (): Promise<void> => {
+        const room = await Room.findById(this.roomId);
+        room.status = "finished";
+        room.finishedAt = new Date();
+        await room.save();
     }
 
     private updateStats = async (winnerId: string, loserId: string): Promise<void> => {
@@ -83,7 +100,7 @@ class tttController {
         await room.save();
     }
 
-    public makeMove = (req: Request, res: Response) => {
+    public makeMove = async (req: Request, res: Response) => {
         const token: string = req.cookies.jwt;
         const {id: userId} = jwt.verify(token, secret);
         if (userId == this.player1.id) {
@@ -101,22 +118,27 @@ class tttController {
                     {message: FinishMessage.Win});
                 emitToPlayers(req,[this.player2.id],'tttGameFinished',
                     {message: FinishMessage.Lose});
+                await this.updateStats(this.player1.id,this.player2.id);
             } else {
                 emitToPlayers(req,[this.player2.id],'tttGameFinished',
                     {message: FinishMessage.Win});
                 emitToPlayers(req,[this.player1.id],'tttGameFinished',
                     {message: FinishMessage.Lose});
+                await this.updateStats(this.player2.id,this.player1.id);
             }
             removeController(this.roomId);
         } else if (isDraw) {
             emitToPlayers(req,[this.player1.id, this.player2.id],'tttGameFinished',
                 {message: FinishMessage.Draw});
+            await this.finishGame();
         } else {
             this.counter++;
             if (this.counter % 2 !== 0) {
                 emitToPlayers(req,[this.player1.id],'tttGiveListeners',{});
+                emitToPlayers(req,[this.player1.id, this.player2.id],'changeSymbol',{symbol: "X"});
             } else {
                 emitToPlayers(req,[this.player2.id],'tttGiveListeners',{});
+                emitToPlayers(req,[this.player1.id, this.player2.id],'changeSymbol',{symbol: "0"});
             }
         }
     }
