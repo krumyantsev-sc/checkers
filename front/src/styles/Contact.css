@@ -1,0 +1,23 @@
+.contact-page {
+    margin-left: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.contact-header {
+    margin-top: 10px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    font-size: 80px;
+}
+
+.contact-info-container {
+    display: flex;
+}
+
+.address {
+    display: flex;
+    align-items: center;
+}

@@ -16,7 +16,7 @@ const SideMenu = () => {
                 <Link to="/"><FontAwesomeIcon icon={faHouse} size="xl" style={{color: "#ffffff",}}/></Link>
                 {isAuthenticated && <Link to="/games"><FontAwesomeIcon icon={faChessBoard} size="xl" style={{color: "#ffffff",}}/></Link>}
                 {<Link to="/profile"><FontAwesomeIcon icon={faUser} size="xl" style={{color: "#ffffff",}}/></Link>}
-                <Link to="#"><FontAwesomeIcon icon={faAddressBook} size="xl" style={{color: "#ffffff",}}/></Link>
+                <Link to="/contact"><FontAwesomeIcon icon={faAddressBook} size="xl" style={{color: "#ffffff",}}/></Link>
                 <Link to="#"><FontAwesomeIcon icon={faQuestion} size="xl" style={{color: "#ffffff",}}/></Link>
             </div>
             <div className="logout-container">

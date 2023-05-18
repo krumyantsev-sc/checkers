@@ -16,6 +16,7 @@ import {AuthProvider, useAuth} from "./components/auth/AuthContext";
 import UserList from "./components/admin/UserList";
 import {ModalProvider} from "./components/Modal/ModalContext";
 import GameWrapper from "./components/GameWrapper";
+import Contact from "./components/Contact";
 
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
           <BrowserRouter>
               <Routes>
                   <Route path="/" element={<Main/>}/>
+                  <Route path="/contact" element={<Contact/>}/>
                   <Route path="/login" element={<Login/>} />
                   <Route path="/games" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
                       <GameList/>
