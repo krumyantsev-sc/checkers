@@ -75,6 +75,9 @@ class authController{
             if (!validPassword) {
                 return res.status(400).json({message: "Неверный пароль"});
             }
+            if (user.role.includes("BANNED")) {
+                return res.status(403).json({message: "Аккаунт заблокирован"});
+            }
             const token: string = generateAccessToken(user._id, user.role);
             res.cookie('jwt', token, {
                 httpOnly: true,

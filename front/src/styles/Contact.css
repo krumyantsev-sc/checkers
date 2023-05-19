@@ -14,10 +14,22 @@
 }
 
 .contact-info-container {
+    margin-top: 2vh;
     display: flex;
 }
 
 .address {
     display: flex;
     align-items: center;
+    margin-right: 6vw;
+    margin-bottom: 2vh;
+}
+
+.sm-icons {
+    display: flex;
+    transition: 1s;
+}
+
+.sm-icons > *:hover {
+    transform: scale(1.2);
 }

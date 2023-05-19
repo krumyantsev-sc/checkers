@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useModal} from "../Modal/ModalContext";
 import TttCell from "../tic-tac-toe/tttCell";
 import socket from "../../API/socket";
@@ -17,6 +17,7 @@ const Board = () => {
     let { gameId } : any = useParams<Record<keyof GameProps, string>>();
     const [canMove, setCanMove] = useState(false);
     const { showModal, closeModal } = useModal();
+    const navigate = useNavigate();
 
     async function fetchBoardFromServer() {
         try {
@@ -63,6 +64,7 @@ const Board = () => {
 
         const finishGame = (data: {message: string}) => {
             showModal(data.message);
+            setTimeout(() => {navigate('/games')}, 2000);
         }
 
         const giveListeners = (data:any) => {

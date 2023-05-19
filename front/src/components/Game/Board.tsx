@@ -5,7 +5,7 @@ import CheckerService from "../../API/CheckerService";
 const _ = require("lodash")
 import Checker from "./Checker";
 import RoomService from "../../API/RoomService";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import socket from "../../API/socket";
 import {io} from "socket.io-client";
 import {useModal} from "../Modal/ModalContext";
@@ -24,6 +24,7 @@ const Board = () => {
     const [isLoading, setIsLoading] = useState(true);
     let { gameId } : any = useParams<Record<keyof GameProps, string>>();
     const { showModal, closeModal } = useModal();
+    const navigate = useNavigate();
 
     const setInitPos = (position: any) => {
         setInitPosition(position);
@@ -148,6 +149,7 @@ const Board = () => {
 
         const finishGame = (data: {message: string}) => {
             showModal(data.message);
+            setTimeout(() => {navigate('/games')}, 2000);
         }
 
         const makeLady = (coords: {i: number, j: number}) => {

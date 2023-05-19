@@ -20,10 +20,6 @@
     justify-content: center;
 }
 
-.sidenav a:hover {
-    color: orange;
-}
-
 .nav-container {
     height: 300px;
     display: flex;
@@ -49,6 +45,19 @@
     justify-content: space-evenly;
     margin-bottom: 50px;
 }
+
+.nav-container > a:hover > svg > path {
+    color: #3ed2f0;
+}
+
+.logout > svg:hover > path {
+    color: #3ed2f0;
+}
+
+.logout-container > a:hover > svg > path {
+    color: #3ed2f0;
+}
+
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}

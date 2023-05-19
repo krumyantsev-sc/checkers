@@ -17,7 +17,7 @@ const SideMenu = () => {
                 {isAuthenticated && <Link to="/games"><FontAwesomeIcon icon={faChessBoard} size="xl" style={{color: "#ffffff",}}/></Link>}
                 {<Link to="/profile"><FontAwesomeIcon icon={faUser} size="xl" style={{color: "#ffffff",}}/></Link>}
                 <Link to="/contact"><FontAwesomeIcon icon={faAddressBook} size="xl" style={{color: "#ffffff",}}/></Link>
-                <Link to="#"><FontAwesomeIcon icon={faQuestion} size="xl" style={{color: "#ffffff",}}/></Link>
+                <Link to="/rules"><FontAwesomeIcon icon={faQuestion} size="xl" style={{color: "#ffffff",}}/></Link>
             </div>
             <div className="logout-container">
                 {isAdmin && <Link to='/admin'><FontAwesomeIcon icon={faScrewdriverWrench} size="xl" style={{color: "#ffffff",}}/></Link>}
