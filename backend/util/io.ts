@@ -1,7 +1,24 @@
+import Room, {IRoom} from "../models/Room";
+
 const socketIo = require('socket.io');
 import authenticateToken from './jwtVerification';
 import {Server, Socket} from "socket.io";
 const cookie = require('cookie');
+
+const exitFromGame = async (playerId: string) => {
+    const room: IRoom = await Room.findOne({$and: [{$or:[{firstPlayer: playerId}, {secondPlayer: playerId}]}, {status: "active"}]});
+    console.log("room", room._id)
+    if (room) {
+        console.log("Комната найдена")
+        if (room.firstPlayer.toString() === playerId) {
+            console.log('return!!!!', room.secondPlayer.toString())
+            return room.secondPlayer.toString()
+        } else {
+            console.log('return!!!!', room.firstPlayer.toString())
+            return room.firstPlayer.toString();
+        }
+    }
+}
 
 export default class SocketService {
     private io: Server;
@@ -25,9 +42,28 @@ export default class SocketService {
                 socket.disconnect();
             }
             socket.join(playerId);
-            socket.on('disconnect', () => {
+            let timer: NodeJS.Timeout;
+
+            socket.on('disconnect', async () => {
                 console.log('user disconnected');
+                const secondPlayerId = await exitFromGame(playerId);
+                if (secondPlayerId) {
+                    console.log(secondPlayerId)
+                    this.io.to(secondPlayerId).emit('enemyDisconnected');
+                }
+                timer = setTimeout(() => {
+                    console.log('Таймер завершен');
+                }, 5000);
                 socket.leave(playerId);
+            });
+
+            socket.on('reconnect', () => {
+                console.log('Пользователь повторно подключился');
+
+                if (timer) {
+                    clearTimeout(timer);
+                    console.log('Таймер очищен');
+                }
             });
         });
     }

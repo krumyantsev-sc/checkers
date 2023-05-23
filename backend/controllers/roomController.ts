@@ -10,6 +10,7 @@ const secret = require("../config/config");
 
 
 class roomController{
+
     public connect = async (req: Request, res: Response): Promise<any> => {
         try {
             const token: string = req.cookies.jwt;

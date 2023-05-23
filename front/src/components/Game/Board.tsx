@@ -160,17 +160,23 @@ const Board = () => {
                 return checkersBoard;
             })
         }
+
+        const enemyDisconnectHandler = () => {
+            console.log("Оппонент отключился")
+        }
         socket.on('makeLady', makeLady);
         socket.on('gameFinished', finishGame);
         socket.on('giveListeners', changeDragColor);
         socket.on('checkerMoved', updateBoardFromServer);
         socket.on('removeChecker', removeCheckerByEvent);
+        socket.on('enemyDisconnected', enemyDisconnectHandler);
         return () => {
             socket.off('makeLady', makeLady);
             socket.off('gameFinished', finishGame);
             socket.off('giveListeners', changeDragColor);
             socket.off('checkerMoved', updateBoardFromServer);
             socket.off('removeChecker', removeCheckerByEvent);
+            socket.off('enemyDisconnected', enemyDisconnectHandler);
             socket.disconnect();
         };
     }, []);
