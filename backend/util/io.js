@@ -54,6 +54,8 @@ class SocketService {
                 if (secondPlayerId) {
                     console.log(secondPlayerId);
                     this.io.to(secondPlayerId).emit('enemyDisconnected');
+                    const serverTime = new Date().getTime();
+                    this.io.to(secondPlayerId).emit('syncTime', serverTime);
                 }
                 timer = setTimeout(() => {
                     console.log('Таймер завершен');

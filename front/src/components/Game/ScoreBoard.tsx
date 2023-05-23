@@ -6,6 +6,7 @@ import whiteCheckerImg from "../../assets/img/Pawn.png"
 import blackCheckerImg from "../../assets/img/PawnBlack.png"
 import "../../styles/Board.css"
 import socket from "../../API/socket";
+import Timer from "../Timer";
 
 interface GameProps {
     gameName: string;
@@ -19,6 +20,7 @@ const ScoreBoard = () => {
     let { gameName } : any = useParams<Record<keyof GameProps, string>>();
     let { gameId } : any = useParams<Record<keyof RoomProps, string>>();
     let gameHeader: string | undefined = gameName.toUpperCase();
+    const [displayTimer, setDisplayTimer] = useState(false);
     const [gameInfo, setGameInfo] = useState<any>(null);
     const [firstPlayerScore, setFirstPlayerScore] = useState(0);
     const [secondPlayerScore, setSecondPlayerScore] = useState(0);
@@ -58,6 +60,11 @@ const ScoreBoard = () => {
         const changeColor = (data: {color: string}) => {
             setCurrentMoveColor(data.color);
         }
+
+        const displayTimer = () => {
+            setDisplayTimer(true);
+        }
+        socket.on('syncTime', displayTimer);
         socket.on('switchTeam', changeColor);
         socket.on('refreshScore', refreshScore);
         return () => {
@@ -93,6 +100,7 @@ const ScoreBoard = () => {
                         </div>
                         <span className="second-player-score">{secondPlayerScore}</span>
                     </div>
+                    {displayTimer && <Timer/>}
                 </>
             )}
         </div>
