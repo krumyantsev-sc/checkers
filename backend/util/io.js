@@ -13,18 +13,20 @@ const Room_1 = require("../models/Room");
 const socketIo = require('socket.io');
 const jwtVerification_1 = require("./jwtVerification");
 const cookie = require('cookie');
-const exitFromGame = (playerId) => __awaiter(void 0, void 0, void 0, function* () {
+const getSecondPlayerName = (playerId) => __awaiter(void 0, void 0, void 0, function* () {
     const room = yield Room_1.default.findOne({ $and: [{ $or: [{ firstPlayer: playerId }, { secondPlayer: playerId }] }, { status: "active" }] });
-    console.log("room", room._id);
     if (room) {
-        console.log("Комната найдена");
-        if (room.firstPlayer.toString() === playerId) {
-            console.log('return!!!!', room.secondPlayer.toString());
-            return room.secondPlayer.toString();
-        }
-        else {
-            console.log('return!!!!', room.firstPlayer.toString());
-            return room.firstPlayer.toString();
+        if (room.firstPlayer && room.secondPlayer) {
+            if (room.firstPlayer)
+                if (room.firstPlayer.toString() === playerId) {
+                    if (room.secondPlayer) {
+                        return room.secondPlayer.toString();
+                    }
+                }
+                else if (room.secondPlayer.toString() === playerId) {
+                    console.log('return!!!!', room.firstPlayer.toString());
+                    return room.firstPlayer.toString();
+                }
         }
     }
 });
@@ -36,21 +38,28 @@ class SocketService {
                 origin: 'http://localhost:3000'
             },
         });
-        this.io.on('connection', (socket) => {
+        this.io.on('connection', (socket) => __awaiter(this, void 0, void 0, function* () {
             console.log('user connected');
             const cookies = socket.handshake.headers.cookie;
             const parsedCookies = cookie.parse(cookies);
             const token = parsedCookies.jwt;
             const playerId = (0, jwtVerification_1.default)(token);
-            socket.join(playerId);
             if (playerId === null) {
                 socket.disconnect();
             }
             socket.join(playerId);
+            const secondPlayerId = yield getSecondPlayerName(playerId);
+            if (secondPlayerId) {
+                this.io.to(secondPlayerId).emit('enemyReconnected');
+            }
             let timer;
+            if (timer) {
+                clearTimeout(timer);
+                console.log('Таймер очищен');
+            }
             socket.on('disconnect', () => __awaiter(this, void 0, void 0, function* () {
                 console.log('user disconnected');
-                const secondPlayerId = yield exitFromGame(playerId);
+                const secondPlayerId = yield getSecondPlayerName(playerId);
                 if (secondPlayerId) {
                     console.log(secondPlayerId);
                     this.io.to(secondPlayerId).emit('enemyDisconnected');
@@ -62,14 +71,14 @@ class SocketService {
                 }, 5000);
                 socket.leave(playerId);
             }));
-            socket.on('reconnect', () => {
+            this.io.on('reconnect', () => {
                 console.log('Пользователь повторно подключился');
                 if (timer) {
                     clearTimeout(timer);
                     console.log('Таймер очищен');
                 }
             });
-        });
+        }));
     }
     emiter(event, target, body) {
         this.io.to(target).emit(event, body);

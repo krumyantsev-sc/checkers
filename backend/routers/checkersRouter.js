@@ -65,5 +65,9 @@ router.get("/:roomId/getMoveStatusInfo", function (req, res) {
     let status = findControllerByRoomId(activeGames, req.params.roomId).getMoveStatusInfo(req);
     res.json(status);
 });
+router.get("/:roomId/finishGameOnTimedOut", function (req, res) {
+    findControllerByRoomId(activeGames, req.params.roomId).finishGameOnDisconnect(req);
+    res.status(200).json({ message: "Game finished" });
+});
 exports.default = router;
 //# sourceMappingURL=checkersRouter.js.map

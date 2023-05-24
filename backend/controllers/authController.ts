@@ -15,7 +15,7 @@ const generateAccessToken = (id: string, roles: Array<IRole | string>): string =
         id,
         roles,
     };
-    return jwt.sign(payload, secret, { expiresIn: "1m" });
+    return jwt.sign(payload, secret, { expiresIn: "72h" });
 };
 
 class authController{

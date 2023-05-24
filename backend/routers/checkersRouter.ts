@@ -62,4 +62,11 @@ router.get("/:roomId/getMoveStatusInfo", function (req: Request, res: Response) 
     let status = findControllerByRoomId(activeGames,req.params.roomId).getMoveStatusInfo(req);
     res.json(status)
 })
+
+router.get("/:roomId/finishGameOnTimedOut", function (req: Request, res: Response) {
+    findControllerByRoomId(activeGames,req.params.roomId).finishGameOnDisconnect(req);
+    res.status(200).json({message: "Game finished"});
+})
+
+
 export default router;

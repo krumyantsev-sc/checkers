@@ -9,6 +9,7 @@ import {Avatar} from "@mui/material";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faO, faX} from "@fortawesome/free-solid-svg-icons";
 import socket from "../../API/socket";
+import Timer from "../Timer";
 
 interface RoomProps {
     lobbyId: string;
@@ -18,6 +19,7 @@ const TicTacToeScoreBoard = () => {
     let { gameId } : any = useParams<Record<keyof RoomProps, string>>();
     const [gameInfo, setGameInfo] = useState<any>(null);
     const [currentMoveSymbol, setCurrentMoveSymbol] = useState("none");
+    const [displayTimer, setDisplayTimer] = useState(false);
 
     async function getGameInfoFromServer() {
         try {
@@ -27,11 +29,6 @@ const TicTacToeScoreBoard = () => {
                 console.log(data)
                 setGameInfo(data);
             }
-          //  const colorPromise = await CheckerService.getMoveStatus(gameId);
-            // const currentColor = await colorPromise.data;
-            // if (currentColor) {
-            //     setCurrentMoveColor(currentColor.color);
-            // }
         } catch (error) {
             console.error('Ошибка при получении комнат:', error);
             // navigate('/');
@@ -44,8 +41,21 @@ const TicTacToeScoreBoard = () => {
         const changeSymbol = (data: {symbol: string}) => {
             setCurrentMoveSymbol(data.symbol);
         }
+
+        const displayTimer = () => {
+            setDisplayTimer(true);
+        }
+
+        const stopDisplayTimer = () => {
+            setDisplayTimer(false);
+        }
+
+        socket.on('enemyReconnected', stopDisplayTimer);
+        socket.on('syncTime', displayTimer);
         socket.on('changeSymbol', changeSymbol);
         return () => {
+            socket.off('enemyReconnected', stopDisplayTimer);
+            socket.off('syncTime', displayTimer);
             socket.off('changeSymbol', changeSymbol);
             socket.disconnect();
         };
@@ -78,6 +88,7 @@ const TicTacToeScoreBoard = () => {
                             <FontAwesomeIcon icon={faO} size="xl" style={{color: "#3ed2f0",}}/>
                         </div>
                     </div>
+                    {displayTimer && <Timer/>}
                 </>
             )}
         </div>

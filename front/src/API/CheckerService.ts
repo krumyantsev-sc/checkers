@@ -31,4 +31,9 @@ export default class CheckerService {
         const res = await axios.get(`http://localhost:3001/checkers/${gameId}/getMoveStatusInfo`, {withCredentials: true});
         return res;
     }
+
+    static async finishGameByDisconnect(gameId: string) {
+        const res = await axios.get(`http://localhost:3001/checkers/${gameId}/finishGameOnTimedOut`, {withCredentials: true});
+        return res;
+    }
 }

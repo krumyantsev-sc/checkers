@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import socket from "../API/socket";
+import {useParams} from "react-router-dom";
+import CheckerService from "../API/CheckerService";
+import TicTacToeService from "../API/Tic-Tac-ToeService";
+
+interface RoomProps {
+    lobbyId: string;
+}
+
+interface GameProps {
+    gameName: string;
+}
 
 const Timer: React.FC = () => {
+    let { gameName } : any = useParams<Record<keyof GameProps, string>>();
     const [timerValue, setTimerValue] = useState<number>(() => {
         const storedValue = localStorage.getItem('timerValue');
         return storedValue ? parseInt(storedValue, 10) : 30;
     });
-    let timerId: NodeJS.Timeout | null = null;
+    let { gameId } : any = useParams<Record<keyof RoomProps, string>>();
+    let timerId: NodeJS.Timeout| number | null = null;
+
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -38,6 +52,10 @@ const Timer: React.FC = () => {
             console.log('Отключено от сервера');
 
             // Очищаем таймер при отключении от сервера
+            clearTimer();
+        });
+
+        socket.on('enemyReconnected', () => {
             clearTimer();
         });
 
@@ -118,8 +136,11 @@ const Timer: React.FC = () => {
     };
     const handleTimerFinish = () => {
         console.log('Таймер завершился');
-        // Здесь вы можете выполнить действия, которые должны произойти после завершения таймера
-
+        if (gameName === "checkers") {
+            CheckerService.finishGameByDisconnect(gameId);
+        } else {
+            TicTacToeService.finishGameByDisconnect(gameId);
+        }
         // Очищаем значение таймера в локальном хранилище
         localStorage.removeItem('timerValue');
     };

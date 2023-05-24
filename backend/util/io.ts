@@ -5,17 +5,19 @@ import authenticateToken from './jwtVerification';
 import {Server, Socket} from "socket.io";
 const cookie = require('cookie');
 
-const exitFromGame = async (playerId: string) => {
+const getSecondPlayerName = async (playerId: string) => {
     const room: IRoom = await Room.findOne({$and: [{$or:[{firstPlayer: playerId}, {secondPlayer: playerId}]}, {status: "active"}]});
-    console.log("room", room._id)
     if (room) {
-        console.log("Комната найдена")
-        if (room.firstPlayer.toString() === playerId) {
-            console.log('return!!!!', room.secondPlayer.toString())
-            return room.secondPlayer.toString()
-        } else {
-            console.log('return!!!!', room.firstPlayer.toString())
-            return room.firstPlayer.toString();
+        if (room.firstPlayer && room.secondPlayer) {
+            if (room.firstPlayer)
+                if (room.firstPlayer.toString() === playerId) {
+                    if (room.secondPlayer) {
+                        return room.secondPlayer.toString()
+                    }
+                } else if (room.secondPlayer.toString() === playerId) {
+                    console.log('return!!!!', room.firstPlayer.toString())
+                    return room.firstPlayer.toString();
+                }
         }
     }
 }
@@ -31,22 +33,28 @@ export default class SocketService {
             },
         });
 
-        this.io.on('connection', (socket: Socket) => {
+        this.io.on('connection', async (socket: Socket) => {
             console.log('user connected');
             const cookies = socket.handshake.headers.cookie;
             const parsedCookies = cookie.parse(cookies);
             const token = parsedCookies.jwt;
             const playerId = authenticateToken(token);
-            socket.join(playerId);
             if (playerId === null) {
                 socket.disconnect();
             }
             socket.join(playerId);
+            const secondPlayerId = await getSecondPlayerName(playerId);
+            if (secondPlayerId) {
+                this.io.to(secondPlayerId).emit('enemyReconnected');
+            }
             let timer: NodeJS.Timeout;
-
+            if (timer) {
+                clearTimeout(timer);
+                console.log('Таймер очищен');
+            }
             socket.on('disconnect', async () => {
                 console.log('user disconnected');
-                const secondPlayerId = await exitFromGame(playerId);
+                const secondPlayerId = await getSecondPlayerName(playerId);
                 if (secondPlayerId) {
                     console.log(secondPlayerId)
                     this.io.to(secondPlayerId).emit('enemyDisconnected');
@@ -60,7 +68,7 @@ export default class SocketService {
                 socket.leave(playerId);
             });
 
-            socket.on('reconnect', () => {
+            this.io.on('reconnect', () => {
                 console.log('Пользователь повторно подключился');
 
                 if (timer) {

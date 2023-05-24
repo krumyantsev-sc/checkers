@@ -86,6 +86,32 @@ class tttController {
         await room.save();
     }
 
+    public finishGameOnDisconnect = (req: Request) => {
+        try {
+            const token: string = req.cookies.jwt;
+            const {id: userId} = jwt.verify(token, secret);
+            if (this.player1.id === userId) {
+                this.emitWin(this.player1.id, this.player2.id, req);
+            }
+            if (this.player2.id === userId) {
+                this.emitWin(this.player2.id, this.player1.id, req);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    private emitWin = (winnerId: string, loserId: string, req: Request) => {
+        this.updateStats(winnerId, loserId).then(() => {
+            emitToPlayers(req,[winnerId],'tttGameFinished',
+                {message: FinishMessage.Win});
+            emitToPlayers(req,[loserId],'tttGameFinished',
+                {message: FinishMessage.Lose});
+            removeController(this.roomId);
+        });
+    }
+
     private updateStats = async (winnerId: string, loserId: string): Promise<void> => {
         const winner = await User.findById(winnerId);
         const loser = await User.findById(loserId);

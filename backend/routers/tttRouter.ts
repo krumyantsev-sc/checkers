@@ -49,4 +49,10 @@ router.post("/:roomId/makeMove", async function(req: Request, res: Response) {
     res.status(200).json({message:"Successfully moved"});
 });
 
+router.get("/:roomId/finishGameOnTimedOut", function (req: Request, res: Response) {
+    findControllerByRoomId(activeGames,req.params.roomId).finishGameOnDisconnect(req);
+    res.status(200).json({message: "Game finished"});
+})
+
+
 export default router;

@@ -17,4 +17,8 @@ export default class TicTacToeService {
         const res = await axios.get(`http://localhost:3001/tic-tac-toe/${gameId}/getGameInfo`, {withCredentials: true});
         return res;
     }
+    static async finishGameByDisconnect(gameId: string) {
+        const res = await axios.get(`http://localhost:3001/tic-tac-toe/${gameId}/finishGameOnTimedOut`, {withCredentials: true});
+        return res;
+    }
 }

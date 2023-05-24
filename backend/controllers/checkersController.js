@@ -19,12 +19,29 @@ const finishMessage_1 = require("../enums/finishMessage");
 const User_1 = require("../models/User");
 const EventEmitter = require("events");
 const checkersRouter_1 = require("../routers/checkersRouter");
+const jwt = require("jsonwebtoken");
+const secret = require("../config/config");
 class checkersController {
     constructor() {
         this.emitter = new EventEmitter();
         this.counter = 2;
         this.player1 = new player_1.default("White");
         this.player2 = new player_1.default("Black");
+        this.finishGameOnDisconnect = (req) => {
+            try {
+                const token = req.cookies.jwt;
+                const { id: userId } = jwt.verify(token, secret);
+                if (this.player1.id === userId) {
+                    this.emitWin(this.player1.id, this.player2.id, req);
+                }
+                if (this.player2.id === userId) {
+                    this.emitWin(this.player2.id, this.player1.id, req);
+                }
+            }
+            catch (error) {
+                console.log(error);
+            }
+        };
         this.initializeGame = (roomId, req, res) => __awaiter(this, void 0, void 0, function* () {
             this.roomId = roomId;
             console.log(this.roomId);
@@ -79,20 +96,19 @@ class checkersController {
         this.getPositionsForHighlighting = (req) => {
             return (0, MoveService_1.checkMoveVariants)(this.boardService, req.body);
         };
+        this.emitWin = (winnerId, loserId, req) => {
+            this.updateStats(winnerId, loserId).then(() => {
+                (0, util_1.default)(req, [winnerId], 'gameFinished', { message: finishMessage_1.FinishMessage.Win });
+                (0, util_1.default)(req, [loserId], 'gameFinished', { message: finishMessage_1.FinishMessage.Lose });
+                (0, checkersRouter_1.removeController)(this.roomId);
+            });
+        };
         this.checkWin = (req) => {
             if (this.player1.score === 12) {
-                this.updateStats(this.player1.id, this.player2.id).then(() => {
-                    (0, util_1.default)(req, [this.player1.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Win });
-                    (0, util_1.default)(req, [this.player2.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Lose });
-                    (0, checkersRouter_1.removeController)(this.roomId);
-                });
+                this.emitWin(this.player1.id, this.player2.id, req);
             }
             if (this.player2.score === 12) {
-                this.updateStats(this.player2.id, this.player1.id).then(() => {
-                    (0, util_1.default)(req, [this.player1.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Lose });
-                    (0, util_1.default)(req, [this.player2.id], 'gameFinished', { message: finishMessage_1.FinishMessage.Win });
-                    (0, checkersRouter_1.removeController)(this.roomId);
-                });
+                this.emitWin(this.player2.id, this.player1.id, req);
             }
         };
         this.updateScore = (removedChecker, req) => {

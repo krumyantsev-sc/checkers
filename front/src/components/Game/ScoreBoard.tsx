@@ -64,12 +64,20 @@ const ScoreBoard = () => {
         const displayTimer = () => {
             setDisplayTimer(true);
         }
+
+        const stopDisplayTimer = () => {
+            setDisplayTimer(false);
+        }
+
+        socket.on('enemyReconnected', stopDisplayTimer);
         socket.on('syncTime', displayTimer);
         socket.on('switchTeam', changeColor);
         socket.on('refreshScore', refreshScore);
         return () => {
             socket.off('giveListeners', changeColor);
             socket.off('refreshScore', refreshScore);
+            socket.off('enemyReconnected', stopDisplayTimer);
+            socket.off('syncTime', displayTimer)
             socket.disconnect();
         };
     }, []);
