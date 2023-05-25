@@ -7,11 +7,11 @@ interface IStatistics {
 }
 
 const StatisticsSchema = new Schema({
-    wins: { type: Number, default: 0 },
-    loses: { type: Number, default: 0 },
+    wins: {type: Number, default: 0},
+    loses: {type: Number, default: 0},
 });
 
-export interface IUser extends Document{
+export interface IUser extends Document {
     username: string;
     password: string;
     firstName: string;
@@ -19,7 +19,7 @@ export interface IUser extends Document{
     statistics: IStatistics;
     email: string;
     avatar: string;
-    role: Array<IRole|string>;
+    role: Array<IRole | string>;
 }
 
 const UserSchema = new Schema({
@@ -27,10 +27,10 @@ const UserSchema = new Schema({
     password: {type: String, required: true},
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
-    statistics: { type: StatisticsSchema, default: { wins: 0, loses: 0 } },
+    statistics: {type: StatisticsSchema, default: {wins: 0, loses: 0}},
     email: {type: String, required: true},
     avatar: {type: String, default: "profile-avatar-default.png"},
-    role: [{type:String, ref:'Role'}]
+    role: [{type: String, ref: 'Role'}]
 });
 
 const UserModel = model<IUser>("User", UserSchema);

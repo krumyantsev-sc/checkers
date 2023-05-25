@@ -1,7 +1,7 @@
-import { Schema, model, Document } from 'mongoose';
-import { IUser } from "./User";
-import { IGame } from "./Game";
-import { IMessage, MessageModel } from "./Message";
+import {Schema, model, Document} from 'mongoose';
+import {IUser} from "./User";
+import {IGame} from "./Game";
+import {IMessage, MessageModel} from "./Message";
 
 export interface IRoom extends Document {
     firstPlayer: IUser['_id'];

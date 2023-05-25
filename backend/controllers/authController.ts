@@ -1,24 +1,24 @@
 import User from "../models/User"
 import Role from "../models/Role"
+
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const { validationResult } = require("express-validator")
+const {validationResult} = require("express-validator")
 const secret = require("../config/config")
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import {IUser} from "../models/User"
 import {IRole} from "../models/Role"
 import {HydratedDocument} from "mongoose";
-const cookieParser = require('cookie-parser');
 
 const generateAccessToken = (id: string, roles: Array<IRole | string>): string => {
     const payload = {
         id,
         roles,
     };
-    return jwt.sign(payload, secret, { expiresIn: "72h" });
+    return jwt.sign(payload, secret, {expiresIn: "72h"});
 };
 
-class authController{
+class authController {
     public logout = (req: Request, res: Response) => {
         res.clearCookie('jwt');
         return res.status(200).json({message: "Successful logout"});
@@ -30,7 +30,7 @@ class authController{
             if (!token) {
                 return res.status(200).json({isAuthenticated: false, isAdmin: false});
             }
-            const payload = jwt.verify(token,secret);
+            const payload = jwt.verify(token, secret);
             let isAdmin = false;
             if (payload.roles.includes("ADMIN")) {
                 isAdmin = true;
@@ -55,7 +55,14 @@ class authController{
             const hashPassword: string = bcrypt.hashSync(password, 7);
             const userRole: IRole = await Role.findOne({value: "USER"});
             const user: HydratedDocument<IUser> = new User(
-                {firstName: firstName, lastName: lastName, email: email, username: username, password: hashPassword, role: [userRole.value]});
+                {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    username: username,
+                    password: hashPassword,
+                    role: [userRole.value]
+                });
             await user.save();
             return res.json({message: "Пользователь успешно зарегистрирован"});
         } catch (e) {
@@ -83,7 +90,7 @@ class authController{
                 httpOnly: true,
                 secure: false,
             });
-            res.status(200).json({ message: 'Успешная авторизация' });
+            res.status(200).json({message: 'Успешная авторизация'});
         } catch (e) {
             console.log(e);
             return res.status(400).json({message: "Login error"});
@@ -98,15 +105,14 @@ class authController{
             const users = await User.find()
                 .skip(skip)
                 .limit(limit)
-                .sort({ _id: -1 })
+                .sort({_id: -1})
                 .select('username email role')
-                //.populate('role', 'name');
             const totalUsers = await User.countDocuments();
             const totalPages = Math.ceil(totalUsers / limit);
-            res.json({ users, totalPages });
+            res.json({users, totalPages});
         } catch (error) {
             console.error('Ошибка при получении пользователей с пагинацией:', error);
-            res.status(500).json({ error: 'Произошла ошибка сервера' });
+            res.status(500).json({error: 'Произошла ошибка сервера'});
         }
     }
 
@@ -115,8 +121,8 @@ class authController{
         const regex = new RegExp(`^${searchTerm}`, 'i');
         const users: IUser[] = await User.find({
             $or: [
-                { username: regex },
-                { email: regex },
+                {username: regex},
+                {email: regex},
             ],
         })
             .select('username email role')
@@ -140,7 +146,7 @@ class authController{
         const user: HydratedDocument<IUser> = await User.findById(userId);
         const bannedRole = await Role.findOne({value: "BANNED"});
         if (user.role.includes(bannedRole.value)) {
-           return res.status(409).json({message: "Пользователь уже забанен"})
+            return res.status(409).json({message: "Пользователь уже забанен"})
         }
         user.role.push(bannedRole.value);
         user.save();
@@ -150,9 +156,9 @@ class authController{
     public getUserName = async (req: Request, res: Response): Promise<any> => {
         try {
             const token: string = req.cookies.jwt;
-            const { id: userId }: {id: string} = jwt.verify(token, secret) as { id: string };
+            const {id: userId}: { id: string } = jwt.verify(token, secret) as { id: string };
             const candidate: IUser = await User.findById(userId);
-            res.json({ username: candidate?.username });
+            res.json({username: candidate?.username});
         } catch (e) {
             console.log(e);
         }

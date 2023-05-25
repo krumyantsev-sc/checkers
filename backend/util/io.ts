@@ -3,10 +3,11 @@ import Room, {IRoom} from "../models/Room";
 const socketIo = require('socket.io');
 import authenticateToken from './jwtVerification';
 import {Server, Socket} from "socket.io";
+
 const cookie = require('cookie');
 
 const getSecondPlayerName = async (playerId: string) => {
-    const room: IRoom = await Room.findOne({$and: [{$or:[{firstPlayer: playerId}, {secondPlayer: playerId}]}, {status: "active"}]});
+    const room: IRoom = await Room.findOne({$and: [{$or: [{firstPlayer: playerId}, {secondPlayer: playerId}]}, {status: "active"}]});
     if (room) {
         if (room.firstPlayer && room.secondPlayer) {
             if (room.firstPlayer)

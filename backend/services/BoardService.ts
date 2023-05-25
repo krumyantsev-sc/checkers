@@ -1,7 +1,7 @@
-
 import checker from "../entity/checker";
 import IBoardService from "./interfaces/IBoardService";
 import {checkerCoords} from "../types/checkersTypes";
+
 class BoardService implements IBoardService {
     board: (checker | null)[][] = [
         [null, null, null, null, null, null, null, null],
@@ -13,14 +13,16 @@ class BoardService implements IBoardService {
         [null, null, null, null, null, null, null, null],
         [null, null, null, null, null, null, null, null]
     ];
+
     constructor() {
-      this.init();
+        this.init();
     }
+
     getBoard(): (checker | null)[][] {
         return this.board;
     }
 
-    init(): void{
+    init(): void {
         let boardSchema: (number | null)[][] = [
             [null, 0, null, 1, null, 2, null, 3],
             [4, null, 5, null, 6, null, 7, null],
@@ -36,23 +38,24 @@ class BoardService implements IBoardService {
                 if (boardSchema[i][j] !== null) {
                     this.board[i][j] = boardSchema[i][j] <= 11 ? (new checker("White", {
                         i, j
-                    },boardSchema[i][j]!)) : (new checker("Black", {i, j},boardSchema[i][j]!));
+                    }, boardSchema[i][j]!)) : (new checker("Black", {i, j}, boardSchema[i][j]!));
                 }
             }
         }
     }
 
     checkBorders(position: checkerCoords): boolean {
-        const {i,j} = position;
+        const {i, j} = position;
         return (i > -1 && i < 8 && j > -1 && j < 8);
     }
 
     isFreeCell(position: checkerCoords): boolean {
-        const {i,j} = position;
+        const {i, j} = position;
         return (this.checkBorders(position) && this.board[i][j] == null);
     }
+
     isCellTaken(position: checkerCoords): boolean {
-        const {i,j} = position;
+        const {i, j} = position;
         return (this.checkBorders(position) && this.board[i][j] != null);
     }
 }

@@ -15,7 +15,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const secret = require("../config/config");
-const cookieParser = require('cookie-parser');
 const generateAccessToken = (id, roles) => {
     const payload = {
         id,
@@ -59,7 +58,14 @@ class authController {
                 }
                 const hashPassword = bcrypt.hashSync(password, 7);
                 const userRole = yield Role_1.default.findOne({ value: "USER" });
-                const user = new User_1.default({ firstName: firstName, lastName: lastName, email: email, username: username, password: hashPassword, role: [userRole.value] });
+                const user = new User_1.default({
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    username: username,
+                    password: hashPassword,
+                    role: [userRole.value]
+                });
                 yield user.save();
                 return res.json({ message: "Пользователь успешно зарегистрирован" });
             }
@@ -104,7 +110,6 @@ class authController {
                     .limit(limit)
                     .sort({ _id: -1 })
                     .select('username email role');
-                //.populate('role', 'name');
                 const totalUsers = yield User_1.default.countDocuments();
                 const totalPages = Math.ceil(totalUsers / limit);
                 res.json({ users, totalPages });

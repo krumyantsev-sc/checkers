@@ -1,6 +1,6 @@
 import {Schema, model, Document} from "mongoose";
 
-export interface IGame extends Document{
+export interface IGame extends Document {
     name: string;
     description: string;
     logo: string;

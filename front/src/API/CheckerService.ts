@@ -3,12 +3,12 @@ import axios from "axios";
 
 export default class CheckerService {
     static async getBoardFromServer(gameId: string) {
-        const res = await axios.get(`http://localhost:3001/checkers/${gameId}/getBoard`);
+        const res = await axios.get(`http://localhost:3001/checkers/${gameId}/getBoard`, {withCredentials: true});
         return res;
     }
 
     static async getPositionsForHighlighting(gameId: string, data: any) {
-        const res = await axios.post(`http://localhost:3001/checkers/${gameId}/getPossiblePositions`,data);
+        const res = await axios.post(`http://localhost:3001/checkers/${gameId}/getPossiblePositions`,data, {withCredentials: true});
         return res;
     }
 

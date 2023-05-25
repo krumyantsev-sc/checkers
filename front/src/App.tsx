@@ -68,7 +68,9 @@ function App() {
                       <RoomList/>
                   </ProtectedRoute> } />
                   <Route path="/games/:gameName/:gameId" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
-                      <Lobby/>
+                      <ModalProvider>
+                        <Lobby/>
+                      </ModalProvider>
                   </ProtectedRoute> } />
                   <Route path="/games/:gameName/:gameId/game" element={ <ProtectedRoute isSignedIn={isLoggedIn}>
                       <GameWrapper/>

@@ -9,6 +9,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import socket from "../../API/socket";
 import {io} from "socket.io-client";
 import {useModal} from "../Modal/ModalContext";
+import Loading from "../Loading";
 
 
 interface GameProps {
@@ -75,6 +76,7 @@ const Board = () => {
         try {
             const res = await CheckerService.getBoardFromServer(gameId);
             const serverBoard = await res.data;
+            console.log(serverBoard)
             if (serverBoard) {
                 setCheckersBoard(serverBoard);
             }

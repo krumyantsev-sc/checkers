@@ -1,12 +1,4 @@
 import * as path from "path";
-
-const express = require("express");
-const app = express();
-const server = require('http').Server(app);
-import SocketService from "./util/io";
-const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
 import authRouter from './routers/authRouter'
 import checkersRouter from "./routers/checkersRouter";
 import roomRouter from './routers/roomRouter';
@@ -14,6 +6,15 @@ import gamesRouter from "./routers/gamesRouter";
 import profileRouter from "./routers/profileRouter";
 import chatRouter from "./routers/chatRouter";
 import tttRouter from "./routers/tttRouter";
+import SocketService from "./util/io";
+
+const express = require("express");
+const app = express();
+const server = require('http').Server(app);
+const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -31,10 +32,11 @@ app.use(cors({
 }));
 
 app.set("socketService", new SocketService(server));
+
 const start = async () => {
     try {
         await mongoose.connect(`mongodb+srv://rumik:13372281@cluster0.orq3t9o.mongodb.net/?retryWrites=true&w=majority`);
-        server.listen(3001, function() {
+        server.listen(3001, function () {
             console.log("listening on *:3001");
         });
     } catch (e) {

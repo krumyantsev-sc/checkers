@@ -13,5 +13,8 @@ export default class RoomService {
         const response = await axios.post('http://localhost:3001/room/connect', {roomId: roomId}, {withCredentials: true});
         return response;
     };
-
+    static leaveRoom = async (roomId: number) => {
+        const response = await axios.post('http://localhost:3001/room/leave', {roomId: roomId}, {withCredentials: true});
+        return response;
+    };
 }

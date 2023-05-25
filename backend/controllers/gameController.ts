@@ -1,9 +1,6 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import Game, {IGame} from "../models/Game"
-import User, {IUser} from "../models/User";
-import {HydratedDocument} from "mongoose";
 const multer = require('multer');
-import jwt from "jsonwebtoken";
 const path = require('path');
 import * as fs from 'fs';
 
@@ -12,18 +9,12 @@ const storage = multer.diskStorage({
         cb(null, 'static/games/');
     },
     filename: function (req, file, cb) {
-        console.log(req.body.name)
         const name: string = req.body.name;
-        console.log(name)
-        console.log(file);
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!")
         const fileName = `${name}${path.extname(file.originalname)}`;
         fs.readdirSync("static/games/").forEach(file => {
             const fileNameWithoutExt = path.parse(file).name;
             if (fileNameWithoutExt.startsWith(name)) {
-                console.log("Совпадение найдено")
                 fs.unlinkSync(path.join("static/games/", file));
-                console.log(`Файл ${file} удален`);
             }
         });
         cb(null, fileName);
@@ -31,7 +22,7 @@ const storage = multer.diskStorage({
 });
 
 class gameController {
-    upload = multer({ storage: storage });
+    upload = multer({storage: storage});
     createGame = async (req: Request, res: Response): Promise<any> => {
         const name: string = req.body.name;
         const description: string = req.body.description;
@@ -42,10 +33,10 @@ class gameController {
                 newGame.logo = logoFile.filename;
             }
             await newGame.save();
-            res.send({ message: "game created successfully", status: "success" });
+            res.send({message: "game created successfully", status: "success"});
         } catch (error) {
             console.error(error);
-            res.status(500).send({message:"An error occurred while creating the game"});
+            res.status(500).send({message: "An error occurred while creating the game"});
         }
     }
 
@@ -62,7 +53,6 @@ class gameController {
         const name: string = req.body.name;
         const description: string = req.body.description;
         const logoFile = req.file;
-        console.log("logoFile", logoFile);
         const id: string = req.body.id;
         try {
             const updatedGame = await Game.findByIdAndUpdate(
@@ -71,7 +61,7 @@ class gameController {
                     name: name,
                     description: description,
                 },
-                { new: true }
+                {new: true}
             );
 
             if (logoFile) {
@@ -80,17 +70,17 @@ class gameController {
                     {
                         logo: logoFile.filename
                     },
-                    { new: true }
+                    {new: true}
                 );
             }
             if (!updatedGame) {
                 res.status(404).send({message: "Game not found"});
             } else {
-                res.send({ message: "game updated successfully", status: "success" });
+                res.send({message: "game updated successfully", status: "success"});
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send({message:"An error occurred while updating the game"});
+            res.status(500).send({message: "An error occurred while updating the game"});
         }
     }
 
@@ -100,12 +90,12 @@ class gameController {
             const deletedGame = await Game.findByIdAndDelete(gameId);
 
             if (!deletedGame) {
-                return res.status(404).json({ message: 'Game not found' });
+                return res.status(404).json({message: 'Game not found'});
             }
 
-            res.status(200).json({ message: 'Game deleted successfully' });
+            res.status(200).json({message: 'Game deleted successfully'});
         } catch (error) {
-            res.status(500).json({ message: 'Error deleting game'});
+            res.status(500).json({message: 'Error deleting game'});
         }
     };
 }

@@ -6,6 +6,9 @@ import LobbyService from "../API/LobbyService";
 import LobbyInfo from "./Lobby/LobbyInfo";
 import "../styles/Lobby.css"
 import socket from "../API/socket"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faCircleXmark} from '@fortawesome/free-solid-svg-icons';
+import {useModal} from "./Modal/ModalContext";
 
 interface GameProps {
     gameName: string;
@@ -30,6 +33,7 @@ interface IRoomInfo {
 }
 
 const Lobby = () => {
+    const { showModal, closeModal } = useModal();
     const [isLoading, setIsLoading] = useState(true);
     const [roomInfo,setRoomInfo] = useState<IRoomInfo>();
     const navigate = useNavigate();
@@ -68,12 +72,26 @@ const Lobby = () => {
         };
     }, []);
 
+    const leaveRoomHandler = () => {
+        if (roomInfo) {
+            RoomService.leaveRoom(roomInfo.roomId)
+                .then(() => {navigate(`/games/${gameName.toString()}`)})
+                .catch((e) => {showModal(e.response.data.message)});
+        }
+    }
+
     return (
         <div>
             <SideMenu/>
             <div className="lobby-page">
                 <div className="game-room-info-container">
-                    <span className="game-header">{gameHeader}</span>
+                    <div className="room-header-button-container">
+                        <span className="game-header">{gameHeader}</span>
+                        <FontAwesomeIcon
+                            className="room-leave-button"
+                            onClick={() => {leaveRoomHandler()}}
+                            icon={faCircleXmark} size="xl" style={{color: "#49a2de",}}/>
+                    </div>
                     {roomInfo && <LobbyInfo
                         key={roomInfo.roomId}
                         lobbyId={roomInfo.roomId}

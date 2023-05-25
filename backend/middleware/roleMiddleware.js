@@ -4,7 +4,6 @@ const jsonwebtoken_1 = require("jsonwebtoken");
 const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
 const checkRoleInJWT = (userRole, roles, res) => {
-    console.log(userRole, roles);
     let hasRole = false;
     userRole.forEach(role => {
         if (roles.includes(role)) {
@@ -17,30 +16,26 @@ const checkRoleInJWT = (userRole, roles, res) => {
 };
 const checkRole = (roles) => {
     return (req, res, next) => {
-        console.log('vhod');
         if (req.method === "OPTIONS") {
             next();
         }
         const token = req.cookies.jwt;
+        console.log("token", token);
         try {
-            console.log(token);
             if (!token) {
                 return res.status(200).json({ message: "Пользователь не авторизован" });
             }
             const { roles: userRole } = jwt.verify(token, secret);
             checkRoleInJWT(userRole, roles, res);
-            console.log(userRole);
             next();
         }
         catch (e) {
             if (e instanceof jsonwebtoken_1.TokenExpiredError) {
-                console.log("expired");
                 const payload = jwt.decode(token);
                 const newToken = jwt.sign({
                     id: payload.id,
                     roles: payload.roles,
                 }, secret, { expiresIn: "24h" });
-                console.log(newToken);
                 res.cookie('jwt', newToken, {
                     httpOnly: true,
                     secure: false,

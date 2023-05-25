@@ -74,7 +74,7 @@ const Board = () => {
 
         socket.on('tttGiveListeners', giveListeners);
         socket.on('tttBoardUpdated', updateBoard);
-        socket.on('tttGameFinished', finishGame);
+        socket.on('gameFinished', finishGame);
 
         return () => {
             socket.off('tttBoardUpdated', updateBoard);

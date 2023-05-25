@@ -1,9 +1,11 @@
 import {Request, Response} from 'express';
 import User, {IUser} from "../models/User";
+
 const multer = require('multer');
 const path = require('path');
 import * as fs from 'fs';
 import Room, {IRoom} from "../models/Room";
+
 const bcrypt = require("bcrypt")
 const secret = require("../config/config")
 const jwt = require("jsonwebtoken")
@@ -18,11 +20,8 @@ const storage = multer.diskStorage({
         const fileName = `${userId}${path.extname(file.originalname)}`;
         fs.readdirSync("static/avatar/").forEach(file => {
             const fileNameWithoutExt = path.parse(file).name;
-            console.log(fileNameWithoutExt);
             if (fileNameWithoutExt.startsWith(userId)) {
-                console.log("Совпадение найдено")
                 fs.unlinkSync(path.join("static/avatar/", file));
-                console.log(`Файл ${file} удален`);
             }
         });
         cb(null, fileName);
@@ -31,9 +30,8 @@ const storage = multer.diskStorage({
 
 
 class UserProfileController {
-    upload = multer({ storage: storage });
+    upload = multer({storage: storage});
     updateProfile = async (req: Request, res: Response) => {
-        const username: string = req.body.username;
         const email: string = req.body.email;
         const password: string = req.body.password;
         const firstName: string = req.body.firstName;
@@ -51,55 +49,54 @@ class UserProfileController {
                     firstName: firstName,
                     lastName: lastName,
                 },
-                { new: true }
+                {new: true}
             );
             if (avatarFile) {
-                const updatedUser = await User.findByIdAndUpdate(
+                await User.findByIdAndUpdate(
                     userId,
                     {
                         avatar: avatarFile.filename
                     },
-                    { new: true }
+                    {new: true}
                 );
             }
 
             if (!updatedUser) {
                 res.status(404).send({message: "User not found"});
             } else {
-                res.send({ message: "Profile updated successfully", status: "success" });
+                res.send({message: "Profile updated successfully", status: "success"});
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send({message:"An error occurred while updating the profile"});
+            res.status(500).send({message: "An error occurred while updating the profile"});
         }
     };
 
     getProfileAvatar = async (req: Request, res: Response) => {
         try {
             const token: string = req.cookies.jwt;
-            const { id: userId }: {id: string} = jwt.verify(token, secret) as { id: string };
+            const {id: userId}: { id: string } = jwt.verify(token, secret) as { id: string };
             const user = await User.findById(userId);
             if (!user) {
-                return res.status(404).json({ error: 'User not found' });
+                return res.status(404).json({error: 'User not found'});
             }
             if (!user.avatar) {
-                return res.status(404).json({ error: 'Avatar not found' });
+                return res.status(404).json({error: 'Avatar not found'});
             }
-            console.log(user.avatar)
             return res.json({avatar: user.avatar});
         } catch (e) {
             console.log(e)
-            return res.status(500).json({ error: 'Internal server error' });
+            return res.status(500).json({error: 'Internal server error'});
         }
     }
 
     getProfileInfo = async (req: Request, res: Response) => {
         try {
             const token: string = req.cookies.jwt;
-            const { id: userId }: {id: string} = jwt.verify(token, secret) as { id: string };
+            const {id: userId}: { id: string } = jwt.verify(token, secret) as { id: string };
             const user = await User.findById(userId);
             if (!user) {
-                return res.status(404).json({ error: 'User not found' });
+                return res.status(404).json({error: 'User not found'});
             }
             return res.json({
                 username: user.username,
@@ -110,22 +107,24 @@ class UserProfileController {
                 loses: user.statistics.loses
             });
         } catch (e) {
-            return res.status(500).json({ error: 'Internal server error' });
+            return res.status(500).json({error: 'Internal server error'});
         }
     }
 
     getMatchHistory = async (req: Request, res: Response) => {
         try {
             const token: string = req.cookies.jwt;
-            const { id: userId }: {id: string} = jwt.verify(token, secret) as { id: string };
+            const {id: userId}: { id: string } = jwt.verify(token, secret) as { id: string };
             const user = await User.findById(userId);
             if (!user) {
-                return res.status(404).json({ error: 'User not found' });
+                return res.status(404).json({error: 'User not found'});
             }
-            const rooms = await Room.find({$or:[{'firstPlayer': user}, {'secondPlayer': user}],$and: [
-                { 'status': 'finished' }
-            ]})
-                .populate('firstPlayer' )
+            const rooms = await Room.find({
+                $or: [{'firstPlayer': user}, {'secondPlayer': user}], $and: [
+                    {'status': 'finished'}
+                ]
+            })
+                .populate('firstPlayer')
                 .populate('secondPlayer')
                 .populate('game')
                 .populate('winner')
@@ -138,7 +137,7 @@ class UserProfileController {
                     game: room.game.name,
                     winner: room.winner ? room.winner.username : "no winner",
                     createdAt: room.createdAt,
-                    duration: Math.floor(Math.abs(room.finishedAt.getTime() - room.startedAt.getTime())/ (1000 * 60))
+                    duration: Math.floor(Math.abs(room.finishedAt.getTime() - room.startedAt.getTime()) / (1000 * 60))
                 };
             });
             const page: number = Number(req.query.page) || 1;
@@ -149,9 +148,9 @@ class UserProfileController {
             const paginatedGames = transformedRooms.slice(startIndex, endIndex);
             const totalPages: number = Math.ceil(rooms.length / limit);
 
-            return res.json({ games: paginatedGames, totalPages });
+            return res.json({games: paginatedGames, totalPages});
         } catch (e) {
-            return res.status(500).json({ error: 'Internal server error' });
+            return res.status(500).json({error: 'Internal server error'});
         }
     }
 
@@ -159,9 +158,8 @@ class UserProfileController {
         try {
             const userId = req.params.id;
             const user = await User.findById(userId);
-            console.log(user);
             if (!user) {
-                return res.status(404).json({ error: 'User not found' });
+                return res.status(404).json({error: 'User not found'});
             }
             return res.json({
                 username: user.username,
@@ -173,7 +171,7 @@ class UserProfileController {
                 avatar: user.avatar
             });
         } catch (e) {
-            return res.status(500).json({ error: 'Internal server error' });
+            return res.status(500).json({error: 'Internal server error'});
         }
     }
 }

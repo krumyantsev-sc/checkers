@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Router = require("express");
+const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const authController_1 = require("../controllers/authController");
+const Router = require("express");
 const router = new Router();
 const { check } = require("express-validator");
-const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const cors = require("cors");
 router.use(cors({
     origin: 'http://localhost:3000',
