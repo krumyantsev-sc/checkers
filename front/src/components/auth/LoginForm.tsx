@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, {ChangeEvent, FormEvent, useState} from 'react';
 import '../../styles/Auth.css';
 import AuthService from "../../API/AuthService";
 import {useModal} from "../Modal/ModalContext";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {useAuth} from "./AuthContext";
 
 interface LoginFormProps {
     setLogin: (value: boolean) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
-    const { login } = useAuth();
-    const { showModal, closeModal } = useModal();
+const LoginForm: React.FC<LoginFormProps> = ({setLogin}) => {
+    const {login} = useAuth();
+    const {showModal} = useModal();
     const [formData, setFormData] = useState({
         username: '',
         password: ''
@@ -37,7 +37,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
         }
     }
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (validatePassword(formData.password)) {
             logIn();
@@ -47,14 +47,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
         }
     };
 
-    const handleChange = (e: any) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setFormData({...formData, [e.target.name]: e.target.value});
     };
 
     return (
-        <div className="form-button-container">
-            <span className="authPartSpan">Login</span>
-            <form className="form-container" onSubmit={handleSubmit}>
+        <div
+            className="form-button-container">
+            <span
+                className="authPartSpan">
+                Login
+            </span>
+            <form
+                className="form-container"
+                onSubmit={handleSubmit}>
                 <input
                     className="input-field"
                     type="text"
@@ -71,14 +77,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ setLogin })=> {
                     value={formData.password}
                     onChange={handleChange}
                 />
-                <button className="submit-button" type="submit">
+                <button
+                    className="submit-button"
+                    type="submit">
                     Log in
                 </button>
             </form>
-            {error && <div className="error-message">{error}</div>}
-            <div className="backButton"
-                onClick={() => setLogin(false)}
-            >
+            {error &&
+            <div
+                className="error-message">
+                {error}
+            </div>}
+            <div
+                className="backButton"
+                onClick={() => setLogin(false)}>
                 Register
             </div>
         </div>

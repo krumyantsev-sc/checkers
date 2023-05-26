@@ -6,7 +6,7 @@ import LobbyService from "../API/LobbyService";
 import LobbyInfo from "./Lobby/LobbyInfo";
 import "../styles/Lobby.css"
 import socket from "../API/socket"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCircleXmark} from '@fortawesome/free-solid-svg-icons';
 import {useModal} from "./Modal/ModalContext";
 
@@ -22,7 +22,7 @@ interface IPlayer {
     username: string,
     firstName: string,
     lastName: string,
-    statistics: {wins: number, loses: number},
+    statistics: { wins: number, loses: number },
     avatar: string
 }
 
@@ -33,13 +33,13 @@ interface IRoomInfo {
 }
 
 const Lobby = () => {
-    const { showModal, closeModal } = useModal();
-    const [isLoading, setIsLoading] = useState(true);
-    const [roomInfo,setRoomInfo] = useState<IRoomInfo>();
+    const {showModal} = useModal();
+    const [roomInfo, setRoomInfo] = useState<IRoomInfo>();
     const navigate = useNavigate();
-    let { gameName } : any = useParams<Record<keyof GameProps, string>>();
-    let { gameId } : any = useParams<Record<keyof RoomProps, string>>();
-    let gameHeader: string | undefined = gameName.toUpperCase();
+    const {gameName} = useParams();
+    const {gameId} = useParams();
+    const gameHeader = gameName && gameName.toUpperCase();
+
     async function getRoomInfoFromServer() {
         try {
             const response = await LobbyService.getLobbyInfo(gameId);
@@ -47,24 +47,17 @@ const Lobby = () => {
             console.log(data);
             if (data) {
                 setRoomInfo(data);
-                setIsLoading(false);
             }
         } catch (error) {
             console.error('Ошибка при получении информации об игре:', error);
-            //navigate('/');
-        } finally {
-            setIsLoading(false);
         }
     }
 
     useEffect(() => {
         getRoomInfoFromServer();
-    }, []);
-
-
-    useEffect(() => {
         socket.connect();
-        socket.on('updateLobbyData', (data) => {
+
+        socket.on('updateLobbyData', () => {
             getRoomInfoFromServer();
         });
         return () => {
@@ -75,8 +68,12 @@ const Lobby = () => {
     const leaveRoomHandler = () => {
         if (roomInfo) {
             RoomService.leaveRoom(roomInfo.roomId)
-                .then(() => {navigate(`/games/${gameName.toString()}`)})
-                .catch((e) => {showModal(e.response.data.message)});
+                .then(() => {
+                    gameName && navigate(`/games/${gameName.toString()}`);
+                })
+                .catch((e) => {
+                    showModal(e.response.data.message);
+                });
         }
     }
 
@@ -89,8 +86,13 @@ const Lobby = () => {
                         <span className="game-header">{gameHeader}</span>
                         <FontAwesomeIcon
                             className="room-leave-button"
-                            onClick={() => {leaveRoomHandler()}}
-                            icon={faCircleXmark} size="xl" style={{color: "#49a2de",}}/>
+                            onClick={() => {
+                                leaveRoomHandler()
+                            }}
+                            icon={faCircleXmark}
+                            size="xl"
+                            style={{color: "#49a2de",}}
+                        />
                     </div>
                     {roomInfo && <LobbyInfo
                         key={roomInfo.roomId}

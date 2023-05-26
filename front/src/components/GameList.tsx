@@ -7,13 +7,13 @@ import Loading from "./Loading";
 
 const GameList = () => {
     const [isLoading, setIsLoading] = useState(true);
-    const [games,setGames] = useState([]);
+    const [games, setGames] = useState([]);
     const navigate = useNavigate();
+
     async function getGamesFromServer() {
         try {
             const response = await GamesService.getGames();
             const data = await response.data;
-            console.log(data);
             if (data) {
                 setGames(data);
                 setIsLoading(false);
@@ -25,18 +25,21 @@ const GameList = () => {
             setIsLoading(false);
         }
     }
-    useEffect(() => {
 
+    useEffect(() => {
         getGamesFromServer();
     }, []);
 
     if (isLoading) {
         return <Loading/>;
     }
+
     return (
         <div>
             <SideMenu/>
-            <List games={games} getGames={getGamesFromServer}/>
+            <List
+                games={games}
+                getGames={getGamesFromServer}/>
         </div>
     );
 };

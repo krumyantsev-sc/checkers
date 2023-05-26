@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Room_1 = require("../models/Room");
-const socketIo = require('socket.io');
 const jwtVerification_1 = require("./jwtVerification");
+const socketIo = require('socket.io');
 const cookie = require('cookie');
 const getSecondPlayerName = (playerId) => __awaiter(void 0, void 0, void 0, function* () {
     const room = yield Room_1.default.findOne({ $and: [{ $or: [{ firstPlayer: playerId }, { secondPlayer: playerId }] }, { status: "active" }] });
@@ -39,7 +39,6 @@ class SocketService {
             },
         });
         this.io.on('connection', (socket) => __awaiter(this, void 0, void 0, function* () {
-            console.log('user connected');
             const cookies = socket.handshake.headers.cookie;
             const parsedCookies = cookie.parse(cookies);
             const token = parsedCookies.jwt;
@@ -52,32 +51,15 @@ class SocketService {
             if (secondPlayerId) {
                 this.io.to(secondPlayerId).emit('enemyReconnected');
             }
-            let timer;
-            if (timer) {
-                clearTimeout(timer);
-                console.log('Таймер очищен');
-            }
             socket.on('disconnect', () => __awaiter(this, void 0, void 0, function* () {
-                console.log('user disconnected');
                 const secondPlayerId = yield getSecondPlayerName(playerId);
                 if (secondPlayerId) {
-                    console.log(secondPlayerId);
                     this.io.to(secondPlayerId).emit('enemyDisconnected');
                     const serverTime = new Date().getTime();
                     this.io.to(secondPlayerId).emit('syncTime', serverTime);
                 }
-                timer = setTimeout(() => {
-                    console.log('Таймер завершен');
-                }, 5000);
                 socket.leave(playerId);
             }));
-            this.io.on('reconnect', () => {
-                console.log('Пользователь повторно подключился');
-                if (timer) {
-                    clearTimeout(timer);
-                    console.log('Таймер очищен');
-                }
-            });
         }));
     }
     emiter(event, target, body) {

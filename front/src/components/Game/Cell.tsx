@@ -1,10 +1,20 @@
 import React from 'react';
 import "../../styles/Board.css"
 import Checker from "./Checker";
+import {checker, checkerCoords} from "./types/checkersTypes";
+
+interface cellProps {
+    color: string
+    checker: checker,
+    coords: checkerCoords,
+    setInitPos,
+    setHighlightedPos,
+    moveColor
+}
+
 const Cell = ({ color, checker, coords, moveChecker, setInitPos, setHighlightedPos, moveColor }: any) => {
 
     const onDrop = (event: any) => {
-        console.log('drop')
         event.preventDefault();
         moveChecker(coords);
         setHighlightedPos([]);

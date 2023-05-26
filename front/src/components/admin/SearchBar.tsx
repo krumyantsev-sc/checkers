@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import "../../styles/SearchBar.css"
 
 interface SearchBarProps {
     onSearch: (query: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-    const [searchText, setSearchText] = useState('');
+const SearchBar: React.FC<SearchBarProps> = ({onSearch}) => {
+    const [searchText, setSearchText] = useState<string>('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(event.target.value);
@@ -23,7 +23,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     };
 
     return (
-        <div className="search-bar">
+        <div
+            className="search-bar">
             <input
                 type="text"
                 placeholder="Поиск..."
@@ -31,7 +32,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
                 onChange={handleChange}
                 onKeyPress={handleKeyPress}
             />
-            <button onClick={handleSearch}>Поиск</button>
+            <button
+                onClick={handleSearch}>
+                Поиск
+            </button>
         </div>
     );
 };

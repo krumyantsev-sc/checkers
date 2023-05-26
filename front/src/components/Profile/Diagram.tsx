@@ -1,16 +1,20 @@
-
 import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import {PieChart, Pie, Cell, Tooltip} from 'recharts';
 
 interface Props {
-    data: { name: string; value: number }[];
+    data: {
+        name: string;
+        value: number
+    }[];
 }
 
-const Diagram: React.FC<Props> = ({ data }) => {
+const Diagram: React.FC<Props> = ({data}) => {
     const COLORS = ['#0088FE', '#00C49F'];
 
     return (
-        <PieChart width={200} height={200}>
+        <PieChart
+            width={200}
+            height={200}>
             <Pie
                 data={data}
                 cx={100}
@@ -18,13 +22,15 @@ const Diagram: React.FC<Props> = ({ data }) => {
                 labelLine={false}
                 outerRadius={80}
                 fill="#8884d8"
-                dataKey="value"
-            >
+                dataKey="value">
                 {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                    />
                 ))}
             </Pie>
-            <Tooltip />
+            <Tooltip/>
         </PieChart>
     );
 };

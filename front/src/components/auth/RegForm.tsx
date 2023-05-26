@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import '../../styles/Auth.css';
 import AuthService from "../../API/AuthService";
 import {useModal} from "../Modal/ModalContext";
@@ -7,7 +7,8 @@ import {useModal} from "../Modal/ModalContext";
 interface RegFormProps {
     setLogin: (value: boolean) => void;
 }
-const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
+
+const RegForm: React.FC<RegFormProps> = ({setLogin}) => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -23,10 +24,10 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
         username: '',
         password: '',
     });
-    const { showModal, closeModal } = useModal();
+    const {showModal} = useModal();
 
-    const handleChange = (e: any) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setFormData({...formData, [e.target.name]: e.target.value});
     };
 
     const validateEmail = (email: string) => {
@@ -66,7 +67,6 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
                 ? ''
                 : 'Пароль должен быть длиннее 7 символов',
         };
-
         setErrors(newErrors);
         return !Object.values(newErrors).some((error) => error);
     };
@@ -75,7 +75,7 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
             const res = await AuthService.register(formData)
             const data = await res.data;
             showModal(data.message);
-        } catch (error){
+        } catch (error) {
             showModal("Ошибка регистрации! Проверьте введенные данные.");
         }
     }
@@ -94,9 +94,15 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
         }
     };
     return (
-        <div className="form-button-container">
-            <span className="authPartSpan">Registration</span>
-            <form className="form-container" onSubmit={handleSubmit}>
+        <div
+            className="form-button-container">
+            <span
+                className="authPartSpan">
+                Registration
+            </span>
+            <form
+                className="form-container"
+                onSubmit={handleSubmit}>
                 <input
                     className="input-field"
                     type="text"
@@ -106,7 +112,10 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
                     onChange={handleChange}
                 />
                 {errors.firstName && (
-                    <div className="error-message">{errors.firstName}</div>
+                    <div
+                        className="error-message">
+                        {errors.firstName}
+                    </div>
                 )}
                 <input
                     className="input-field"
@@ -117,7 +126,10 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
                     onChange={handleChange}
                 />
                 {errors.lastName && (
-                    <div className="error-message">{errors.lastName}</div>
+                    <div
+                        className="error-message">
+                        {errors.lastName}
+                    </div>
                 )}
                 <input
                     className="input-field"
@@ -128,7 +140,10 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
                     onChange={handleChange}
                 />
                 {errors.email && (
-                    <div className="error-message">{errors.email}</div>
+                    <div
+                        className="error-message">
+                        {errors.email}
+                    </div>
                 )}
                 <input
                     className="input-field"
@@ -139,7 +154,10 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
                     onChange={handleChange}
                 />
                 {errors.username && (
-                    <div className="error-message">{errors.username}</div>
+                    <div
+                        className="error-message">
+                        {errors.username}
+                    </div>
                 )}
                 <input
                     className="input-field"
@@ -150,15 +168,20 @@ const RegForm: React.FC<RegFormProps> = ({ setLogin }) => {
                     onChange={handleChange}
                 />
                 {errors.password && (
-                    <div className="error-message">{errors.password}</div>
+                    <div
+                        className="error-message">
+                        {errors.password}
+                    </div>
                 )}
-                <button className="submit-button" type="submit">
+                <button
+                    className="submit-button"
+                    type="submit">
                     Register
                 </button>
             </form>
-            <div className="backButton"
-                 onClick={() => setLogin(true)}
-            >
+            <div
+                className="backButton"
+                onClick={() => setLogin(true)}>
                 Back to login
             </div>
         </div>

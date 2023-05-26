@@ -1,6 +1,6 @@
 import React from 'react';
-import SideMenu from "./SideMenu";
-import "../styles/Rules.css"
+import SideMenu from "../SideMenu";
+import "../../styles/Rules.css"
 import {faDice, faPhone} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 

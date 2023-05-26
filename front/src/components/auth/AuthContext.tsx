@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {createContext, useContext, useState} from 'react';
 
 interface AuthContextInterface {
     isAuthenticated: boolean;
@@ -11,10 +11,14 @@ interface AuthContextInterface {
 
 const AuthContext = createContext<AuthContextInterface>({
     isAuthenticated: false,
-    login: () => {},
-    logout: () => {},
-    giveAdminAccess: () => {},
-    makeGuest: () => {},
+    login: () => {
+    },
+    logout: () => {
+    },
+    giveAdminAccess: () => {
+    },
+    makeGuest: () => {
+    },
     isAdmin: false
 });
 
@@ -22,16 +26,15 @@ export const useAuth = () => {
     return useContext(AuthContext);
 };
 
-interface AuthProviderProps extends React.PropsWithChildren<{}> {}
+interface AuthProviderProps extends React.PropsWithChildren<{}> {
+}
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
+export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
     const login = () => {
         setIsAuthenticated(true);
-        console.log('login')
-        console.log(isAuthenticated)
     };
 
     const logout = () => {
@@ -47,7 +50,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout, giveAdminAccess, makeGuest, isAdmin }}>
+        <AuthContext.Provider
+            value={{isAuthenticated, login, logout, giveAdminAccess, makeGuest, isAdmin}}>
             {children}
         </AuthContext.Provider>
     );

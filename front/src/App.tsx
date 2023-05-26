@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import "./styles/App.css"
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Login from "./components/Login";
-import Main from "./components/Main";
+import Login from "./components/auth/Login";
+import Main from "./components/main/Main";
 import GameList from "./components/GameList";
 import RoomList from "./components/RoomList";
 import Lobby from "./components/Lobby";
 import Game from "./components/Game/Game";
-import Profile from "./components/Profile";
+import Profile from "./components/Profile/Profile";
 import AuthService from "./API/AuthService";
 import Loading from "./components/Loading";
 import ProtectedRoute from "./components/util/ProtectedRoute";
@@ -16,8 +16,8 @@ import {AuthProvider, useAuth} from "./components/auth/AuthContext";
 import UserList from "./components/admin/UserList";
 import {ModalProvider} from "./components/Modal/ModalContext";
 import GameWrapper from "./components/GameWrapper";
-import Contact from "./components/Contact";
-import Rules from "./components/Rules";
+import Contact from "./components/main/Contact";
+import Rules from "./components/main/Rules";
 
 
 function App() {
