@@ -3,9 +3,9 @@ import "./styles/App.css"
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from "./components/auth/Login";
 import Main from "./components/main/Main";
-import GameList from "./components/GameList";
-import RoomList from "./components/RoomList";
-import Lobby from "./components/Lobby";
+import GameList from "./components/GameList/GameList";
+import RoomList from "./components/RoomList/RoomList";
+import Lobby from "./components/Lobby/Lobby";
 import Game from "./components/Game/Game";
 import Profile from "./components/Profile/Profile";
 import AuthService from "./API/AuthService";

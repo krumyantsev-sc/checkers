@@ -5,13 +5,15 @@ import socket from "../../API/socket";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import CheckerService from "../../API/CheckerService";
 import TicTacToeService from "../../API/Tic-Tac-ToeService";
+
 interface IPlayer {
     username: string,
     firstName: string,
     lastName: string,
-    statistics: {wins: number, loses: number},
+    statistics: { wins: number, loses: number },
     avatar: string
 }
+
 interface RoomsProps {
     firstPlayer: IPlayer;
     secondPlayer: IPlayer;
@@ -22,18 +24,18 @@ interface GameProps {
     gameName: string;
 }
 
-const LobbyInfo: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, lobbyId }) => {
-    const [isReady,setIsReady] = useState<boolean>(false);
+const LobbyInfo: React.FC<RoomsProps> = ({firstPlayer, secondPlayer, lobbyId}) => {
+    const [isReady, setIsReady] = useState<boolean>(false);
     const navigate = useNavigate();
-    let { gameName } : any = useParams<Record<keyof GameProps, string>>();
-    let gameHeader: string = gameName.toLowerCase();
+    let {gameName} = useParams();
     const location = useLocation();
+
     useEffect(() => {
         if (firstPlayer.username && secondPlayer.username) {
             setIsReady(true);
         }
         socket.connect();
-        socket.on('updateLobbyData', (data) => {
+        socket.on('updateLobbyData', () => {
             setIsReady(true);
         });
         socket.on('makeBtnActive', () => {
@@ -56,10 +58,17 @@ const LobbyInfo: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, lobbyId })
                 statistics={firstPlayer.statistics || {}}
                 avatar={firstPlayer.avatar || ""}
             />
-            <div className="game-info">
-                <span>GAME ID</span>
-                <span className="gameId">{lobbyId}</span>
-                {isReady && <div
+            <div
+                className="game-info">
+                <span>
+                    GAME ID
+                </span>
+                <span
+                    className="gameId">
+                    {lobbyId}
+                </span>
+                {isReady &&
+                <div
                     className="play-button-lobby"
                     onClick={() => {
                         gameName === "checkers" ?
@@ -72,9 +81,10 @@ const LobbyInfo: React.FC<RoomsProps> = ({ firstPlayer, secondPlayer, lobbyId })
                                 .then(() => {
                                     navigate(`${location.pathname}/game`);
                                 });
-                        }
                     }
-                >PLAY</div>}
+                    }
+                >PLAY
+                </div>}
             </div>
             <PlayerInfo
                 username={secondPlayer.username || "no player"}

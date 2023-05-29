@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import SideMenu from "./SideMenu";
-import List from "./GameList/List";
-import GamesService from "../API/GamesService";
+import SideMenu from "../SideMenu";
+import List from "./List";
+import GamesService from "../../API/GamesService";
 import {useNavigate} from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "../Loading";
+import Game from "./interfaces/IGame";
 
 const GameList = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [games, setGames] = useState([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [games, setGames] = useState<Game[]>([]);
     const navigate = useNavigate();
 
     async function getGamesFromServer() {
@@ -39,7 +40,8 @@ const GameList = () => {
             <SideMenu/>
             <List
                 games={games}
-                getGames={getGamesFromServer}/>
+                getGames={getGamesFromServer}
+            />
         </div>
     );
 };

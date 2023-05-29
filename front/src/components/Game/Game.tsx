@@ -3,7 +3,7 @@ import SideMenu from "../SideMenu";
 import Board from "./Board";
 import Chat from "./Chat"
 import ScoreBoard from "./ScoreBoard";
-import { ModalProvider } from '../Modal/ModalContext';
+import {ModalProvider} from '../Modal/ModalContext';
 
 const Game = () => {
     return (

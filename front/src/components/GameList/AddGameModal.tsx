@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Input, InputLabel, FormControl } from "@mui/material";
-import ProfileService from "../../API/ProfileService";
+import React, {useState} from 'react';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField,
+    Input,
+    FormControl
+} from "@mui/material";
 import GamesService from "../../API/GamesService";
 
 interface Props {
@@ -10,13 +19,13 @@ interface Props {
 }
 
 const AddGameModal: React.FC<Props> = ({getGames, open, onClose}) => {
-    const [gameName, setGameName] = useState("");
-    const [gameDescription, setGameDescription] = useState("");
+    const [gameName, setGameName] = useState<string>("");
+    const [gameDescription, setGameDescription] = useState<string>("");
     const [gameImage, setGameImage] = useState<File | null>(null);
 
-    const [isGameNameValid, setIsGameNameValid] = useState(true);
-    const [isGameDescriptionValid, setIsGameDescriptionValid] = useState(true);
-    const [isGameImageValid, setIsGameImageValid] = useState(true);
+    const [isGameNameValid, setIsGameNameValid] = useState<boolean>(true);
+    const [isGameDescriptionValid, setIsGameDescriptionValid] = useState<boolean>(true);
+    const [isGameImageValid, setIsGameImageValid] = useState<boolean>(true);
 
     const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setGameName(event.target.value);
@@ -37,7 +46,6 @@ const AddGameModal: React.FC<Props> = ({getGames, open, onClose}) => {
         const formData = new FormData();
         formData.append('name', gameName);
         formData.append('description', gameDescription);
-        console.log(gameImage)
         if (gameImage) {
             formData.append('logo', gameImage);
         }
@@ -56,10 +64,18 @@ const AddGameModal: React.FC<Props> = ({getGames, open, onClose}) => {
     const isFormValid = isGameNameValid && isGameDescriptionValid && isGameImageValid;
 
     return (
-        <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Добавить игру</DialogTitle>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            aria-labelledby="form-dialog-title">
+            <DialogTitle
+                id="form-dialog-title">
+                Добавить игру
+            </DialogTitle>
             <DialogContent>
-                <DialogContentText>Пожалуйста, заполните информацию о игре.</DialogContentText>
+                <DialogContentText>
+                    Пожалуйста, заполните информацию о игре.
+                </DialogContentText>
                 <TextField
                     autoFocus
                     margin="dense"
@@ -85,16 +101,31 @@ const AddGameModal: React.FC<Props> = ({getGames, open, onClose}) => {
                     error={!isGameDescriptionValid}
                     helperText={!isGameDescriptionValid ? 'Описание игры не должно быть пустым.' : ''}
                 />
-                <FormControl fullWidth margin="dense">
-                    <Input id="image-upload" type="file" onChange={handleImageChange} error={!isGameImageValid} />
-                    {!isGameImageValid && <p style={{ color: 'red' }}>Выберите изображение игры.</p>}
+                <FormControl
+                    fullWidth margin="dense">
+                    <Input
+                        id="image-upload"
+                        type="file"
+                        onChange={handleImageChange}
+                        error={!isGameImageValid}
+                    />
+                    {!isGameImageValid &&
+                    <p
+                        style={{color: 'red'}}>
+                        Выберите изображение игры.
+                    </p>}
                 </FormControl>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color="primary">
+                <Button
+                    onClick={onClose}
+                    color="primary">
                     Отмена
                 </Button>
-                <Button onClick={handleSubmit} color="primary" disabled={!isFormValid}>
+                <Button
+                    onClick={handleSubmit}
+                    color="primary"
+                    disabled={!isFormValid}>
                     Сохранить
                 </Button>
             </DialogActions>

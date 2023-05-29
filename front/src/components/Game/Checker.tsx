@@ -6,19 +6,37 @@ import whiteQueenImg from "../../assets/img/WhiteQueen.png"
 import blackQueenImg from "../../assets/img/BlackQueen.png"
 import CheckerService from "../../API/CheckerService";
 import {useParams} from "react-router-dom";
+import {checkerCoords} from "./types/checkersTypes";
 
-interface GameProps {
-    gameId: string;
+interface checkerProps {
+    moveColor?: string;
+    checkerColor: string;
+    moveChecker: (to: checkerCoords) => void;
+    setInitPos: (position: checkerCoords) => void;
+    setHighlightedPos?: (positionArr: checkerCoords[]) => void;
+    isLady: boolean;
+    coords: checkerCoords;
 }
 
-const Checker = (props: any) => {
-    let { gameId } : any = useParams<Record<keyof GameProps, string>>();
-    const onDragStart = (event: any) => {
-        if (props.checkerColor === props.moveColor) {
-            props.setInitPos(props.coords)
+const Checker: React.FC<checkerProps> = ({
+                                             setHighlightedPos,
+                                             setInitPos,
+                                             moveChecker,
+                                             checkerColor,
+                                             moveColor,
+                                             coords,
+                                             isLady
+                                         }) => {
+    const {gameId} = useParams();
+
+    const onDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        if (checkerColor === moveColor) {
+            setInitPos(coords)
             const setHighLightedPositions = async () => {
-                CheckerService.getPositionsForHighlighting(gameId, props.coords).then((res) => {
-                    props.setHighlightedPos(res.data);
+                CheckerService.getPositionsForHighlighting(gameId!, coords).then((res) => {
+                    if (setHighlightedPos) {
+                        setHighlightedPos(res.data);
+                    }
                 });
             }
             setHighLightedPositions().then()
@@ -26,25 +44,26 @@ const Checker = (props: any) => {
         event.dataTransfer.setData("text/plain", "");
     }
 
-    const onDragOver = (event: any) => {
+    const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
     }
 
-    const onDrop = (event: any) => {
-        console.log('drop')
+    const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
-        props.moveChecker(props.coords);
+        moveChecker(coords);
     }
 
     return (
         <div
-            className={props.checkerColor === "Black" ? "black-checker" : "white-checker"}
+            className={checkerColor === "Black" ? "black-checker" : "white-checker"}
             onDragStart={onDragStart}
             onDragOver={onDragOver}
             onDrop={onDrop}
             draggable={false}>
-            <img src={props.checkerColor === "Black" ? (props.isLady ? blackQueenImg : blackCheckerImg) :
-                (props.isLady ? whiteQueenImg : whiteCheckerImg)} alt="checker"/>
+            <img
+                src={checkerColor === "Black" ? (isLady ? blackQueenImg : blackCheckerImg) :
+                    (isLady ? whiteQueenImg : whiteCheckerImg)}
+                alt="checker"/>
         </div>
     );
 };

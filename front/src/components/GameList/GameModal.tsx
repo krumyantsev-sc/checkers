@@ -1,6 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Input, InputLabel, FormControl } from "@mui/material";
-import ProfileService from "../../API/ProfileService";
+import React, {useState, useEffect} from 'react';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField,
+    Input,
+    InputLabel,
+    FormControl
+} from "@mui/material";
 import GamesService from "../../API/GamesService";
 
 interface Props {
@@ -13,14 +23,22 @@ interface Props {
     getGames: () => {};
 }
 
-const GameModal: React.FC<Props> = ({getGames, open, onClose, initialGameName, initialGameDescription, initialGameImage, id }) => {
-    const [gameName, setGameName] = useState(initialGameName);
-    const [gameDescription, setGameDescription] = useState(initialGameDescription);
+const GameModal: React.FC<Props> = ({
+                                        getGames,
+                                        open,
+                                        onClose,
+                                        initialGameName,
+                                        initialGameDescription,
+                                        initialGameImage,
+                                        id
+                                    }) => {
+    const [gameName, setGameName] = useState<string>(initialGameName);
+    const [gameDescription, setGameDescription] = useState<string>(initialGameDescription);
     const [gameImage, setGameImage] = useState<File | null>(null);
 
     const [isGameNameValid, setIsGameNameValid] = useState(true);
-    const [isGameDescriptionValid, setIsGameDescriptionValid] = useState(true);
-    const [isGameImageValid, setIsGameImageValid] = useState(true);
+    const [isGameDescriptionValid, setIsGameDescriptionValid] = useState<boolean>(true);
+    const [isGameImageValid, setIsGameImageValid] = useState<boolean>(true);
 
     useEffect(() => {
         setIsGameNameValid(!!initialGameName);
@@ -49,7 +67,6 @@ const GameModal: React.FC<Props> = ({getGames, open, onClose, initialGameName, i
         formData.append('name', gameName);
         formData.append('description', gameDescription);
         if (gameImage) {
-            console.log("Прикреплен")
             formData.append('logo', gameImage);
         }
         GamesService.updateGame(formData)
@@ -66,8 +83,8 @@ const GameModal: React.FC<Props> = ({getGames, open, onClose, initialGameName, i
 
     const handleDelete = () => {
         GamesService.deleteGame(id)
-            .then((response) => {
-                    getGames();
+            .then(() => {
+                getGames();
             })
             .catch((error) => {
                 console.error(error);
@@ -78,10 +95,18 @@ const GameModal: React.FC<Props> = ({getGames, open, onClose, initialGameName, i
     const isFormValid = isGameNameValid && isGameDescriptionValid && isGameImageValid;
 
     return (
-        <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Редактировать игру</DialogTitle>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            aria-labelledby="form-dialog-title">
+            <DialogTitle
+                id="form-dialog-title">
+                Редактировать игру
+            </DialogTitle>
             <DialogContent>
-                <DialogContentText>Пожалуйста, заполните информацию о игре.</DialogContentText>
+                <DialogContentText>
+                    Пожалуйста, заполните информацию об игре.
+                </DialogContentText>
                 <TextField
                     autoFocus
                     margin="dense"
@@ -107,19 +132,36 @@ const GameModal: React.FC<Props> = ({getGames, open, onClose, initialGameName, i
                     error={!isGameDescriptionValid}
                     helperText={!isGameDescriptionValid ? 'Описание игры не должно быть пустым.' : ''}
                 />
-                <FormControl fullWidth margin="dense">
-                    <Input id="image-upload" type="file" onChange={handleImageChange} error={!isGameImageValid} />
-                    {!isGameImageValid && <p style={{ color: 'red' }}>Выберите изображение игры.</p>}
+                <FormControl
+                    fullWidth margin="dense">
+                    <Input
+                        id="image-upload"
+                        type="file"
+                        onChange={handleImageChange}
+                        error={!isGameImageValid}
+                    />
+                    {!isGameImageValid &&
+                    <p
+                        style={{color: 'red'}}>
+                        Выберите изображение игры.
+                    </p>}
                 </FormControl>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleDelete} color="primary">
+                <Button
+                    onClick={handleDelete}
+                    color="primary">
                     Удалить
                 </Button>
-                <Button onClick={onClose} color="primary">
+                <Button
+                    onClick={onClose}
+                    color="primary">
                     Отмена
                 </Button>
-                <Button onClick={handleSubmit} color="primary" disabled={!isFormValid}>
+                <Button
+                    onClick={handleSubmit}
+                    color="primary"
+                    disabled={!isFormValid}>
                     Сохранить
                 </Button>
             </DialogActions>

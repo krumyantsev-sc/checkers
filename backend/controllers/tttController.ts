@@ -68,7 +68,6 @@ class tttController extends gameLogicController{
                 emitToPlayers(req, [this.player1.id, this.player2.id], 'changeSymbol', {symbol: "0"});
             }
         }, 1000)
-
         return this.board;
     }
 

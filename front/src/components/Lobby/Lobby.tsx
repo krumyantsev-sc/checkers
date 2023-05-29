@@ -1,22 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import SideMenu from "./SideMenu";
+import SideMenu from "../SideMenu";
 import {useNavigate, useParams} from "react-router-dom";
-import RoomService from "../API/RoomService";
-import LobbyService from "../API/LobbyService";
-import LobbyInfo from "./Lobby/LobbyInfo";
-import "../styles/Lobby.css"
-import socket from "../API/socket"
+import RoomService from "../../API/RoomService";
+import LobbyService from "../../API/LobbyService";
+import LobbyInfo from "./LobbyInfo";
+import "../../styles/Lobby.css"
+import socket from "../../API/socket"
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCircleXmark} from '@fortawesome/free-solid-svg-icons';
-import {useModal} from "./Modal/ModalContext";
-
-interface GameProps {
-    gameName: string;
-}
-
-interface RoomProps {
-    lobbyId: string;
-}
+import {useModal} from "../Modal/ModalContext";
 
 interface IPlayer {
     username: string,
@@ -44,7 +36,6 @@ const Lobby = () => {
         try {
             const response = await LobbyService.getLobbyInfo(gameId);
             const data = await response.data;
-            console.log(data);
             if (data) {
                 setRoomInfo(data);
             }
@@ -80,10 +71,16 @@ const Lobby = () => {
     return (
         <div>
             <SideMenu/>
-            <div className="lobby-page">
-                <div className="game-room-info-container">
-                    <div className="room-header-button-container">
-                        <span className="game-header">{gameHeader}</span>
+            <div
+                className="lobby-page">
+                <div
+                    className="game-room-info-container">
+                    <div
+                        className="room-header-button-container">
+                        <span
+                            className="game-header">
+                            {gameHeader}
+                        </span>
                         <FontAwesomeIcon
                             className="room-leave-button"
                             onClick={() => {
@@ -94,7 +91,8 @@ const Lobby = () => {
                             style={{color: "#49a2de",}}
                         />
                     </div>
-                    {roomInfo && <LobbyInfo
+                    {roomInfo &&
+                    <LobbyInfo
                         key={roomInfo.roomId}
                         lobbyId={roomInfo.roomId}
                         firstPlayer={roomInfo.firstPlayer}
