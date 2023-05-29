@@ -23,7 +23,6 @@ const checkRole = (roles) => {
             next()
         }
         const token: string = req.cookies.jwt;
-        console.log("token",token);
         try {
             if (!token) {
                 return res.status(200).json({message: "Пользователь не авторизован"});

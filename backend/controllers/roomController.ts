@@ -80,6 +80,24 @@ class roomController {
         }
     }
 
+    public createRoomWithBot = async (req: Request, res: Response): Promise<any> => {
+        try {
+            const gameName: string = req.params.gameName;
+            const game: IGame = await Game.findOne({name: gameName});
+            const room: HydratedDocument<IRoom> = new Room({game: game});
+            const token: string = req.cookies.jwt;
+            const {id: userId} = jwt.verify(token, secret);
+            const candidate: IUser = await User.findById(userId);
+            const bot = await User.findById("6474ead11d7ba9f21dbe2315");
+            room.firstPlayer = candidate;
+            room.secondPlayer = bot;
+            await room.save();
+            return res.status(200).json({id: room._id});
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     public getRoomList = async (req: Request, res: Response): Promise<any> => {
         try {
             const gameName = req.params.gameName;

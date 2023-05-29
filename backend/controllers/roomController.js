@@ -88,6 +88,24 @@ class roomController {
                 console.log(error);
             }
         });
+        this.createRoomWithBot = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const gameName = req.params.gameName;
+                const game = yield Game_1.default.findOne({ name: gameName });
+                const room = new Room_1.default({ game: game });
+                const token = req.cookies.jwt;
+                const { id: userId } = jwt.verify(token, secret);
+                const candidate = yield User_1.default.findById(userId);
+                const bot = yield User_1.default.findById("6474ead11d7ba9f21dbe2315");
+                room.firstPlayer = candidate;
+                room.secondPlayer = bot;
+                yield room.save();
+                return res.status(200).json({ id: room._id });
+            }
+            catch (error) {
+                console.log(error);
+            }
+        });
         this.getRoomList = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const gameName = req.params.gameName;

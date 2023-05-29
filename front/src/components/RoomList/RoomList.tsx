@@ -76,14 +76,27 @@ const RoomList = () => {
                         className="room-list-container">
                         <div
                             className="room-controls">
-                            <div
-                                className="play-button"
-                                onClick={() => {
-                                    RoomService.createRoom(gameHeader).then(() => {
-                                        getRoomsFromServer()
-                                    })
-                                }}
-                            >CREATE ROOM
+                            <div className="create-room-btn-container">
+                                <div
+                                    className="play-button"
+                                    onClick={() => {
+                                        RoomService.createRoom(gameHeader).then(() => {
+                                            getRoomsFromServer()
+                                        })
+                                    }}
+                                >CREATE ROOM
+                                </div>
+                                {gameHeader === "checkers" && <div className="play-button bot"
+                                    onClick={() => {
+                                        RoomService.createRoomWithBot(gameHeader)
+                                            .then((res) => {
+                                                navigate(`${location.pathname}/${res.data.id}`)
+                                            })
+                                        }
+                                    }
+                                >
+                                    WITH BOT
+                                </div>}
                             </div>
                             <div
                                 className="refresh-icon-container"

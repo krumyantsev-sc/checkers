@@ -88,3 +88,11 @@
     justify-content: center;
     font-weight: bold;
 }
+
+.create-room-btn-container {
+    display: flex;
+}
+
+.create-room-btn-container .bot {
+    margin-left: 10px;
+}

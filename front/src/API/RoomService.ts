@@ -17,4 +17,9 @@ export default class RoomService {
         const response = await axios.post('http://localhost:3001/room/leave', {roomId: roomId}, {withCredentials: true});
         return response;
     };
+
+    static createRoomWithBot = async (gameName: string) => {
+        const response = await axios.get(`http://localhost:3001/room/createRoomWithBot/${gameName.toLowerCase()}`, {withCredentials: true});
+        return response;
+    };
 }

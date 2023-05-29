@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.beat = exports.getBeatPositions = void 0;
+exports.getBeatPositionForBot = exports.beat = exports.getBeatPositions = void 0;
 const getBeatPositions = (gameBoard, position) => {
     let takenPositions = [];
     const { i, j } = position;
@@ -43,6 +43,20 @@ const getBeatPositions = (gameBoard, position) => {
     return takenPositions;
 };
 exports.getBeatPositions = getBeatPositions;
+const getBeatPositionForBot = (gameBoard) => {
+    for (let i = 8; i > 0; i--) {
+        for (let j = 0; j < gameBoard.board[i].length; j++) {
+            if (gameBoard.board[i].color === "White") {
+                let beatPositions = getBeatPositions(gameBoard, { i: i, j: j });
+                if (beatPositions.length > 0) {
+                    return { fromI: i, fromJ: j, toI: beatPositions[0].i, toJ: beatPositions[0].j };
+                }
+            }
+        }
+    }
+    return null;
+};
+exports.getBeatPositionForBot = getBeatPositionForBot;
 const beat = (gameBoard, from, to) => {
     let difference = to.i - from.i;
     let pos = [];

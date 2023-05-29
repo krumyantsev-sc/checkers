@@ -5,6 +5,7 @@ const secret = require("../config/config");
 const authenticateToken = (token) => {
     try {
         const { id: userId } = jwt.verify(token, secret);
+        console.log(userId);
         return userId;
     }
     catch (e) {
