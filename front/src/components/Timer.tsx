@@ -3,14 +3,7 @@ import socket from "../API/socket";
 import {useParams} from "react-router-dom";
 import CheckerService from "../API/CheckerService";
 import TicTacToeService from "../API/Tic-Tac-ToeService";
-
-interface RoomProps {
-    lobbyId: string;
-}
-
-interface GameProps {
-    gameName: string;
-}
+import "../styles/Timer.css"
 
 const Timer: React.FC = () => {
     let {gameName} = useParams();
@@ -99,7 +92,7 @@ const Timer: React.FC = () => {
     };
 
     const updateTimerDisplay = () => {
-        return <div>{timerValue} seconds</div>;
+        return <div className="timer-seconds">{timerValue} seconds</div>;
     };
 
     const handleTimerFinish = () => {
@@ -112,7 +105,7 @@ const Timer: React.FC = () => {
     };
 
     return (
-        <div>
+        <div className="timer">
             <h1>Game ends in:</h1>
             {updateTimerDisplay()}
         </div>
