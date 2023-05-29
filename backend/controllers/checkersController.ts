@@ -1,5 +1,5 @@
 import boardService from "../services/BoardService"
-import {moveChecker, checkMoveVariants} from "../services/MoveService";
+import {moveChecker, checkMoveVariants, getBotMovePosition} from "../services/MoveService";
 import {beat, getBeatPositions} from "../services/BeatService";
 import Player from "../entity/player"
 import emitToPlayers from "../util/util";
@@ -8,12 +8,12 @@ import {checkerCoords, checkerCoordsWithColor} from "../types/checkersTypes";
 import checker from "../entity/checker";
 import gameLogicController from "./gameLogicController";
 
-class checkersController extends gameLogicController{
+class checkersController extends gameLogicController {
     counter: number = 2;
     roomId!: string;
     private readonly boardService: boardService;
     player1: Player = new Player("White");
-     player2: Player = new Player("Black");
+    player2: Player = new Player("Black");
 
     constructor() {
         super();
@@ -66,6 +66,29 @@ class checkersController extends gameLogicController{
             {firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score});
     }
 
+    public getBotMove = (req: Request) => {
+        const {fromI, fromJ, toI, toJ} = getBotMovePosition(this.boardService);
+        const fromObj: checkerCoords = {i: fromI, j: fromJ};
+        const toObj: checkerCoords = {i: toI, j: toJ};
+        moveChecker(this.boardService, this.boardService.board[fromI][fromJ], toObj);
+        emitToPlayers(req, [this.player1.id], 'checkerMoved', req.body);
+        if (this.boardService.board[toI][toJ].canMakeLady()) {
+            emitToPlayers(req, [this.player1.id, this.player2.id], 'makeLady', toObj);
+        }
+        let moveResult = beat(this.boardService, fromObj, toObj);
+        let nextBeatPositions: checkerCoords[] = moveResult[0];
+        let removedChecker: checkerCoordsWithColor | undefined = moveResult[1];
+        if (removedChecker !== undefined) {
+            emitToPlayers(req, [this.player1.id], 'removeChecker', removedChecker);
+            this.updateScore(removedChecker, req);
+        }
+        if (nextBeatPositions.length === 0) {
+            this.counter++;
+            this.switchTeam(req);
+            if (this.counter % 2 !== 0)
+                emitToPlayers(req, [this.player1.id], 'giveListeners', {color: this.player1.color});
+        }
+    }
 
     public moveCheckerOnBoard = (req: Request): checkerCoords[] => {
         const {fromI, fromJ, toI, toJ} = req.body;

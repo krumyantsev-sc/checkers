@@ -45,6 +45,20 @@ const getBeatPositions: IGetBeatPositions = (gameBoard, position) => {
     return takenPositions;
 }
 
+const getBeatPositionForBot = (gameBoard) => {
+    for (let i = 8; i > 0; i--) {
+        for (let j = 0; j < gameBoard.board[i].length; j++) {
+            if (gameBoard.board[i].color === "White") {
+                let beatPositions = this.getBeatPositions(gameBoard, {i: i, j: j});
+                if (beatPositions.length > 0) {
+                    return {fromI: i, fromJ: j, toI: beatPositions[0].i, toJ: beatPositions[0].j};
+                }
+            }
+        }
+    }
+    return null;
+}
+
 const beat: IBeat = (gameBoard, from, to) => {
     let difference = to.i - from.i;
     let pos = [];
@@ -84,4 +98,4 @@ const removeChecker: IRemoveChecker = (gameBoard, from, to) => {
     return removedChecker;
 }
 
-export {getBeatPositions, beat}
+export {getBeatPositions, beat, getBeatPositionForBot}
