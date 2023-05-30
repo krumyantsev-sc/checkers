@@ -86,14 +86,15 @@ const RoomList = () => {
                                     }}
                                 >CREATE ROOM
                                 </div>
-                                {gameHeader === "checkers" && <div className="play-button bot"
-                                    onClick={() => {
-                                        RoomService.createRoomWithBot(gameHeader)
-                                            .then((res) => {
-                                                navigate(`${location.pathname}/${res.data.id}`)
-                                            })
-                                        }
-                                    }
+                                {gameHeader === "CHECKERS" &&
+                                <div className="play-button bot"
+                                     onClick={() => {
+                                         RoomService.createRoomWithBot(gameHeader)
+                                             .then((res) => {
+                                                 navigate(`${location.pathname}/${res.data.id}`)
+                                             })
+                                     }
+                                     }
                                 >
                                     WITH BOT
                                 </div>}

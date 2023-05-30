@@ -14,6 +14,7 @@ class checkersController extends gameLogicController {
     private readonly boardService: boardService;
     player1: Player = new Player("White");
     player2: Player = new Player("Black");
+    withBot: boolean = false;
 
     constructor() {
         super();
@@ -34,9 +35,15 @@ class checkersController extends gameLogicController {
 
     public getMoveStatusInfo = (req: Request) => {
         let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
-        (this.counter % 2 !== 0) ?
-            emitToPlayers(req, [this.player1.id], 'giveListeners', {color: this.player1.color}) :
+        if (this.counter % 2 !== 0) {
+            emitToPlayers(req, [this.player1.id], 'giveListeners', {color: this.player1.color})
+        } else {
             emitToPlayers(req, [this.player2.id], 'giveListeners', {color: this.player2.color});
+            if (this.withBot) {
+                setTimeout(() => {this.getBotMove(req)}, 5000)
+
+            }
+        }
         emitToPlayers(req, [this.player1.id, this.player2.id], 'switchTeam', {color: currColor});
         return {message: "successfully sent"};
     }
@@ -70,8 +77,9 @@ class checkersController extends gameLogicController {
         const {fromI, fromJ, toI, toJ} = getBotMovePosition(this.boardService);
         const fromObj: checkerCoords = {i: fromI, j: fromJ};
         const toObj: checkerCoords = {i: toI, j: toJ};
+
         moveChecker(this.boardService, this.boardService.board[fromI][fromJ], toObj);
-        emitToPlayers(req, [this.player1.id], 'checkerMoved', req.body);
+        emitToPlayers(req, [this.player1.id], 'checkerMoved', {fromI: fromI, fromJ: fromJ, toI: toI, toJ: toJ});
         if (this.boardService.board[toI][toJ].canMakeLady()) {
             emitToPlayers(req, [this.player1.id, this.player2.id], 'makeLady', toObj);
         }
@@ -87,6 +95,8 @@ class checkersController extends gameLogicController {
             this.switchTeam(req);
             if (this.counter % 2 !== 0)
                 emitToPlayers(req, [this.player1.id], 'giveListeners', {color: this.player1.color});
+        } else {
+            this.getBotMove(req);
         }
     }
 
@@ -109,6 +119,7 @@ class checkersController extends gameLogicController {
         if (nextBeatPositions.length === 0) {
             this.counter++;
             this.switchTeam(req);
+            this.getBotMove(req);
             (this.counter % 2 !== 0) ?
                 emitToPlayers(req, [this.player1.id], 'giveListeners', {color: this.player1.color}) :
                 emitToPlayers(req, [this.player2.id], 'giveListeners', {color: this.player2.color});

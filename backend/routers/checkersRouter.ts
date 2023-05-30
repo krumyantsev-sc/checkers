@@ -55,6 +55,9 @@ router.get("/:roomId/initialize", roleMiddleware(["USER", "ADMIN"]), async funct
     if (!findControllerByRoomId(activeGames, req.params.roomId)) {
         let checkersController = new CheckersController();
         await checkersController.initializeGame(req.params.roomId, req, res);
+        if (req.query.withBot) {
+            checkersController.withBot = true;
+        }
         activeGames.push(checkersController);
     }
     res.status(200).json({message: "Successfully initialized"});

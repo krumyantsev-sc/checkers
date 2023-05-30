@@ -119,8 +119,10 @@ const Board = () => {
         socket.connect();
 
         const updateBoardFromServer = (data: moveCoords) => {
+            console.log(data);
             initPos = {i: data.fromI, j: data.fromJ};
             setCheckersBoard((checkersBoard) => {
+                console.log(checkersBoard);
                 if (checkersBoard[data.fromI][data.fromJ] !== null) {
                     return updateBoard(checkersBoard, {i: data.toI, j: data.toJ})
                 }

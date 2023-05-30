@@ -12,8 +12,8 @@ export default class CheckerService {
         return res;
     }
 
-    static async initializeGame(gameId: string) {
-        const res = await axios.get(`http://localhost:3001/checkers/${gameId}/initialize`, {withCredentials: true});
+    static async initializeGame(gameId: string, withBot: boolean) {
+        const res = await axios.get(`http://localhost:3001/checkers/${gameId}/initialize`, {params: {withBot: withBot}, withCredentials: true});
         return res;
     }
 

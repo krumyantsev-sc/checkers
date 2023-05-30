@@ -40,8 +40,8 @@ const getBotMovePosition = (gameBoard) => {
     let beatPosition = getBeatPositionForBot(gameBoard);
     if (beatPosition === null) {
         for (let i = 0; i < gameBoard.board.length; i++) {
-            for (let j = 0; j < gameBoard.board[i].length; i++) {
-                if (gameBoard.board[i][j].color === "White") {
+            for (let j = 0; j < gameBoard.board[i].length; j++) {
+                if (gameBoard.board[i][j]?.color === "Black") {
                     let movePositions = getSimpleMoveVariants(gameBoard, {i: i, j: j});
                     if (movePositions.length > 0) {
                         return {fromI: i, fromJ: j, toI: movePositions[0].i, toJ: movePositions[0].j};

@@ -72,7 +72,7 @@ const LobbyInfo: React.FC<RoomsProps> = ({firstPlayer, secondPlayer, lobbyId}) =
                     className="play-button-lobby"
                     onClick={() => {
                         gameName === "checkers" ?
-                            CheckerService.initializeGame(lobbyId.toString())
+                            CheckerService.initializeGame(lobbyId.toString(), secondPlayer.username === "Bot")
                                 .then(() => {
                                     navigate(`${location.pathname}/game`);
                                 })

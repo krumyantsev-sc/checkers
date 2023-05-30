@@ -46,9 +46,9 @@ const getBeatPositions: IGetBeatPositions = (gameBoard, position) => {
 }
 
 const getBeatPositionForBot = (gameBoard) => {
-    for (let i = 8; i > 0; i--) {
+    for (let i = 7; i > 0; i--) {
         for (let j = 0; j < gameBoard.board[i].length; j++) {
-            if (gameBoard.board[i].color === "White") {
+            if (gameBoard.board[i][j]?.color === "Black") {
                 let beatPositions = getBeatPositions(gameBoard, {i: i, j: j});
                 if (beatPositions.length > 0) {
                     return {fromI: i, fromJ: j, toI: beatPositions[0].i, toJ: beatPositions[0].j};

@@ -36,11 +36,12 @@ const moveChecker = (boardService, checker, to) => {
 };
 exports.moveChecker = moveChecker;
 const getBotMovePosition = (gameBoard) => {
+    var _a;
     let beatPosition = (0, BeatService_1.getBeatPositionForBot)(gameBoard);
     if (beatPosition === null) {
         for (let i = 0; i < gameBoard.board.length; i++) {
-            for (let j = 0; j < gameBoard.board[i].length; i++) {
-                if (gameBoard.board[i][j].color === "White") {
+            for (let j = 0; j < gameBoard.board[i].length; j++) {
+                if (((_a = gameBoard.board[i][j]) === null || _a === void 0 ? void 0 : _a.color) === "Black") {
                     let movePositions = getSimpleMoveVariants(gameBoard, { i: i, j: j });
                     if (movePositions.length > 0) {
                         return { fromI: i, fromJ: j, toI: movePositions[0].i, toJ: movePositions[0].j };
