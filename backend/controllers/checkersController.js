@@ -31,7 +31,7 @@ class checkersController extends gameLogicController_1.default {
             else {
                 (0, util_1.default)(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
                 if (this.withBot) {
-                    setTimeout(() => { this.getBotMove(req); }, 5000);
+                    this.getBotMove(req);
                 }
             }
             (0, util_1.default)(req, [this.player1.id, this.player2.id], 'switchTeam', { color: currColor });
@@ -59,38 +59,12 @@ class checkersController extends gameLogicController_1.default {
             }
             (0, util_1.default)(req, [this.player1.id, this.player2.id], 'refreshScore', { firstPlayerScore: this.player1.score, secondPlayerScore: this.player2.score });
         };
-        this.getBotMove = (req) => {
-            const { fromI, fromJ, toI, toJ } = (0, MoveService_1.getBotMovePosition)(this.boardService);
+        this.processOneMove = (req, moveObj) => {
+            const { fromI, fromJ, toI, toJ } = moveObj;
             const fromObj = { i: fromI, j: fromJ };
             const toObj = { i: toI, j: toJ };
             (0, MoveService_1.moveChecker)(this.boardService, this.boardService.board[fromI][fromJ], toObj);
-            (0, util_1.default)(req, [this.player1.id], 'checkerMoved', { fromI: fromI, fromJ: fromJ, toI: toI, toJ: toJ });
-            if (this.boardService.board[toI][toJ].canMakeLady()) {
-                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'makeLady', toObj);
-            }
-            let moveResult = (0, BeatService_1.beat)(this.boardService, fromObj, toObj);
-            let nextBeatPositions = moveResult[0];
-            let removedChecker = moveResult[1];
-            if (removedChecker !== undefined) {
-                (0, util_1.default)(req, [this.player1.id], 'removeChecker', removedChecker);
-                this.updateScore(removedChecker, req);
-            }
-            if (nextBeatPositions.length === 0) {
-                this.counter++;
-                this.switchTeam(req);
-                if (this.counter % 2 !== 0)
-                    (0, util_1.default)(req, [this.player1.id], 'giveListeners', { color: this.player1.color });
-            }
-            else {
-                this.getBotMove(req);
-            }
-        };
-        this.moveCheckerOnBoard = (req) => {
-            const { fromI, fromJ, toI, toJ } = req.body;
-            const fromObj = { i: fromI, j: fromJ };
-            const toObj = { i: toI, j: toJ };
-            (0, MoveService_1.moveChecker)(this.boardService, this.boardService.board[fromI][fromJ], toObj);
-            (0, util_1.default)(req, [this.player1.id, this.player2.id], 'checkerMoved', req.body);
+            (0, util_1.default)(req, [this.player1.id, this.player2.id], 'checkerMoved', { fromI: fromI, fromJ: fromJ, toI: toI, toJ: toJ });
             if (this.boardService.board[toI][toJ].canMakeLady()) {
                 (0, util_1.default)(req, [this.player1.id, this.player2.id], 'makeLady', toObj);
             }
@@ -101,13 +75,38 @@ class checkersController extends gameLogicController_1.default {
                 (0, util_1.default)(req, [this.player1.id, this.player2.id], 'removeChecker', removedChecker);
                 this.updateScore(removedChecker, req);
             }
-            if (nextBeatPositions.length === 0) {
-                this.counter++;
-                this.switchTeam(req);
+            return nextBeatPositions;
+        };
+        this.goToNextMove = (req) => {
+            this.counter++;
+            this.switchTeam(req);
+            if (this.withBot && this.counter % 2 === 0)
                 this.getBotMove(req);
-                (this.counter % 2 !== 0) ?
-                    (0, util_1.default)(req, [this.player1.id], 'giveListeners', { color: this.player1.color }) :
-                    (0, util_1.default)(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
+            (this.counter % 2 !== 0) ?
+                (0, util_1.default)(req, [this.player1.id], 'giveListeners', { color: this.player1.color }) :
+                (0, util_1.default)(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
+        };
+        this.handleMove = (req, moveObj) => {
+            const nextBeatPositions = this.processOneMove(req, moveObj);
+            if (nextBeatPositions.length === 0) {
+                this.goToNextMove(req);
+            }
+            else {
+                setTimeout(() => {
+                    this.handleMove(req, { fromI: moveObj.toI, fromJ: moveObj.toJ, toI: nextBeatPositions[0].i, toJ: nextBeatPositions[0].j });
+                }, 2000);
+            }
+        };
+        this.getBotMove = (req) => {
+            setTimeout(() => {
+                this.handleMove(req, (0, MoveService_1.getBotMovePosition)(this.boardService));
+            }, 2000);
+        };
+        this.moveCheckerOnBoard = (req) => {
+            const nextBeatPositions = this.processOneMove(req, req.body);
+            console.log(this.withBot);
+            if (nextBeatPositions.length === 0) {
+                this.goToNextMove(req);
             }
             return nextBeatPositions;
         };
