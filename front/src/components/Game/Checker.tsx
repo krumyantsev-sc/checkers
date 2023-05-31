@@ -32,14 +32,12 @@ const Checker: React.FC<checkerProps> = ({
     const onDragStart = (event: React.DragEvent<HTMLDivElement>) => {
         if (checkerColor === moveColor) {
             setInitPos(coords)
-            const setHighLightedPositions = async () => {
-                CheckerService.getPositionsForHighlighting(gameId!, coords).then((res) => {
-                    if (setHighlightedPos) {
-                        setHighlightedPos(res.data);
-                    }
-                });
-            }
-            setHighLightedPositions().then()
+            CheckerService.getPositionsForHighlighting(gameId!, coords).then((res) => {
+                if (setHighlightedPos) {
+                    console.log(res.data)
+                    setHighlightedPos(res.data);
+                }
+            });
         }
         event.dataTransfer.setData("text/plain", "");
     }

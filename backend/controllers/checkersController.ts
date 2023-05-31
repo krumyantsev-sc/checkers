@@ -1,5 +1,10 @@
 import boardService from "../services/BoardService"
-import {moveChecker, checkMoveVariants, getBotMovePosition} from "../services/MoveService";
+import {
+    moveChecker,
+    checkMoveVariants,
+    getBotMovePosition,
+    getPositionsForBeatHighlighting
+} from "../services/MoveService";
 import {beat, getBeatPositions} from "../services/BeatService";
 import Player from "../entity/player"
 import emitToPlayers from "../util/util";
@@ -36,12 +41,21 @@ class checkersController extends gameLogicController {
     public getMoveStatusInfo = (req: Request) => {
         let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
         if (this.counter % 2 !== 0) {
-            emitToPlayers(req, [this.player1.id], 'giveListeners', {color: this.player1.color})
+            console.log(getPositionsForBeatHighlighting(this.boardService, this.player1.color));
+            emitToPlayers(req, [this.player1.id], 'giveListeners',
+                {
+                    color: this.player1.color,
+                    positions: getPositionsForBeatHighlighting(this.boardService, this.player1.color)
+                })
         } else {
-            emitToPlayers(req, [this.player2.id], 'giveListeners', {color: this.player2.color});
+            emitToPlayers(req, [this.player2.id], 'giveListeners',
+                {
+                    color: this.player2.color,
+                    positions: getPositionsForBeatHighlighting(this.boardService, this.player2.color)
+                })
+            console.log(getPositionsForBeatHighlighting(this.boardService, this.player2.color));
             if (this.withBot) {
                 this.getBotMove(req)
-
             }
         }
         emitToPlayers(req, [this.player1.id, this.player2.id], 'switchTeam', {color: currColor});
@@ -91,6 +105,7 @@ class checkersController extends gameLogicController {
         let nextBeatPositions: checkerCoords[] = moveResult[0];
         let removedChecker: checkerCoordsWithColor | undefined = moveResult[1];
         if (removedChecker !== undefined) {
+            emitToPlayers(req, [this.player1.id, this.player2.id], 'stopBeatHighlight', {});
             emitToPlayers(req, [this.player1.id, this.player2.id], 'removeChecker', removedChecker);
             this.updateScore(removedChecker, req);
         }
@@ -103,8 +118,16 @@ class checkersController extends gameLogicController {
         if (this.withBot && this.counter % 2 === 0)
             this.getBotMove(req);
         (this.counter % 2 !== 0) ?
-            emitToPlayers(req, [this.player1.id], 'giveListeners', {color: this.player1.color}) :
-            emitToPlayers(req, [this.player2.id], 'giveListeners', {color: this.player2.color});
+            emitToPlayers(req, [this.player1.id], 'giveListeners',
+                {
+                    color: this.player1.color,
+                    positions: getPositionsForBeatHighlighting(this.boardService, this.player1.color)
+                }) :
+            emitToPlayers(req, [this.player2.id], 'giveListeners',
+                {
+                    color: this.player2.color,
+                    positions: getPositionsForBeatHighlighting(this.boardService, this.player2.color)
+                });
     }
 
     private handleMove = (req: Request, moveObj: moveCoords) => {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBotMovePosition = exports.moveChecker = exports.checkMoveVariants = void 0;
+exports.getPositionsForBeatHighlighting = exports.getBotMovePosition = exports.moveChecker = exports.checkMoveVariants = void 0;
 const BeatService_1 = require("./BeatService");
 const getSimpleMoveVariants = (boardService, position) => {
     let possibleWays = [];
@@ -23,6 +23,23 @@ const getSimpleMoveVariants = (boardService, position) => {
     }
     return possibleWays;
 };
+const getPositionsForBeatHighlighting = (gameBoard, color) => {
+    let highlightedPos = [];
+    for (let i = 0; i < gameBoard.board.length; i++) {
+        for (let j = 0; j < gameBoard.board[i].length; j++) {
+            if (gameBoard.board[i][j] && gameBoard.board[i][j].color === color) {
+                let possibleWays = (0, BeatService_1.getBeatPositions)(gameBoard, { i: i, j: j });
+                if (possibleWays.length > 0) {
+                    for (let item of possibleWays) {
+                        highlightedPos.push({ fromI: i, fromJ: j, toI: item.i, toJ: item.j });
+                    }
+                }
+            }
+        }
+    }
+    return highlightedPos;
+};
+exports.getPositionsForBeatHighlighting = getPositionsForBeatHighlighting;
 const checkMoveVariants = (gameBoard, position) => {
     let possibleWays = (0, BeatService_1.getBeatPositions)(gameBoard, position);
     if (possibleWays.length === 0) {

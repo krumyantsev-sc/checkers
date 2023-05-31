@@ -15,6 +15,7 @@ const Board = () => {
     const [highlightPositions, setHighlightPositions] = useState<checkerCoords[]>([]);
     const [draggableColor, setDraggableColor] = useState<string>("none");
     let [initPos, setInitPosition] = useState<checkerCoords>();
+    const [highLightMove, setHighlightMove] = useState<boolean>(false);
     const {gameId} = useParams();
     const {showModal} = useModal();
     const navigate = useNavigate();
@@ -104,6 +105,8 @@ const Board = () => {
                 }
                 boardRow.push(
                     <Cell
+                        highLightMove={highLightMove}
+                        setHighLightMove={setHighlightMove}
                         color={cellColor}
                         checker={checkersBoard[i][j]}
                         coords={{i: i, j: j}}
@@ -119,7 +122,6 @@ const Board = () => {
         socket.connect();
 
         const updateBoardFromServer = (data: moveCoords) => {
-            console.log(data);
             initPos = {i: data.fromI, j: data.fromJ};
             setCheckersBoard((checkersBoard) => {
                 console.log(checkersBoard);
@@ -203,6 +205,8 @@ const Board = () => {
                                 setInitPos={setInitPos}
                                 setHighlightedPos={setHighlightPos}
                                 moveColor={draggableColor}
+                                highLightMove={highLightMove}
+                                setHighLightMove={setHighlightMove}
                             />
                         )}
                     </div>

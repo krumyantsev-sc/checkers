@@ -26,10 +26,18 @@ class checkersController extends gameLogicController_1.default {
         this.getMoveStatusInfo = (req) => {
             let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
             if (this.counter % 2 !== 0) {
-                (0, util_1.default)(req, [this.player1.id], 'giveListeners', { color: this.player1.color });
+                console.log((0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player1.color));
+                (0, util_1.default)(req, [this.player1.id], 'giveListeners', {
+                    color: this.player1.color,
+                    positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player1.color)
+                });
             }
             else {
-                (0, util_1.default)(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
+                (0, util_1.default)(req, [this.player2.id], 'giveListeners', {
+                    color: this.player2.color,
+                    positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color)
+                });
+                console.log((0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color));
                 if (this.withBot) {
                     this.getBotMove(req);
                 }
@@ -64,7 +72,12 @@ class checkersController extends gameLogicController_1.default {
             const fromObj = { i: fromI, j: fromJ };
             const toObj = { i: toI, j: toJ };
             (0, MoveService_1.moveChecker)(this.boardService, this.boardService.board[fromI][fromJ], toObj);
-            (0, util_1.default)(req, [this.player1.id, this.player2.id], 'checkerMoved', { fromI: fromI, fromJ: fromJ, toI: toI, toJ: toJ });
+            (0, util_1.default)(req, [this.player1.id, this.player2.id], 'checkerMoved', {
+                fromI: fromI,
+                fromJ: fromJ,
+                toI: toI,
+                toJ: toJ
+            });
             if (this.boardService.board[toI][toJ].canMakeLady()) {
                 (0, util_1.default)(req, [this.player1.id, this.player2.id], 'makeLady', toObj);
             }
@@ -72,6 +85,7 @@ class checkersController extends gameLogicController_1.default {
             let nextBeatPositions = moveResult[0];
             let removedChecker = moveResult[1];
             if (removedChecker !== undefined) {
+                (0, util_1.default)(req, [this.player1.id, this.player2.id], 'stopBeatHighlight', {});
                 (0, util_1.default)(req, [this.player1.id, this.player2.id], 'removeChecker', removedChecker);
                 this.updateScore(removedChecker, req);
             }
@@ -83,8 +97,14 @@ class checkersController extends gameLogicController_1.default {
             if (this.withBot && this.counter % 2 === 0)
                 this.getBotMove(req);
             (this.counter % 2 !== 0) ?
-                (0, util_1.default)(req, [this.player1.id], 'giveListeners', { color: this.player1.color }) :
-                (0, util_1.default)(req, [this.player2.id], 'giveListeners', { color: this.player2.color });
+                (0, util_1.default)(req, [this.player1.id], 'giveListeners', {
+                    color: this.player1.color,
+                    positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player1.color)
+                }) :
+                (0, util_1.default)(req, [this.player2.id], 'giveListeners', {
+                    color: this.player2.color,
+                    positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color)
+                });
         };
         this.handleMove = (req, moveObj) => {
             const nextBeatPositions = this.processOneMove(req, moveObj);
@@ -104,7 +124,6 @@ class checkersController extends gameLogicController_1.default {
         };
         this.moveCheckerOnBoard = (req) => {
             const nextBeatPositions = this.processOneMove(req, req.body);
-            console.log(this.withBot);
             if (nextBeatPositions.length === 0) {
                 this.goToNextMove(req);
             }

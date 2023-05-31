@@ -1,6 +1,7 @@
 import {getBeatPositionForBot, getBeatPositions} from "./BeatService";
 import {checkerCoords} from "../types/checkersTypes";
 import {IMoveChecker, IMoveVariants} from "./interfaces/IMoveService";
+import BoardService from "./BoardService";
 
 const getSimpleMoveVariants: IMoveVariants = (boardService, position) => {
     let possibleWays: checkerCoords[] = [];
@@ -22,6 +23,23 @@ const getSimpleMoveVariants: IMoveVariants = (boardService, position) => {
         }
     }
     return possibleWays;
+}
+
+const getPositionsForBeatHighlighting = (gameBoard: BoardService, color: string) => {
+    let highlightedPos = [];
+    for (let i = 0; i < gameBoard.board.length; i++) {
+        for (let j = 0; j < gameBoard.board[i].length; j++) {
+            if (gameBoard.board[i][j] && gameBoard.board[i][j].color === color) {
+                let possibleWays = getBeatPositions(gameBoard, {i:i,j:j});
+                if (possibleWays.length > 0) {
+                    for (let item of possibleWays) {
+                        highlightedPos.push({fromI: i, fromJ: j, toI:item.i, toJ: item.j});
+                    }
+                }
+            }
+        }
+    }
+    return highlightedPos;
 }
 
 const checkMoveVariants: IMoveVariants = (gameBoard, position) => {
@@ -53,4 +71,4 @@ const getBotMovePosition = (gameBoard) => {
     return beatPosition;
 }
 
-export {checkMoveVariants, moveChecker, getBotMovePosition};
+export {checkMoveVariants, moveChecker, getBotMovePosition, getPositionsForBeatHighlighting};

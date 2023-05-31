@@ -56,9 +56,7 @@ router.get("/:roomId/initialize", (0, roleMiddleware_1.default)(["USER", "ADMIN"
         if (!findControllerByRoomId(activeGames, req.params.roomId)) {
             let checkersController = new checkersController_1.default();
             yield checkersController.initializeGame(req.params.roomId, req, res);
-            console.log(req.query.withBot);
             if (req.query.withBot === "true") {
-                console.log("!!!!!!!!!!!");
                 checkersController.withBot = true;
             }
             activeGames.push(checkersController);
