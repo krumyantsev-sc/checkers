@@ -86,7 +86,7 @@ const Cell: React.FC<cellProps> =
         return (
             <div
                 className={color}
-                style={highLight ? {border: "1px solid red"} : {}}
+                style={highLight ? {border: "2px dotted coral"} : {}}
                 onDrop={onDrop}
                 onDragOver={onDragOver}>
                 {checker &&

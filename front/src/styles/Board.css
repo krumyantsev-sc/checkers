@@ -13,13 +13,19 @@
 .dark-cell, .light-cell{
     width: 75px;
     height: 75px;
-    /*animation-name: border-color;*/
-    /*animation-duration: 2s;*/
-    /*animation-timing-function: linear;*/
-    /*animation-iteration-count: infinite;*/
-
-
     background-color: #b38436;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
 }
 
 @keyframes border-color {

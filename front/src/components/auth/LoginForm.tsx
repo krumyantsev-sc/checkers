@@ -32,8 +32,8 @@ const LoginForm: React.FC<LoginFormProps> = ({setLogin}) => {
             setTimeout(() => {
                 navigate('/');
             }, 3000);
-        } catch (error) {
-            showModal("Ошибка авторизации! Проверьте введенные данные.");
+        } catch (error: any) {
+            showModal(error.response.data.message);
         }
     }
 

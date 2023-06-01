@@ -20,6 +20,7 @@ class checkersController extends gameLogicController {
     player1: Player = new Player("White");
     player2: Player = new Player("Black");
     withBot: boolean = false;
+    gameFinished: boolean = false;
 
     constructor() {
         super();
@@ -62,16 +63,33 @@ class checkersController extends gameLogicController {
         return {message: "successfully sent"};
     }
 
+    private giveListeners = (req: Request) => {
+        (this.counter % 2 !== 0) ?
+            emitToPlayers(req, [this.player1.id], 'giveListeners',
+                {
+                    color: this.player1.color,
+                    positions: getPositionsForBeatHighlighting(this.boardService, this.player1.color)
+                }) :
+            emitToPlayers(req, [this.player2.id], 'giveListeners',
+                {
+                    color: this.player2.color,
+                    positions: getPositionsForBeatHighlighting(this.boardService, this.player2.color)
+                });
+    }
+
     public getPositionsForHighlighting = (req: Request): checkerCoords[] => {
+        this.giveListeners(req);
         return checkMoveVariants(this.boardService, req.body);
     }
 
     private checkWin = (req: Request): void => {
         if (this.player1.score === 12) {
             this.emitWin(this.player1.id, this.player2.id, req);
+            this.gameFinished = true;
         }
         if (this.player2.score === 12) {
             this.emitWin(this.player2.id, this.player1.id, req);
+            this.gameFinished = true;
         }
     }
 
@@ -113,21 +131,13 @@ class checkersController extends gameLogicController {
     }
 
     private goToNextMove = (req: Request) => {
-        this.counter++;
-        this.switchTeam(req);
-        if (this.withBot && this.counter % 2 === 0)
-            this.getBotMove(req);
-        (this.counter % 2 !== 0) ?
-            emitToPlayers(req, [this.player1.id], 'giveListeners',
-                {
-                    color: this.player1.color,
-                    positions: getPositionsForBeatHighlighting(this.boardService, this.player1.color)
-                }) :
-            emitToPlayers(req, [this.player2.id], 'giveListeners',
-                {
-                    color: this.player2.color,
-                    positions: getPositionsForBeatHighlighting(this.boardService, this.player2.color)
-                });
+        if (!this.gameFinished) {
+            this.counter++;
+            this.switchTeam(req);
+            if (this.withBot && this.counter % 2 === 0)
+                this.getBotMove(req);
+            this.giveListeners(req);
+        }
     }
 
     private handleMove = (req: Request, moveObj: moveCoords) => {

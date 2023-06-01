@@ -73,10 +73,11 @@ const RegForm: React.FC<RegFormProps> = ({setLogin}) => {
     const register = async () => {
         try {
             const res = await AuthService.register(formData)
-            const data = await res.data;
+            const data = res.data;
             showModal(data.message);
-        } catch (error) {
-            showModal("Ошибка регистрации! Проверьте введенные данные.");
+        } catch (error: any) {
+            showModal(error.response.data.message)
+            console.error("Ошибка регистрации")
         }
     }
 

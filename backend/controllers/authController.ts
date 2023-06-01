@@ -9,6 +9,7 @@ import {Request, Response} from 'express';
 import {IUser} from "../models/User"
 import {IRole} from "../models/Role"
 import {HydratedDocument} from "mongoose";
+import {$or} from "sift";
 
 const generateAccessToken = (id: string, roles: Array<IRole | string>): string => {
     const payload = {
@@ -48,9 +49,9 @@ class authController {
                 return res.status(400).json({message: "Ошибка при регистрации", errors});
             }
             const {firstName, lastName, email, username, password} = req.body;
-            const candidate: IUser = await User.findOne({username});
+            const candidate: IUser = await User.findOne({$or: [{username: username}, {email: email}]});
             if (candidate) {
-                return res.status(400).json({message: "Пользователь с таким именем уже существует"});
+                return res.status(400).json({message: "Пользователь с таким именем или email уже существует"});
             }
             const hashPassword: string = bcrypt.hashSync(password, 7);
             const userRole: IRole = await Role.findOne({value: "USER"});
@@ -74,7 +75,7 @@ class authController {
     public login = async (req: Request, res: Response): Promise<any> => {
         try {
             const {username, password} = req.body;
-            const user: IUser = await User.findOne({username});
+            const user = await User.findOne({username});
             if (!user) {
                 return res.status(400).json({message: "Пользователь не найден"});
             }
@@ -131,7 +132,7 @@ class authController {
 
     public makeAdmin = async (req: Request, res: Response) => {
         const userId: string = req.params.id;
-        const user: HydratedDocument<IUser> = await User.findById(userId);
+        const user = await User.findById(userId);
         const adminRole = await Role.findOne({value: "ADMIN"});
         if (user.role.includes(adminRole.value)) {
             return res.status(409).json({message: "Пользователь уже обладает правами администратора"})
@@ -143,7 +144,7 @@ class authController {
 
     public ban = async (req: Request, res: Response) => {
         const userId: string = req.params.id;
-        const user: HydratedDocument<IUser> = await User.findById(userId);
+        const user = await User.findById(userId);
         const bannedRole = await Role.findOne({value: "BANNED"});
         if (user.role.includes(bannedRole.value)) {
             return res.status(409).json({message: "Пользователь уже забанен"})

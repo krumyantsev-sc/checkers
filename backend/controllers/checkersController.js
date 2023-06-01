@@ -13,6 +13,7 @@ class checkersController extends gameLogicController_1.default {
         this.player1 = new player_1.default("White");
         this.player2 = new player_1.default("Black");
         this.withBot = false;
+        this.gameFinished = false;
         this.getGameInfo = (req, res) => {
             res.status(201).json({
                 firstPlayer: { name: this.player1.name, score: this.player1.score },
@@ -46,14 +47,25 @@ class checkersController extends gameLogicController_1.default {
             return { message: "successfully sent" };
         };
         this.getPositionsForHighlighting = (req) => {
+            (this.counter % 2 !== 0) ?
+                (0, util_1.default)(req, [this.player1.id], 'giveListeners', {
+                    color: this.player1.color,
+                    positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player1.color)
+                }) :
+                (0, util_1.default)(req, [this.player2.id], 'giveListeners', {
+                    color: this.player2.color,
+                    positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color)
+                });
             return (0, MoveService_1.checkMoveVariants)(this.boardService, req.body);
         };
         this.checkWin = (req) => {
             if (this.player1.score === 12) {
                 this.emitWin(this.player1.id, this.player2.id, req);
+                this.gameFinished = true;
             }
             if (this.player2.score === 12) {
                 this.emitWin(this.player2.id, this.player1.id, req);
+                this.gameFinished = true;
             }
         };
         this.updateScore = (removedChecker, req) => {
@@ -92,19 +104,21 @@ class checkersController extends gameLogicController_1.default {
             return nextBeatPositions;
         };
         this.goToNextMove = (req) => {
-            this.counter++;
-            this.switchTeam(req);
-            if (this.withBot && this.counter % 2 === 0)
-                this.getBotMove(req);
-            (this.counter % 2 !== 0) ?
-                (0, util_1.default)(req, [this.player1.id], 'giveListeners', {
-                    color: this.player1.color,
-                    positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player1.color)
-                }) :
-                (0, util_1.default)(req, [this.player2.id], 'giveListeners', {
-                    color: this.player2.color,
-                    positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color)
-                });
+            if (!this.gameFinished) {
+                this.counter++;
+                this.switchTeam(req);
+                if (this.withBot && this.counter % 2 === 0)
+                    this.getBotMove(req);
+                (this.counter % 2 !== 0) ?
+                    (0, util_1.default)(req, [this.player1.id], 'giveListeners', {
+                        color: this.player1.color,
+                        positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player1.color)
+                    }) :
+                    (0, util_1.default)(req, [this.player2.id], 'giveListeners', {
+                        color: this.player2.color,
+                        positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color)
+                    });
+            }
         };
         this.handleMove = (req, moveObj) => {
             const nextBeatPositions = this.processOneMove(req, moveObj);

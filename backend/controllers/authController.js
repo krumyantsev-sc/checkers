@@ -52,9 +52,9 @@ class authController {
                     return res.status(400).json({ message: "Ошибка при регистрации", errors });
                 }
                 const { firstName, lastName, email, username, password } = req.body;
-                const candidate = yield User_1.default.findOne({ username });
+                const candidate = yield User_1.default.findOne({ $or: [{ username: username }, { email: email }] });
                 if (candidate) {
-                    return res.status(400).json({ message: "Пользователь с таким именем уже существует" });
+                    return res.status(400).json({ message: "Пользователь с таким именем или email уже существует" });
                 }
                 const hashPassword = bcrypt.hashSync(password, 7);
                 const userRole = yield Role_1.default.findOne({ value: "USER" });
