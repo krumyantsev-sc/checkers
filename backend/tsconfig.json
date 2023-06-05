@@ -3,7 +3,8 @@
     "module": "CommonJS",
     "sourceMap": true,
     "target": "es6",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
   },
   "include": [
     "./**/*"

@@ -1,15 +1,16 @@
-import User from "../models/User"
+import User from "../pgModels/User"
 import Role from "../models/Role"
+import {Request, Response} from 'express';
+import {IUser} from "../models/User"
+import {IRole} from "../models/Role"
+import {HydratedDocument} from "mongoose";
+import {Op} from "sequelize";
 
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const {validationResult} = require("express-validator")
 const secret = require("../config/config")
-import {Request, Response} from 'express';
-import {IUser} from "../models/User"
-import {IRole} from "../models/Role"
-import {HydratedDocument} from "mongoose";
-import {$or} from "sift";
+
 
 const generateAccessToken = (id: string, roles: Array<IRole | string>): string => {
     const payload = {
@@ -49,22 +50,31 @@ class authController {
                 return res.status(400).json({message: "Ошибка при регистрации", errors});
             }
             const {firstName, lastName, email, username, password} = req.body;
-            const candidate: IUser = await User.findOne({$or: [{username: username}, {email: email}]});
+            const candidate = await User.findOne({
+                where: {
+                    [Op.or]: [
+                        { username: username },
+                        { email: email }
+                    ]
+                }
+            });
             if (candidate) {
                 return res.status(400).json({message: "Пользователь с таким именем или email уже существует"});
             }
             const hashPassword: string = bcrypt.hashSync(password, 7);
-            const userRole: IRole = await Role.findOne({value: "USER"});
-            const user: HydratedDocument<IUser> = new User(
-                {
-                    firstName: firstName,
+            //const userRole: IRole = await Role.findOne({value: "USER"});
+            const user = await User.create(
+                 {
+                     firstName: firstName,
                     lastName: lastName,
                     email: email,
                     username: username,
                     password: hashPassword,
-                    role: [userRole.value]
                 });
-            await user.save();
+            const defaultRole = await Role.findOne({where: {name: "USER"}});
+            if(defaultRole) {
+                await user.addRole(defaultRole);
+            }
             return res.json({message: "Пользователь успешно зарегистрирован"});
         } catch (e) {
             console.log(e);

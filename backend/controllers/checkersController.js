@@ -46,7 +46,7 @@ class checkersController extends gameLogicController_1.default {
             (0, util_1.default)(req, [this.player1.id, this.player2.id], 'switchTeam', { color: currColor });
             return { message: "successfully sent" };
         };
-        this.getPositionsForHighlighting = (req) => {
+        this.giveListeners = (req) => {
             (this.counter % 2 !== 0) ?
                 (0, util_1.default)(req, [this.player1.id], 'giveListeners', {
                     color: this.player1.color,
@@ -56,6 +56,9 @@ class checkersController extends gameLogicController_1.default {
                     color: this.player2.color,
                     positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color)
                 });
+        };
+        this.getPositionsForHighlighting = (req) => {
+            this.giveListeners(req);
             return (0, MoveService_1.checkMoveVariants)(this.boardService, req.body);
         };
         this.checkWin = (req) => {
@@ -109,15 +112,7 @@ class checkersController extends gameLogicController_1.default {
                 this.switchTeam(req);
                 if (this.withBot && this.counter % 2 === 0)
                     this.getBotMove(req);
-                (this.counter % 2 !== 0) ?
-                    (0, util_1.default)(req, [this.player1.id], 'giveListeners', {
-                        color: this.player1.color,
-                        positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player1.color)
-                    }) :
-                    (0, util_1.default)(req, [this.player2.id], 'giveListeners', {
-                        color: this.player2.color,
-                        positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color)
-                    });
+                this.giveListeners(req);
             }
         };
         this.handleMove = (req, moveObj) => {

@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = require("../models/User");
+const User_1 = require("../pgModels/User");
 const Role_1 = require("../models/Role");
+const sequelize_1 = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
@@ -52,21 +53,29 @@ class authController {
                     return res.status(400).json({ message: "Ошибка при регистрации", errors });
                 }
                 const { firstName, lastName, email, username, password } = req.body;
-                const candidate = yield User_1.default.findOne({ $or: [{ username: username }, { email: email }] });
+                const candidate = yield User_1.default.findOne({
+                    where: {
+                        [sequelize_1.Op.or]: [
+                            { username: username },
+                            { email: email }
+                        ]
+                    }
+                });
                 if (candidate) {
                     return res.status(400).json({ message: "Пользователь с таким именем или email уже существует" });
                 }
                 const hashPassword = bcrypt.hashSync(password, 7);
-                const userRole = yield Role_1.default.findOne({ value: "USER" });
-                const user = new User_1.default({
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    username: username,
-                    password: hashPassword,
-                    role: [userRole.value]
-                });
-                yield user.save();
+                // const userRole: IRole = await Role.findOne({value: "USER"});
+                // const user: HydratedDocument<IUser> = new User(
+                //     {
+                //         firstName: firstName,
+                //         lastName: lastName,
+                //         email: email,
+                //         username: username,
+                //         password: hashPassword,
+                //         role: [userRole.value]
+                //     });
+                // await user.save();
                 return res.json({ message: "Пользователь успешно зарегистрирован" });
             }
             catch (e) {

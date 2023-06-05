@@ -18,6 +18,7 @@ const profileRouter_1 = require("./routers/profileRouter");
 const chatRouter_1 = require("./routers/chatRouter");
 const tttRouter_1 = require("./routers/tttRouter");
 const io_1 = require("./util/io");
+const database_1 = require("./db/database");
 const express = require("express");
 const app = express();
 const server = require('http').Server(app);
@@ -41,6 +42,9 @@ app.use(cors({
 app.set("socketService", new io_1.default(server));
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        database_1.default.sync().then(() => __awaiter(void 0, void 0, void 0, function* () {
+            console.log("Database & tables created!");
+        }));
         yield mongoose.connect(`mongodb+srv://rumik:13372281@cluster0.orq3t9o.mongodb.net/?retryWrites=true&w=majority`);
         server.listen(3001, function () {
             console.log("listening on *:3001");
