@@ -7,8 +7,6 @@ import profileRouter from "./routers/profileRouter";
 import chatRouter from "./routers/chatRouter";
 import tttRouter from "./routers/tttRouter";
 import SocketService from "./util/io";
-import sequelize from "./db/database";
-import Role from "./pgModels/Role"
 
 const express = require("express");
 const app = express();
@@ -17,6 +15,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
+import sequelize from './db/database';
 
 app.use(express.json());
 app.use(cookieParser());
@@ -39,6 +38,7 @@ const start = async () => {
     try {
         sequelize.sync().then(async () => {
             console.log("Database & tables created!");
+
         });
         await mongoose.connect(`mongodb+srv://rumik:13372281@cluster0.orq3t9o.mongodb.net/?retryWrites=true&w=majority`);
         server.listen(3001, function () {

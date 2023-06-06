@@ -5,4 +5,4 @@ const Role = sequelize.define('Role', {
     name: { type: DataTypes.STRING, unique: true, allowNull: false }
 });
 
-export default Role
+export default Role;
