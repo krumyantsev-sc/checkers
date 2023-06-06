@@ -51,11 +51,11 @@ const ProfileInfo: React.FC<Props> = (
                     className="wins-loses-container">
                     <div
                         className="profile-wins">
-                        win: {userInfo.wins}
+                        Побед: {userInfo.wins}
                     </div>
                     <div
                         className="profile-loses">
-                        lose: {userInfo.loses}
+                        Поражений: {userInfo.loses}
                     </div>
                 </div>
                 <Diagram

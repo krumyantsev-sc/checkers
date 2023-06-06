@@ -61,7 +61,7 @@ body {
     color: white;
     cursor: pointer;
     font-size: 16px;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Comfortaa', cursive;;
 }
 
 .error-message {
@@ -80,6 +80,7 @@ body {
     font-size: 20px;
     color: #007BFF;
     cursor: pointer;
+    font-family: 'Comfortaa', cursive;
 }
 
 .form-button-container {
@@ -93,7 +94,7 @@ body {
 
 .authPartSpan {
     font-size: 30px;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Comfortaa', cursive;
 }
 
 .auth-page--container {

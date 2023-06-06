@@ -35,7 +35,7 @@ const PlayerInfo: React.FC<PlayerProps> = ({
                 src={avatar ? `http://localhost:3001/static/avatar/${avatar}` : avatarImg}/>
             <div
                 className="lobby-stats">
-                {statistics && ("win: " + statistics.wins + " lose: " + statistics.loses)}
+                {statistics && ("Побед: " + statistics.wins + " Поражений: " + statistics.loses)}
             </div>
         </div>
     );

@@ -84,7 +84,7 @@ const RoomList = () => {
                                             getRoomsFromServer()
                                         })
                                     }}
-                                >CREATE ROOM
+                                >СОЗДАТЬ КОМНАТУ
                                 </div>
                                 {gameHeader === "CHECKERS" &&
                                 <div className="play-button bot"
@@ -96,7 +96,7 @@ const RoomList = () => {
                                      }
                                      }
                                 >
-                                    WITH BOT
+                                    ПРОТИВ БОТА
                                 </div>}
                             </div>
                             <div

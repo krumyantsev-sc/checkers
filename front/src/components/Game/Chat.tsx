@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import socket from "../../API/socket";
 
 import '../../styles/Chat.css';
@@ -19,15 +19,13 @@ const Chat: React.FC = () => {
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [author, setAuthor] = useState<string>('');
     const [message, setMessage] = useState<string>('');
-    let { gameId } : any = useParams<Record<keyof GameProps, string>>();
+    let {gameId}: any = useParams<Record<keyof GameProps, string>>();
     useEffect(() => {
         socket.connect();
-        // Получение всех сообщений при подключении
         socket.on('messages', (data: IMessage[]) => {
             setMessages(data);
         });
 
-        // Получение нового сообщения
         socket.on('newMessage', (data: IMessage) => {
             setMessages(prevMessages => [...prevMessages, data]);
         });
@@ -47,7 +45,6 @@ const Chat: React.FC = () => {
             }
         } catch (error) {
             console.error('Ошибка при получении поля:', error);
-            // navigate('/');
         }
     }
 
@@ -58,14 +55,14 @@ const Chat: React.FC = () => {
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         if (!message) return;
-        ChatService.sendMessage(gameId,message);
+        ChatService.sendMessage(gameId, message);
         setAuthor('');
         setMessage('');
     };
 
     return (
         <div className="chat">
-            <h1>Chat</h1>
+            <h1>ЧАТ</h1>
             <div className="messages">
                 {messages.map((message, index) => (
                     <div key={index} className="message">
@@ -82,7 +79,7 @@ const Chat: React.FC = () => {
                     onChange={event => setMessage(event.target.value)}
                     className="input"
                 />
-                <button type="submit" className="button">Send</button>
+                <button type="submit" className="button">ОТПРАВИТЬ</button>
             </form>
         </div>
     );

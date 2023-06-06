@@ -83,7 +83,7 @@ const LobbyInfo: React.FC<RoomsProps> = ({firstPlayer, secondPlayer, lobbyId}) =
                                 });
                     }
                     }
-                >PLAY
+                >ИГРАТЬ
                 </div>}
             </div>
             <PlayerInfo

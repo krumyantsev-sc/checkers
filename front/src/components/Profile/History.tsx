@@ -20,7 +20,7 @@ const History: React.FC = () => {
     return (
         <div
             className="profile-room-list-container">
-            <h1>Game History</h1>
+            <h1>История игр</h1>
             <div
                 className="profile-room-container"
                 style={{border: "none"}}>
@@ -30,23 +30,23 @@ const History: React.FC = () => {
                 </div>
                 <div
                     className="profile-gameName">
-                    Game
+                    Игра
                 </div>
                 <div
                     className="profile-firstPlayer">
-                    First Player
+                    Первый игрок
                 </div>
                 <div
                     className="profile-secondPlayer">
-                    Second Player
+                    Второй игрок
                 </div>
                 <div
                     className="profile-startedAt">
-                    Created at
+                    Создана в
                 </div>
                 <div
                     className="profile-duration">
-                    Duration
+                    Длительность
                 </div>
             </div>
             {games.map((game) => (

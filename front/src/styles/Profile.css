@@ -37,12 +37,14 @@
     font-size: 30px;
     color: #00C49F;
     font-weight: bold;
+    font-family: 'Comfortaa', cursive;
 }
 
 .profile-loses {
     font-size: 30px;
     color: #0088FE;
     font-weight: bold;
+    font-family: 'Comfortaa', cursive;
 }
 
 .avatar-info-container {
@@ -84,6 +86,7 @@
 }
 
 .buttons-container div {
+    font-family: 'Comfortaa', cursive;
     background-color: #007BFF;
     text-align: center;
     display: flex;
@@ -96,7 +99,7 @@
     border: none;
     color: white;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .profile-edit-form, .profile-edit-form form{
@@ -105,6 +108,7 @@
     width: 100%;
     align-items: center;
     padding: 10px;
+    font-family: 'Comfortaa', cursive;
 }
 
 input,label {
@@ -134,7 +138,7 @@ input,label {
 }
 
 .profile-room-list-container h1 {
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Comfortaa', cursive;
     margin-bottom: 1vh;
 }
 
@@ -156,6 +160,9 @@ input,label {
 .profile-duration {
     width: 16.66%;
     text-align: center;
+    font-family: 'Comfortaa', cursive;
 }
+
+
 
 

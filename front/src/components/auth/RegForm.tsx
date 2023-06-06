@@ -99,7 +99,7 @@ const RegForm: React.FC<RegFormProps> = ({setLogin}) => {
             className="form-button-container">
             <span
                 className="authPartSpan">
-                Registration
+                Регистрация
             </span>
             <form
                 className="form-container"
@@ -177,13 +177,13 @@ const RegForm: React.FC<RegFormProps> = ({setLogin}) => {
                 <button
                     className="submit-button"
                     type="submit">
-                    Register
+                    Зарегистрироваться
                 </button>
             </form>
             <div
                 className="backButton"
                 onClick={() => setLogin(true)}>
-                Back to login
+                Войти в аккаунт
             </div>
         </div>
     );

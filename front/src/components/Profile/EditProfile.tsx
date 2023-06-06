@@ -67,7 +67,7 @@ const EditProfile: React.FC<Props> = (
                     />
                 </label>
                 <label>
-                    Password:
+                    Пароль:
                     <input
                         type="password"
                         value={password}
@@ -77,7 +77,7 @@ const EditProfile: React.FC<Props> = (
                     />
                 </label>
                 <label>
-                    Confirm Password:
+                    Подтверждение пароля:
                     <input
                         type="password"
                         value={confirmPassword}
@@ -87,7 +87,7 @@ const EditProfile: React.FC<Props> = (
                     />
                 </label>
                 <label>
-                    First Name:
+                    Имя:
                     <input
                         type="text"
                         value={firstName}
@@ -97,7 +97,7 @@ const EditProfile: React.FC<Props> = (
                     />
                 </label>
                 <label>
-                    Last Name:
+                    Фамилия:
                     <input
                         type="text"
                         value={lastName}
@@ -107,7 +107,7 @@ const EditProfile: React.FC<Props> = (
                     />
                 </label>
                 <label>
-                    Avatar:
+                    Аватар:
                     <input
                         type="file"
                         accept="image/*"
@@ -123,7 +123,7 @@ const EditProfile: React.FC<Props> = (
                 <button
                     className='submit-button'
                     type="submit">
-                    Submit
+                    Сохранить
                 </button>
             </form>
         </div>

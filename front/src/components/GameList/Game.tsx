@@ -62,7 +62,7 @@ const Game: React.FC<IGame> = ({
                         e.preventDefault();
                         navigate(`/games/${name.toLowerCase()}`)
                     }}
-                >PLAY
+                >ИГРАТЬ
                 </div>
                 {isAdmin && <div
                     className="game-edit-button"

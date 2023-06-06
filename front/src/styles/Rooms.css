@@ -37,6 +37,7 @@
 .room-controls .play-button {
     margin-bottom: 5px;
     background-color: lightsalmon;
+    font-family: 'Comfortaa', cursive;
 }
 
 .refresh-icon :hover {

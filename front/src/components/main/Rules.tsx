@@ -9,7 +9,7 @@ const Rules = () => {
         <div>
             <SideMenu/>
             <div className="rules-page">
-                <span className="rules-header">Rules</span>
+                <span className="rules-header">Правила</span>
                 <div className="rules-container">
                     <div className="game-rules-container">
                         <span className="rules-name-header">Checkers</span>

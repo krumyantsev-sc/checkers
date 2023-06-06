@@ -75,7 +75,7 @@ const Profile = () => {
                                 setHistory(false);
                                 setInfo(true)
                             }}
-                        >Profile
+                        >Профиль
                         </div>
                         <div
                             className="edit-profile-button"
@@ -84,7 +84,7 @@ const Profile = () => {
                                 setHistory(false);
                                 setInfo(false)
                             }}
-                        >Edit
+                        >Данные
                         </div>
                         <div
                             className="history-button"
@@ -93,7 +93,7 @@ const Profile = () => {
                                 setHistory(true);
                                 setInfo(false)
                             }}
-                        >History
+                        >История
                         </div>
                     </div>
                 </div>

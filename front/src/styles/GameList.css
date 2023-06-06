@@ -43,6 +43,7 @@
     margin-top: 8px;
     text-align: center;
     font-size: 15px;
+    font-family: 'Comfortaa', cursive;
 }
 
 
@@ -56,7 +57,7 @@
     box-sizing: border-box;
     color: #fff;
     cursor: pointer;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Comfortaa', cursive;
     font-size: 15px;
     font-weight: 500;
     height: 30px;

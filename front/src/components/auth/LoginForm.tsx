@@ -56,7 +56,7 @@ const LoginForm: React.FC<LoginFormProps> = ({setLogin}) => {
             className="form-button-container">
             <span
                 className="authPartSpan">
-                Login
+                Авторизация
             </span>
             <form
                 className="form-container"
@@ -80,7 +80,7 @@ const LoginForm: React.FC<LoginFormProps> = ({setLogin}) => {
                 <button
                     className="submit-button"
                     type="submit">
-                    Log in
+                    Войти
                 </button>
             </form>
             {error &&
@@ -91,7 +91,7 @@ const LoginForm: React.FC<LoginFormProps> = ({setLogin}) => {
             <div
                 className="backButton"
                 onClick={() => setLogin(false)}>
-                Register
+                Зарегистироваться
             </div>
         </div>
     );

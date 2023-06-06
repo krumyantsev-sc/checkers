@@ -59,7 +59,7 @@ const Rooms: React.FC<RoomsProps> = ({firstPlayer, secondPlayer, id}) => {
                                 }
                             })
                     }}
-                >CONNECT
+                >ПРИСОЕДИНИТЬСЯ
                 </div>
             </div>
         </div>
