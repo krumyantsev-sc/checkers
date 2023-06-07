@@ -17,7 +17,6 @@ function Slider() {
                 />
                 <Carousel.Caption>
                     <h3>Checkers</h3>
-                    <p>Создайте аккаунт, чтобы играть</p>
                 </Carousel.Caption>
             </Carousel.Item>
             <Carousel.Item
@@ -30,7 +29,6 @@ function Slider() {
                 />
                 <Carousel.Caption>
                     <h3>Tic-Tac-Toe</h3>
-                    <p>Создайте аккаунт, чтобы играть</p>
                 </Carousel.Caption>
             </Carousel.Item>
         </Carousel>

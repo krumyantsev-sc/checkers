@@ -91,7 +91,7 @@ const LoginForm: React.FC<LoginFormProps> = ({setLogin}) => {
             <div
                 className="backButton"
                 onClick={() => setLogin(false)}>
-                Зарегистироваться
+                Зарегистрироваться
             </div>
         </div>
     );

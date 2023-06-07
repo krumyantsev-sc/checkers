@@ -38,7 +38,7 @@ class roomController {
             } else if (!room.secondPlayer && room.firstPlayer.toString() !== candidate._id.toString()) {
                 room.secondPlayer = candidate;
                 await room.save();
-                emitToPlayers(req, [room.firstPlayer.toString()], 'updateLobbyData', {});
+                emitToPlayers(req, [room.firstPlayer?.toString(), room.secondPlayer?.toString()], 'updateLobbyData', {});
             }
             return res.status(200).json({status: "connected"});
         } catch (error) {
@@ -62,6 +62,7 @@ class roomController {
                 room.secondPlayer = undefined;
             }
             await room.save();
+            emitToPlayers(req, [room.firstPlayer?.toString(), room.secondPlayer?.toString()], 'updateLobbyData', "disconnected");
             res.status(200).json({message: "Вы успешно покинули комнату."});
         } catch (e) {
             console.error(e);

@@ -22,6 +22,16 @@ class checkersController extends gameLogicController_1.default {
         };
         this.switchTeam = (req) => {
             let currColor = (this.counter % 2 !== 0) ? "White" : "Black";
+            if (!this.checkIfCanMove(currColor)) {
+                if (this.player1.score !== 12 && this.player2.score !== 12) {
+                    if (this.player1.color === currColor) {
+                        this.emitWin(this.player2.id, this.player1.id, req);
+                    }
+                    else {
+                        this.emitWin(this.player1.id, this.player2.id, req);
+                    }
+                }
+            }
             (0, util_1.default)(req, [this.player1.id, this.player2.id], 'switchTeam', { color: currColor });
         };
         this.getMoveStatusInfo = (req) => {
@@ -46,7 +56,7 @@ class checkersController extends gameLogicController_1.default {
             (0, util_1.default)(req, [this.player1.id, this.player2.id], 'switchTeam', { color: currColor });
             return { message: "successfully sent" };
         };
-        this.getPositionsForHighlighting = (req) => {
+        this.giveListeners = (req) => {
             (this.counter % 2 !== 0) ?
                 (0, util_1.default)(req, [this.player1.id], 'giveListeners', {
                     color: this.player1.color,
@@ -56,6 +66,9 @@ class checkersController extends gameLogicController_1.default {
                     color: this.player2.color,
                     positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color)
                 });
+        };
+        this.getPositionsForHighlighting = (req) => {
+            this.giveListeners(req);
             return (0, MoveService_1.checkMoveVariants)(this.boardService, req.body);
         };
         this.checkWin = (req) => {
@@ -109,15 +122,7 @@ class checkersController extends gameLogicController_1.default {
                 this.switchTeam(req);
                 if (this.withBot && this.counter % 2 === 0)
                     this.getBotMove(req);
-                (this.counter % 2 !== 0) ?
-                    (0, util_1.default)(req, [this.player1.id], 'giveListeners', {
-                        color: this.player1.color,
-                        positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player1.color)
-                    }) :
-                    (0, util_1.default)(req, [this.player2.id], 'giveListeners', {
-                        color: this.player2.color,
-                        positions: (0, MoveService_1.getPositionsForBeatHighlighting)(this.boardService, this.player2.color)
-                    });
+                this.giveListeners(req);
             }
         };
         this.handleMove = (req, moveObj) => {
@@ -150,6 +155,19 @@ class checkersController extends gameLogicController_1.default {
             return this.boardService.getBoard();
         };
         this.boardService = new BoardService_1.default();
+    }
+    checkIfCanMove(color) {
+        var _a;
+        for (let i = 0; i < this.boardService.board.length; i++) {
+            for (let j = 0; j < this.boardService.board[i].length; j++) {
+                if (((_a = this.boardService.board[i][j]) === null || _a === void 0 ? void 0 : _a.color) === color) {
+                    if ((0, MoveService_1.checkMoveVariants)(this.boardService, { i: i, j: j }).length > 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 exports.default = checkersController;

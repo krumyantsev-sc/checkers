@@ -50,13 +50,22 @@ const History: React.FC = () => {
                 </div>
             </div>
             {games.map((game) => (
-                <ProfileGame key={game._id} firstPlayer={game.firstPlayer} secondPlayer={game.secondPlayer}
-                             _id={game._id} winner={game.winner} game={game.game} duration={game.duration}
-                             createdAt={game.createdAt}/>
+                <ProfileGame
+                    key={game._id}
+                    firstPlayer={game.firstPlayer}
+                    secondPlayer={game.secondPlayer}
+                    _id={game._id}
+                    winner={game.winner}
+                    game={game.game}
+                    duration={game.duration}
+                    createdAt={game.createdAt}/>
             ))}
             <div>
                 {Array.from({length: totalPages}, (_, index) => (
-                    <button key={index} onClick={() => setCurrentPage(index + 1)}>
+                    <button
+                    style={{marginRight:4, textAlign: "center"}}
+                        key={index}
+                        onClick={() => setCurrentPage(index + 1)}>
                         {index + 1}
                     </button>
                 ))}

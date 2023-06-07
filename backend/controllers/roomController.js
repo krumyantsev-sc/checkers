@@ -18,6 +18,7 @@ const secret = require("../config/config");
 class roomController {
     constructor() {
         this.connect = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             try {
                 const token = req.cookies.jwt;
                 const { id: userId } = jwt.verify(token, secret);
@@ -45,7 +46,7 @@ class roomController {
                 else if (!room.secondPlayer && room.firstPlayer.toString() !== candidate._id.toString()) {
                     room.secondPlayer = candidate;
                     yield room.save();
-                    (0, util_1.default)(req, [room.firstPlayer.toString()], 'updateLobbyData', {});
+                    (0, util_1.default)(req, [(_a = room.firstPlayer) === null || _a === void 0 ? void 0 : _a.toString(), (_b = room.secondPlayer) === null || _b === void 0 ? void 0 : _b.toString()], 'updateLobbyData', {});
                 }
                 return res.status(200).json({ status: "connected" });
             }
@@ -54,7 +55,7 @@ class roomController {
             }
         });
         this.leaveRoom = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+            var _c, _d, _e, _f;
             try {
                 const roomId = req.body.roomId;
                 const room = yield Room_1.default.findById(roomId);
@@ -63,13 +64,14 @@ class roomController {
                 }
                 const token = req.cookies.jwt;
                 const { id: userId } = jwt.verify(token, secret);
-                if (((_a = room.firstPlayer) === null || _a === void 0 ? void 0 : _a.toString()) === userId) {
+                if (((_c = room.firstPlayer) === null || _c === void 0 ? void 0 : _c.toString()) === userId) {
                     room.firstPlayer = undefined;
                 }
-                if (((_b = room.secondPlayer) === null || _b === void 0 ? void 0 : _b.toString()) === userId) {
+                if (((_d = room.secondPlayer) === null || _d === void 0 ? void 0 : _d.toString()) === userId) {
                     room.secondPlayer = undefined;
                 }
                 yield room.save();
+                (0, util_1.default)(req, [(_e = room.firstPlayer) === null || _e === void 0 ? void 0 : _e.toString(), (_f = room.secondPlayer) === null || _f === void 0 ? void 0 : _f.toString()], 'updateLobbyData', "disconnected");
                 res.status(200).json({ message: "Вы успешно покинули комнату." });
             }
             catch (e) {

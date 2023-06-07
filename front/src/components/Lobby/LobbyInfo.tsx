@@ -35,14 +35,17 @@ const LobbyInfo: React.FC<RoomsProps> = ({firstPlayer, secondPlayer, lobbyId}) =
             setIsReady(true);
         }
         socket.connect();
-        socket.on('updateLobbyData', () => {
-            setIsReady(true);
+        socket.on('updateLobbyData', (data?: string) => {
+            console.log("data",data)
+            if (data !== "disconnected") {
+                setIsReady(true);
+            } else {
+                console.log("off")
+                setIsReady(false);
+            }
         });
         socket.on('makeBtnActive', () => {
-            console.log('Active');
-            console.log(isReady);
             setIsReady(true);
-            console.log(isReady);
         })
 
         return () => {

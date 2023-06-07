@@ -58,11 +58,11 @@ const UserTable: React.FC<UsersTableProps> = (
                 className="users-table">
                 <thead>
                 <tr>
-                    <th>id</th>
-                    <th>Username</th>
-                    <th>Role</th>
+                    <th>ID</th>
+                    <th>Имя пользователя</th>
+                    <th>Роли</th>
                     <th>Email</th>
-                    <th>Actions</th>
+                    <th>Действия</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -86,22 +86,26 @@ const UserTable: React.FC<UsersTableProps> = (
                         <td
                             className="role-td">
                             {user.role.map((role) => {
-                                return role + " "
+                                return <span style={role === "BANNED" ? {color: "red"} : (role === "ADMIN" ? {color: "green"}: {})}>{role + " "}</span>
                             })}
                         </td>
                         <td>{user.email}</td>
                         <td
                             className="button-table-cell">
+                            {!user.role.includes("BANNED") &&
                             <button
                                 onClick={() => onBlockUser(user._id)}
                                 className="ban-button">
-                                Ban
-                            </button>
-                            <button
-                                onClick={() => onMakeAdmin(user._id)}
-                                className="make-admin-button">
-                                Make admin
-                            </button>
+                                Заблокировать
+                            </button> }
+                            {!user.role.includes("ADMIN") &&
+                                <button
+                                    style={{paddingTop:8, paddingLeft:17}}
+                                    onClick={() => onMakeAdmin(user._id)}
+                                    className="make-admin-button">
+                                    Сделать<br/> администратором
+                                </button>
+                            }
                         </td>
                     </tr>
                 ))}

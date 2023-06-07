@@ -37,7 +37,7 @@ const List = ({games, getGames}: ListProps) => {
                 className="games-header-wrapper">
                 <span
                     className="available-games">
-                    AVAILABLE GAMES
+                    ДОСТУПНЫЕ ИГРЫ
                 </span>
                 {isAdmin &&
                 <div

@@ -43,7 +43,7 @@ const getPositionsForBeatHighlighting = (gameBoard: BoardService, color: string)
 }
 
 const checkMoveVariants: IMoveVariants = (gameBoard, position) => {
-    let possibleWays: { i: number, j: number }[] = getBeatPositions(gameBoard, position);
+    let possibleWays: checkerCoords[] = getBeatPositions(gameBoard, position);
     if (possibleWays.length === 0) {
         possibleWays = getSimpleMoveVariants(gameBoard, position);
     }

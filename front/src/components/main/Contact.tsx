@@ -21,7 +21,7 @@ const Contact = () => {
                 className="contact-page">
                 <span
                     className="contact-header">
-                    Contact information
+                    Контактная информация
                 </span>
                 <div
                     className="contact-info-container">

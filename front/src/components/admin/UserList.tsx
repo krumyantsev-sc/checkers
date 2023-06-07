@@ -37,7 +37,7 @@ const UserList = () => {
                 if (err.response && err.response.status === 409) {
                     showModal(err.response.data.message);
                 } else {
-                    showModal('Error occurred while blocking user');
+                    showModal('Произошла ошибка при блокировке пользователя');
                 }
             });
     };
@@ -51,7 +51,7 @@ const UserList = () => {
                 if (err.response && err.response.status === 409) {
                     showModal(err.response.data.message);
                 } else {
-                    showModal('Error occurred while making user an admin');
+                    showModal('Произошла ошибка при изменении прав пользователя');
                 }
             });
     };
@@ -72,7 +72,7 @@ const UserList = () => {
             <SideMenu/>
             <div
                 className="users-page">
-                <h1>User List</h1>
+                <h1>Список пользователей</h1>
                 <div
                     className="search-bar-container">
                     <SearchBar

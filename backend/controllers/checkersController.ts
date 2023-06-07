@@ -36,6 +36,15 @@ class checkersController extends gameLogicController {
 
     private switchTeam = (req: Request): void => {
         let currColor: string = (this.counter % 2 !== 0) ? "White" : "Black";
+        if (!this.checkIfCanMove(currColor)) {
+            if (this.player1.score !== 12 && this.player2.score !== 12) {
+                if (this.player1.color === currColor) {
+                    this.emitWin(this.player2.id, this.player1.id, req);
+                } else {
+                    this.emitWin(this.player1.id, this.player2.id, req);
+                }
+            }
+        }
         emitToPlayers(req, [this.player1.id, this.player2.id], 'switchTeam', {color: currColor});
     }
 
@@ -61,6 +70,19 @@ class checkersController extends gameLogicController {
         }
         emitToPlayers(req, [this.player1.id, this.player2.id], 'switchTeam', {color: currColor});
         return {message: "successfully sent"};
+    }
+
+    checkIfCanMove (color: string) {
+        for (let i = 0; i < this.boardService.board.length; i++) {
+            for (let j = 0; j < this.boardService.board[i].length; j++) {
+                if (this.boardService.board[i][j]?.color === color) {
+                    if (checkMoveVariants(this.boardService, {i: i,j:j}).length > 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private giveListeners = (req: Request) => {
