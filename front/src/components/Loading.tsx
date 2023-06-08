@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, {keyframes} from 'styled-components';
+import {CircularProgress} from "@mui/material";
 
 const spin = keyframes`
   from {
@@ -29,7 +30,7 @@ const Title = styled.h1`
 function Loading() {
     return (
         <LoadingScreen>
-            <Title>GAMESINT</Title>
+            <CircularProgress />
         </LoadingScreen>
     );
 }
