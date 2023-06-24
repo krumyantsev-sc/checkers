@@ -3,9 +3,9 @@ import '../../styles/UserList.css';
 import UserModal from "./UserModal";
 
 interface User {
-    _id: number;
+    id: number;
     username: string;
-    role: string[];
+    roles: [{name: string}];
     email: string;
 }
 
@@ -68,13 +68,13 @@ const UserTable: React.FC<UsersTableProps> = (
                 <tbody>
                 {users.map((user) => (
                     <tr
-                        key={user._id}>
+                        key={user.id}>
                         <td>
                             <div
                                 className="user-info-admin-button"
-                                onClick={() => handleClickOpen(user._id)}
+                                onClick={() => handleClickOpen(user.id)}
                                 style={{color: "#3ed2f0"}}>
-                                {user._id}
+                                {user.id}
                             </div>
                         </td>
                         <UserModal
@@ -85,20 +85,20 @@ const UserTable: React.FC<UsersTableProps> = (
                         <td>{user.username}</td>
                         <td
                             className="role-td">
-                            {user.role.map((role) => {
-                                return role + " "
+                            {user.roles.map((role) => {
+                                return role.name + " "
                             })}
                         </td>
                         <td>{user.email}</td>
                         <td
                             className="button-table-cell">
                             <button
-                                onClick={() => onBlockUser(user._id)}
+                                onClick={() => onBlockUser(user.id)}
                                 className="ban-button">
                                 Ban
                             </button>
                             <button
-                                onClick={() => onMakeAdmin(user._id)}
+                                onClick={() => onMakeAdmin(user.id)}
                                 className="make-admin-button">
                                 Make admin
                             </button>

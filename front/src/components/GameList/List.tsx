@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AddGameModal from "./AddGameModal";
 
 interface Game {
-    _id: number;
+    id: number;
     name: string;
     logo: string;
     description: string;
@@ -53,9 +53,9 @@ const List = ({games, getGames}: ListProps) => {
                 className="list-container">
                 {games.map((game) => (
                     <Game
-                        key={game._id}
+                        key={game.id}
                         getGames={getGames}
-                        id={game._id}
+                        id={game.id}
                         name={game.name}
                         logo={game.logo}
                         description={game.description}

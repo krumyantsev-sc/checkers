@@ -16,6 +16,7 @@ const GameList = () => {
             const response = await GamesService.getGames();
             const data = await response.data;
             if (data) {
+                console.log(data)
                 setGames(data);
                 setIsLoading(false);
             }

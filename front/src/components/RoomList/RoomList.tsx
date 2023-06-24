@@ -9,7 +9,7 @@ import {faArrowsRotate} from '@fortawesome/free-solid-svg-icons';
 import {ModalProvider} from "../Modal/ModalContext";
 
 interface IRoom {
-    _id: number;
+    id: number;
     firstPlayer: string;
     secondPlayer: string;
 }
@@ -136,10 +136,10 @@ const RoomList = () => {
                         </div>
                         {rooms.map((room: IRoom) => (
                             <Rooms
-                                key={room._id}
+                                key={room.id}
                                 firstPlayer={room.firstPlayer ? room.firstPlayer : "no player"}
                                 secondPlayer={room.secondPlayer ? room.secondPlayer : "no player"}
-                                id={room._id}/>
+                                id={room.id}/>
                         ))}
                     </div>
                     {renderPagination()}

@@ -42,7 +42,7 @@ app.use(cors({
 app.set("socketService", new io_1.default(server));
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        database_1.default.sync().then(() => __awaiter(void 0, void 0, void 0, function* () {
+        database_1.sequelize.sync().then(() => __awaiter(void 0, void 0, void 0, function* () {
             console.log("Database & tables created!");
         }));
         yield mongoose.connect(`mongodb+srv://rumik:13372281@cluster0.orq3t9o.mongodb.net/?retryWrites=true&w=majority`);

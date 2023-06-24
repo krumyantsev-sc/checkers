@@ -15,7 +15,10 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
-import sequelize from './db/database';
+import {sequelize} from './db/database';
+import {User} from "./pgModels/User";
+import {Role} from "./pgModels/Role";
+import {Statistic} from "./pgModels/Statistic";
 
 app.use(express.json());
 app.use(cookieParser());
@@ -38,7 +41,6 @@ const start = async () => {
     try {
         sequelize.sync().then(async () => {
             console.log("Database & tables created!");
-
         });
         await mongoose.connect(`mongodb+srv://rumik:13372281@cluster0.orq3t9o.mongodb.net/?retryWrites=true&w=majority`);
         server.listen(3001, function () {

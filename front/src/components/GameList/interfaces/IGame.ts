@@ -1,5 +1,5 @@
 export default interface Game {
-    _id: number;
+    id: number;
     name: string;
     logo: string;
     description: string;

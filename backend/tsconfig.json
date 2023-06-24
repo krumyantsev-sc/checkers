@@ -4,7 +4,9 @@
     "sourceMap": true,
     "target": "es6",
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "./**/*"

@@ -16,6 +16,7 @@ const UserList = () => {
     async function fetchUsers() {
         const response = await AuthService.getUsers(currentPage);
         setUsers(response.data.users);
+        console.log(response.data.users)
         setTotalPages(response.data.totalPages);
         setIsLoading(false);
     }

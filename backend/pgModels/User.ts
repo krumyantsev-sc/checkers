@@ -1,27 +1,64 @@
-const { Model, DataTypes } = require('sequelize');
-import sequelize from '../db/database';
-import Role from './Role';
+import {
+    Table,
+    Column,
+    Model,
+    DataType,
+    BelongsToMany,
+    HasOne, HasMany
+} from 'sequelize-typescript';
+import { UserRole } from './UserRole';
+import {Role} from "./Role";
+import { Statistic } from './Statistic';
+import {Room} from "./Room";
 
-interface UserAttributes {
+@Table
+export class User extends Model {
+    @Column({
+        type: DataType.STRING,
+        unique: true,
+        allowNull: false
+    })
     username: string;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false
+    })
     password: string;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false
+    })
     firstName: string;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false
+    })
     lastName: string;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false
+    })
     email: string;
-    avatar?: string;
+
+    @Column({
+        type: DataType.STRING,
+        defaultValue: "profile-avatar-default.png"
+    })
+    avatar: string;
+
+    @HasOne(() => Statistic)
+    statistic!: Statistic;
+
+    @BelongsToMany(() => Role, () => UserRole)
+    roles: Role[];
+
+    @HasMany(() => Room, 'firstPlayerId')
+    firstPlayerRooms!: Room[];
+
+    @HasMany(() => Room, 'secondPlayerId')
+    secondPlayerRooms!: Room[];
 }
-
-interface UserInstance extends Model<UserAttributes>, UserAttributes {
-    addRole: (role: Role) => Promise<void>;
-}
-
-const User = sequelize.define<UserInstance>('User', {
-    username: { type: DataTypes.STRING, unique: true, allowNull: false },
-    password: { type: DataTypes.STRING, allowNull: false },
-    firstName: { type: DataTypes.STRING, allowNull: false },
-    lastName: { type: DataTypes.STRING, allowNull: false },
-    email: { type: DataTypes.STRING, allowNull: false },
-    avatar: { type: DataTypes.STRING, defaultValue: "profile-avatar-default.png" },
-})
-
-export default User;

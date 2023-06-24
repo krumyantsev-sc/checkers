@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import Game, {IGame} from "../models/Game"
+import {Game} from "../pgModels/Game"
 const multer = require('multer');
 const path = require('path');
 import * as fs from 'fs';
@@ -28,7 +28,10 @@ class gameController {
         const description: string = req.body.description;
         const logoFile = req.file;
         try {
-            const newGame = new Game({name: name, description: description});
+            const newGame = await Game.create({
+                name: name,
+                description: description
+            });
             if (logoFile) {
                 newGame.logo = logoFile.filename;
             }
@@ -42,52 +45,54 @@ class gameController {
 
     public getGames = async (req: Request, res: Response): Promise<any> => {
         try {
-            const games: IGame[] = await Game.find();
+            const games = await Game.findAll();
             res.json(games);
         } catch (e) {
             console.log(e);
         }
     }
 
-    public editGame = async (req: Request, res: Response) => {
+    editGame = async (req: Request, res: Response) => {
         const name: string = req.body.name;
         const description: string = req.body.description;
         const logoFile = req.file;
         const id: string = req.body.id;
+
         try {
-            const updatedGame = await Game.findByIdAndUpdate(
-                id,
-                {
-                    name: name,
-                    description: description,
-                },
-                {new: true}
-            );
+            const updatedGameData: any = {
+                name: name,
+                description: description,
+            };
 
             if (logoFile) {
-                const updatedGame = await Game.findByIdAndUpdate(
-                    id,
-                    {
-                        logo: logoFile.filename
-                    },
-                    {new: true}
-                );
+                updatedGameData.logo = logoFile.filename;
             }
-            if (!updatedGame) {
-                res.status(404).send({message: "Game not found"});
+
+            const updatedGame = await Game.update(updatedGameData, {
+                where: { id: id },
+                returning: true,
+            });
+
+            if (updatedGame[0] === 0) {
+                res.status(404).send({ message: "Game not found" });
             } else {
-                res.send({message: "game updated successfully", status: "success"});
+                res.send({
+                    message: "Game updated successfully",
+                    status: "success",
+                });
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send({message: "An error occurred while updating the game"});
+            res
+                .status(500)
+                .send({ message: "An error occurred while updating the game" });
         }
     }
 
-    deleteGame = async (req, res) => {
+    deleteGame = async (req: Request, res: Response) => {
         try {
             const gameId = req.params.id;
-            const deletedGame = await Game.findByIdAndDelete(gameId);
+            const deletedGame = await Game.destroy({ where: { id: gameId } });
 
             if (!deletedGame) {
                 return res.status(404).json({message: 'Game not found'});
