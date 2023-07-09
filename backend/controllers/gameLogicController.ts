@@ -1,9 +1,10 @@
-import User from "../models/User";
-import Room, {IRoom} from "../models/Room";
+import {User} from "../pgModels/User";
+import {Room} from "../pgModels/Room";
 import {Request, Response} from "express";
 import emitToPlayers from "../util/util";
 import {FinishMessage} from "../enums/finishMessage";
 import {removeController} from "../routers/checkersRouter";
+import {Statistic} from "../pgModels/Statistic";
 
 const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
@@ -14,37 +15,57 @@ export default class gameLogicController {
     protected player1;
     protected player2;
 
-    updateStats = async (winnerId: string, loserId: string): Promise<void> => {
-        const winner = await User.findById(winnerId);
-        const loser = await User.findById(loserId);
-        const room = await Room.findById(this.roomId);
-        winner.statistics.wins++;
-        loser.statistics.loses++;
-        room.status = "finished";
-        room.winner = winner;
-        room.finishedAt = new Date();
-        await winner.save();
-        await loser.save();
-        await room.save();
-    }
-
-    initializeGame = async (roomId: string, req: Request, res: Response,): Promise<any> => {
-        this.roomId = roomId;
+    public updateStats = async (winnerId: string, loserId: string): Promise<void> => {
         try {
-            const room: IRoom = await Room.findById(this.roomId)
-                .populate('firstPlayer')
-                .populate('secondPlayer')
-                .exec()
-            room.startedAt = new Date();
-            this.player1.id = room?.firstPlayer!._id.toString();
-            this.player1.name = room.firstPlayer.username;
-            this.player2.id = room?.secondPlayer._id.toString();
-            this.player2.name = room.secondPlayer.username;
+            const winner = await User.findByPk(winnerId);
+            const loser = await User.findByPk(loserId);
+            const room = await Room.findByPk(this.roomId);
+
+            if (!winner || !loser || !room) {
+                console.error("Winner, loser, or room not found.");
+                return;
+            }
+
+            const winnerStats = await Statistic.findOne({where: {userId: winnerId}})
+            const loserStats = await Statistic.findOne({where: {userId: loserId}})
+            winnerStats.wins++;
+            loserStats.loses++;
+            room.status = "finished";
+            room.winnerId = winner.id;
+            room.finishedAt = new Date();
+
+            await winner.save();
+            await loser.save();
             await room.save();
-        } catch {
-            return res.status(404).json({message: "Game not found"});
+        } catch (error) {
+            console.error(error);
         }
-    }
+    };
+
+    public initializeGame = async (roomId: string, req: Request, res: Response): Promise<any> => {
+        this.roomId = roomId;
+
+        try {
+            const room = await Room.findByPk(roomId);
+            const firstPlayer = await User.findByPk(room.firstPlayerId);
+            const secondPlayer = await User.findByPk(room.secondPlayerId);
+            if (!room || !room.firstPlayerId || !room.secondPlayerId) {
+                return res.status(404).json({message: "Game not found"});
+            }
+
+            room.startedAt = new Date();
+            this.player1.id = firstPlayer.id;
+            this.player1.name = firstPlayer.username;
+            this.player2.id = secondPlayer.id;
+            this.player2.name = secondPlayer.username;
+
+            await room.save();
+
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({message: "An error occurred while initializing the game"});
+        }
+    };
 
     finishGameOnDisconnect = (req: Request) => {
         try {

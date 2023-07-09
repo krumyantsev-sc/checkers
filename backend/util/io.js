@@ -9,24 +9,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Room_1 = require("../models/Room");
+const Room_1 = require("../pgModels/Room");
 const jwtVerification_1 = require("./jwtVerification");
+const sequelize_1 = require("sequelize");
 const socketIo = require('socket.io');
 const cookie = require('cookie');
 const getSecondPlayerName = (playerId) => __awaiter(void 0, void 0, void 0, function* () {
-    const room = yield Room_1.default.findOne({ $and: [{ $or: [{ firstPlayer: playerId }, { secondPlayer: playerId }] }, { status: "active" }] });
+    const room = yield Room_1.Room.findOne({
+        where: {
+            [sequelize_1.Op.and]: [
+                {
+                    [sequelize_1.Op.or]: [{ firstPlayerId: playerId }, { secondPlayerId: playerId }],
+                },
+                { status: "active" },
+            ],
+        },
+    });
     if (room) {
-        if (room.firstPlayer && room.secondPlayer) {
-            if (room.firstPlayer)
-                if (room.firstPlayer.toString() === playerId) {
-                    if (room.secondPlayer) {
-                        return room.secondPlayer.toString();
-                    }
-                }
-                else if (room.secondPlayer.toString() === playerId) {
-                    console.log('return!!!!', room.firstPlayer.toString());
-                    return room.firstPlayer.toString();
-                }
+        if (room.firstPlayerId && room.secondPlayerId) {
+            if (room.firstPlayerId === playerId) {
+                return room.secondPlayerId;
+            }
+            else if (room.secondPlayerId === playerId) {
+                return room.firstPlayerId;
+            }
         }
     }
 });
@@ -38,29 +44,32 @@ class SocketService {
                 origin: 'http://localhost:3000'
             },
         });
-        this.io.on('connection', (socket) => __awaiter(this, void 0, void 0, function* () {
-            const cookies = socket.handshake.headers.cookie;
-            const parsedCookies = cookie.parse(cookies);
-            const token = parsedCookies.jwt;
-            const playerId = (0, jwtVerification_1.default)(token);
-            if (playerId === null) {
-                socket.disconnect();
-            }
-            socket.join(playerId);
-            const secondPlayerId = yield getSecondPlayerName(playerId);
-            if (secondPlayerId) {
-                this.io.to(secondPlayerId).emit('enemyReconnected');
-            }
-            socket.on('disconnect', () => __awaiter(this, void 0, void 0, function* () {
+        this.io.on('connection', (socket) => {
+            (() => __awaiter(this, void 0, void 0, function* () {
+                const cookies = socket.handshake.headers.cookie;
+                const parsedCookies = cookie.parse(cookies);
+                const token = parsedCookies.jwt;
+                const playerId = (0, jwtVerification_1.default)(token);
+                if (playerId === null) {
+                    socket.disconnect();
+                }
+                console.log("connected to", playerId);
+                socket.join(playerId);
                 const secondPlayerId = yield getSecondPlayerName(playerId);
                 if (secondPlayerId) {
-                    this.io.to(secondPlayerId).emit('enemyDisconnected');
-                    const serverTime = new Date().getTime();
-                    this.io.to(secondPlayerId).emit('syncTime', serverTime);
+                    this.io.to(secondPlayerId).emit('enemyReconnected');
                 }
-                socket.leave(playerId);
-            }));
-        }));
+                socket.on('disconnect', () => __awaiter(this, void 0, void 0, function* () {
+                    const secondPlayerId = yield getSecondPlayerName(playerId);
+                    if (secondPlayerId) {
+                        this.io.to(secondPlayerId).emit('enemyDisconnected');
+                        const serverTime = new Date().getTime();
+                        this.io.to(secondPlayerId).emit('syncTime', serverTime);
+                    }
+                    socket.leave(playerId);
+                }));
+            }))();
+        });
     }
     emiter(event, target, body) {
         this.io.to(target).emit(event, body);

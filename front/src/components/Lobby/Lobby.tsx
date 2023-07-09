@@ -37,6 +37,7 @@ const Lobby = () => {
             const response = await LobbyService.getLobbyInfo(gameId);
             const data = await response.data;
             if (data) {
+                console.log(data)
                 setRoomInfo(data);
             }
         } catch (error) {
@@ -49,6 +50,7 @@ const Lobby = () => {
         socket.connect();
 
         socket.on('updateLobbyData', () => {
+            console.log("UPDATE")
             getRoomInfoFromServer();
         });
         return () => {

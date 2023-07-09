@@ -22,22 +22,22 @@ import { Message } from "./Message";
 export class Room extends Model {
     @ForeignKey(() => User)
     @Column({
-        type: DataType.INTEGER.UNSIGNED,
+        type: DataType.STRING,
         allowNull: true,
     })
-    firstPlayerId!: number | null;
+    firstPlayerId!: string | null;
 
-    @BelongsTo(() => User)
+    @BelongsTo(() => User,{as: 'firstPlayer'})
     firstPlayer!: User;
 
     @ForeignKey(() => User)
     @Column({
-        type: DataType.INTEGER.UNSIGNED,
+        type: DataType.STRING,
         allowNull: true,
     })
-    secondPlayerId!: number | null;
+    secondPlayerId!: string | null;
 
-    @BelongsTo(() => User)
+    @BelongsTo(() => User, {as: 'secondPlayer'})
     secondPlayer!: User;
 
     @ForeignKey(() => User)

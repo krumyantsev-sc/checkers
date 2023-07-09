@@ -11,65 +11,96 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = require("../pgModels/User");
 const Room_1 = require("../pgModels/Room");
+const util_1 = require("../util/util");
 const Game_1 = require("../pgModels/Game");
+const sequelize_1 = require("sequelize");
+const Statistic_1 = require("../pgModels/Statistic");
 const jwt = require("jsonwebtoken");
 const secret = require("../config/config");
 class roomController {
     constructor() {
         this.connect = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            // try {
-            //     const token: string = req.cookies.jwt;
-            //     const {id: userId} = jwt.verify(token, secret);
-            //     const candidate: IUser = await User.findById(userId);
-            //     const activeRoom: IRoom[] = await Room.find({$and: [{$or: [{firstPlayer: candidate._id}, {secondPlayer: candidate._id}]}, {status: "active"}]});
-            //     if (activeRoom.length !== 0) {
-            //         if (activeRoom[0]._id.toString() !== req.body.roomId) {
-            //             return res.status(403).json({
-            //                 message: "Вы уже являетесь участником активной комнаты.",
-            //                 roomId: activeRoom[0]._id.toString()
-            //             });
-            //         }
-            //     }
-            //     const roomId: string = req.body.roomId;
-            //     const room: IRoom = await Room.findById(roomId);
-            //     if (room.firstPlayer && room.secondPlayer && (room.firstPlayer.toString() !== candidate._id.toString()) && (room.secondPlayer.toString() !== candidate._id.toString())) {
-            //         return res.status(403).json({
-            //             message: "Комната переполнена.",
-            //         });
-            //     }
-            //     if (!room.firstPlayer) {
-            //         room.firstPlayer = candidate;
-            //         await room.save();
-            //     } else if (!room.secondPlayer && room.firstPlayer.toString() !== candidate._id.toString()) {
-            //         room.secondPlayer = candidate;
-            //         await room.save();
-            //         emitToPlayers(req, [room.firstPlayer.toString()], 'updateLobbyData', {});
-            //     }
-            //     return res.status(200).json({status: "connected"});
-            // } catch (error) {
-            //     console.log(error);
-            // }
+            try {
+                console.log("!!!!");
+                const token = req.cookies.jwt;
+                const { id: userId } = jwt.verify(token, secret);
+                const candidate = yield User_1.User.findByPk(userId);
+                if (!candidate) {
+                    throw new Error('User not found');
+                }
+                const activeRoom = yield Room_1.Room.findOne({
+                    where: {
+                        status: 'active',
+                        [sequelize_1.Op.or]: [
+                            { firstPlayerId: candidate.id },
+                            { secondPlayerId: candidate.id }
+                        ]
+                    }
+                });
+                if (activeRoom && activeRoom.id !== req.body.roomId) {
+                    return res.status(403).json({
+                        message: 'You are already in an active room',
+                        roomId: activeRoom.id
+                    });
+                }
+                const roomId = req.body.roomId;
+                const room = yield Room_1.Room.findByPk(roomId, {
+                    include: [
+                        { model: User_1.User, as: 'firstPlayer' },
+                        { model: User_1.User, as: 'secondPlayer' }
+                    ]
+                });
+                if (!room) {
+                    throw new Error('Room not found');
+                }
+                if (room.firstPlayerId && room.secondPlayerId && room.firstPlayerId !== candidate.id && room.secondPlayerId !== candidate.id) {
+                    return res.status(403).json({
+                        message: 'Room is full',
+                    });
+                }
+                if (!room.firstPlayerId) {
+                    room.firstPlayer = candidate;
+                    room.firstPlayerId = candidate.id;
+                    yield room.save();
+                }
+                else if (!room.secondPlayerId && room.firstPlayerId !== candidate.id) {
+                    room.secondPlayer = candidate;
+                    room.secondPlayerId = candidate.id;
+                    yield room.save();
+                    console.log("roomfirstId", room.firstPlayerId);
+                    (0, util_1.default)(req, [room.firstPlayerId], 'updateLobbyData', {});
+                }
+                return res.status(200).json({ status: 'connected' });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).send({ message: 'An error occurred while connecting to the room' });
+            }
         });
         this.leaveRoom = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            // try {
-            //     const roomId: string = req.body.roomId;
-            //     const room: IRoom = await Room.findById(roomId);
-            //     if (room.createdAt.toString() !== room.startedAt.toString()) {
-            //         return res.status(403).json({message: "Комнату нельзя покинуть после начала игры."});
-            //     }
-            //     const token: string = req.cookies.jwt;
-            //     const {id: userId} = jwt.verify(token, secret);
-            //     if (room.firstPlayer?.toString() === userId) {
-            //         room.firstPlayer = undefined;
-            //     }
-            //     if (room.secondPlayer?.toString() === userId) {
-            //         room.secondPlayer = undefined;
-            //     }
-            //     await room.save();
-            //     res.status(200).json({message: "Вы успешно покинули комнату."});
-            // } catch (e) {
-            //     console.error(e);
-            // }
+            try {
+                const roomId = req.body.roomId;
+                const room = yield Room_1.Room.findByPk(roomId);
+                if (!room) {
+                    return res.status(404).json({ message: "Room not found." });
+                }
+                if (room.createdAt.toString() !== room.startedAt.toString()) {
+                    return res.status(403).json({ message: "You cannot leave the room after the game has started." });
+                }
+                const token = req.cookies.jwt;
+                const { id: userId } = jwt.verify(token, secret);
+                if (room.firstPlayerId === userId) {
+                    room.firstPlayerId = null;
+                }
+                if (room.secondPlayerId === userId) {
+                    room.secondPlayerId = null;
+                }
+                yield room.save();
+                return res.status(200).json({ message: "You have successfully left the room." });
+            }
+            catch (error) {
+                console.error(error);
+            }
         });
         this.createRoom = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
@@ -121,23 +152,21 @@ class roomController {
                 }
                 const { count: totalRooms, rows: rawRooms } = yield Room_1.Room.findAndCountAll({
                     where: { gameId: game.id, status: "active" },
-                    include: [
-                        { model: User_1.User, as: 'firstPlayer', attributes: ['username'] },
-                        { model: User_1.User, as: 'secondPlayer', attributes: ['username'] }
-                    ],
                     offset,
                     limit,
                     order: [['id', 'DESC']],
                 });
                 const totalPages = Math.ceil(totalRooms / limit);
                 const rooms = rawRooms;
-                const transformedRooms = rooms.map(room => {
+                const transformedRooms = yield Promise.all(rooms.map((room) => __awaiter(this, void 0, void 0, function* () {
+                    const firstPlayer = yield User_1.User.findByPk(room.firstPlayerId);
+                    const secondPlayer = yield User_1.User.findByPk(room.secondPlayerId);
                     return {
                         id: room.id,
-                        firstPlayer: room.firstPlayer ? room.firstPlayer.username : "no player",
-                        secondPlayer: room.secondPlayer ? room.secondPlayer.username : "no player"
+                        firstPlayer: room.firstPlayerId ? firstPlayer.username : "no player",
+                        secondPlayer: room.secondPlayerId ? secondPlayer.username : "no player"
                     };
-                });
+                })));
                 res.json({ transformedRooms, totalPages });
             }
             catch (error) {
@@ -145,34 +174,40 @@ class roomController {
             }
         });
         this.getLobbyInfo = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            // try {
-            //     let currentRoom: IRoom = await Room.findOne({_id: req.body.id})
-            //         .populate('firstPlayer')
-            //         .populate('secondPlayer')
-            //         .exec()
-            //     const transformedRoom = {
-            //         roomId: currentRoom._id,
-            //         firstPlayer: currentRoom.firstPlayer ?
-            //             {
-            //                 username: currentRoom.firstPlayer.username,
-            //                 firstName: currentRoom.firstPlayer.firstName,
-            //                 lastName: currentRoom.firstPlayer.lastName,
-            //                 statistics: currentRoom.firstPlayer.statistics,
-            //                 avatar: currentRoom.firstPlayer.avatar
-            //             } : {},
-            //         secondPlayer: currentRoom.secondPlayer ?
-            //             {
-            //                 username: currentRoom.secondPlayer.username,
-            //                 firstName: currentRoom.secondPlayer.firstName,
-            //                 lastName: currentRoom.secondPlayer.lastName,
-            //                 statistics: currentRoom.secondPlayer.statistics,
-            //                 avatar: currentRoom.secondPlayer.avatar
-            //             } : {}
-            //     };
-            //     res.send(transformedRoom);
-            // } catch (error) {
-            //     console.log(error);
-            // }
+            try {
+                let currentRoom = yield Room_1.Room.findOne({
+                    where: { id: req.body.id },
+                });
+                const firstPlayer = yield User_1.User.findByPk(currentRoom.firstPlayerId);
+                const secondPlayer = yield User_1.User.findByPk(currentRoom.secondPlayerId);
+                const firstPlayerStats = yield Statistic_1.Statistic.findOne({ where: { userId: currentRoom.firstPlayerId } });
+                const secondPlayerStats = yield Statistic_1.Statistic.findOne({ where: { userId: currentRoom.secondPlayerId } });
+                const transformedRoom = {
+                    roomId: currentRoom === null || currentRoom === void 0 ? void 0 : currentRoom.id,
+                    firstPlayer: (currentRoom === null || currentRoom === void 0 ? void 0 : currentRoom.firstPlayerId)
+                        ? {
+                            username: firstPlayer.username,
+                            firstName: firstPlayer.firstName,
+                            lastName: firstPlayer.lastName,
+                            statistics: firstPlayerStats,
+                            avatar: firstPlayer.avatar,
+                        }
+                        : {},
+                    secondPlayer: (currentRoom === null || currentRoom === void 0 ? void 0 : currentRoom.secondPlayerId)
+                        ? {
+                            username: secondPlayer.username,
+                            firstName: secondPlayer.firstName,
+                            lastName: secondPlayer.lastName,
+                            statistics: secondPlayerStats,
+                            avatar: secondPlayer.avatar,
+                        }
+                        : {},
+                };
+                res.send(transformedRoom);
+            }
+            catch (error) {
+                console.log(error);
+            }
         });
     }
 }
